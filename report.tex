@@ -30,9 +30,6 @@
 \usepackage{wrapfig}
 \usepackage{placeins}
 
-% ── Custom column types ───────────────────────────────────────
-\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-
 % ── Page geometry ────────────────────────────────────────────
 \geometry{
     top    = 2.5cm,
@@ -40,6 +37,9 @@
     left   = 3.0cm,
     right  = 2.5cm
 }
+
+% ── Overflow prevention ──────────────────────────────────────
+\setlength{\emergencystretch}{3em}
 
 % ── Hyperref setup ───────────────────────────────────────────
 \hypersetup{
@@ -397,11 +397,11 @@ interactions with the user. The controllers in this layer are:
 \begin{itemize}
     \item \textbf{MainMenuController:} It displays the main menu and manages starting a new game or loading the previous one.
     \item \textbf{SportSelectionController:} It is shown at the beginning of a new game and lists available sports and sends the user's chosen sport code to SportManager.
-    \item \textbf{DashboardController:} It is the main game screen, which shows weekly progression and calls \texttt{SportManager.advanceWeek()} to move the game forward.
+    \item \textbf{DashboardController:} It is the main game screen, which shows weekly progression and calls \texttt{SportManager.}\allowbreak\texttt{advanceWeek()} to move the game forward.
     \item \textbf{SquadController:} It retrieves the player list from the management team and shows the team roster, giving the user access to player attributes and availability.
     \item \textbf{MatchController:} It controls pre-match setup (lineup, tactics) and displays match segments and outcomes.
-    \item \textbf{StandingsController:} It uses \texttt{SportManager.showLeagueTable()} to retrieve and display the current league table.
-    \item \textbf{FixtureController:} It retrieves and displays the full season fixture schedule by calling \texttt{SportManager.showFixture()}.
+    \item \textbf{StandingsController:} It uses \texttt{SportManager.}\allowbreak\texttt{showLeagueTable()} to retrieve and display the current league table.
+    \item \textbf{FixtureController:} It retrieves and displays the full season fixture schedule by calling \texttt{SportManager.}\allowbreak\texttt{showFixture()}.
 \end{itemize}
 
 Importantly, this layer does not contain game logic. All operations are delegated exclusively
@@ -426,10 +426,10 @@ methods of SportManager:
 
 \begin{itemize}
     \item \texttt{startNewGame():} Initializes a new GameSession and triggers sport selection.
-    \item \texttt{selectSport(sportCode: String):} Calls \texttt{SportFactory.createSport(sportCode)} to obtain the correct Sport implementation and stores it in the session.
-    \item \texttt{selectManagedTeam(teamId: String):} Sets the team the user will manage for the season.
-    \item \texttt{advanceWeek(week: String):} Progresses the game by one week; triggers training and schedules upcoming matches.
-    \item \texttt{startMatch(matchId: String):} Retrieves the match for the given ID, delegates simulation to the sport-specific Match class, and returns the result to the UI.
+    \item \texttt{selectSport}\allowbreak\texttt{(sportCode:\,String):} Calls \texttt{SportFactory.}\allowbreak\texttt{createSport(sportCode)} to obtain the correct Sport implementation and stores it in the session.
+    \item \texttt{selectManagedTeam}\allowbreak\texttt{(teamId:\,String):} Sets the team the user will manage for the season.
+    \item \texttt{advanceWeek}\allowbreak\texttt{(week:\,String):} Progresses the game by one week; triggers training and schedules upcoming matches.
+    \item \texttt{startMatch}\allowbreak\texttt{(matchId:\,String):} Retrieves the match for the given ID, delegates simulation to the sport-specific Match class, and returns the result to the UI.
     \item \texttt{showLeagueTable():} Retrieves the current standings from the League object.
     \item \texttt{showFixture():} Retrieves the full fixture list from the League object.
 \end{itemize}
@@ -457,8 +457,8 @@ League manages the full season structure. It is responsible for:
 \begin{itemize}
     \item Storing the list of all teams in the season
     \item Generating the full fixture schedule through \texttt{generateFixtures()}, which creates a round-robin schedule where each team plays every other team twice
-    \item Retrieving all matches for a given week through \texttt{getMatchesOfWeek(weekNo: int)}, which returns a \texttt{List<Match>}
-    \item Updating the standings after a match through \texttt{updateStandings(result: MatchResult)}, which adjusts the relevant StandingEntry objects
+    \item Retrieving all matches for a given week through \texttt{getMatchesOfWeek}\allowbreak\texttt{(weekNo:\,int)}, which returns a \texttt{List<Match>}
+    \item Updating the standings after a match through \texttt{updateStandings}\allowbreak\texttt{(result:\,MatchResult)}, which adjusts the relevant StandingEntry objects
     \item Exposing the current league table through \texttt{getTable()}, which returns a sorted \texttt{List<StandingEntry>}
 \end{itemize}
 
@@ -537,13 +537,13 @@ methods is:
 
 \begin{itemize}
     \item \texttt{getName(): String}: Returns the display name of the sport, used in the UI
-    \item \texttt{createLeague(teamCount: int): League}: Generates and returns a fully populated league with the given number of teams, including all teams, players, and coaches
-    \item \texttt{createTeam(name: String): Team}: Creates and returns a sport-specific team instance
-    \item \texttt{createPlayer(name: String, position: String): Player}: Creates and returns a sport-specific player with appropriate attributes for the given position
-    \item \texttt{createMatch(home: Team, away: Team, weekNo: int): Match}: Creates and returns a sport-specific match instance
-    \item \texttt{calculatePoints(result: MatchResult, team: Team): int}: Calculates and returns the points earned by the given team from the given result, applying sport-specific scoring rules
-    \item \texttt{trainTeam(team: Team):} Applies a full training session to the team, updating player fitness and attributes
-    \item \texttt{applyInjuries(match: Match):} Processes the match result and generates injury records for affected players
+    \item \texttt{createLeague}\allowbreak\texttt{(teamCount:\,int):\,League}: Generates and returns a fully populated league with the given number of teams, including all teams, players, and coaches
+    \item \texttt{createTeam}\allowbreak\texttt{(name:\,String):\,Team}: Creates and returns a sport-specific team instance
+    \item \texttt{createPlayer}\allowbreak\texttt{(name:\,String, position:\,String):\,Player}: Creates and returns a sport-specific player with appropriate attributes for the given position
+    \item \texttt{createMatch}\allowbreak\texttt{(home:\,Team, away:\,Team, weekNo:\,int):\,Match}: Creates and returns a sport-specific match instance
+    \item \texttt{calculatePoints}\allowbreak\texttt{(result:\,MatchResult, team:\,Team):\,int}: Calculates and returns the points earned by the given team from the given result, applying sport-specific scoring rules
+    \item \texttt{trainTeam}\allowbreak\texttt{(team:\,Team):} Applies a full training session to the team, updating player fitness and attributes
+    \item \texttt{applyInjuries}\allowbreak\texttt{(match:\,Match):} Processes the match result and generates injury records for affected players
 \end{itemize}
 
 Every method in this interface is called by the Core System layer during normal game
@@ -590,11 +590,11 @@ scenarios.
 \subsubsection*{Starting a new game:}
 
 \begin{enumerate}
-    \item The user clicks ``New Game'' in MainMenuController, which calls \texttt{SportManager.startNewGame()}
+    \item The user clicks ``New Game'' in MainMenuController, which calls \texttt{SportManager.}\allowbreak\texttt{startNewGame()}
     \item SportManager creates a new GameSession and navigates to SportSelectionController
-    \item The user selects Football; SportSelectionController calls \texttt{SportManager.selectSport("football")}
-    \item SportManager calls \texttt{SportFactory.createSport("football")}, which returns a FootballSport instance stored as type Sport in GameSession
-    \item SportManager calls \texttt{sport.createLeague(20)}, which generates 20 Football teams with players and coaches
+    \item The user selects Football; SportSelectionController calls \texttt{SportManager.}\allowbreak\texttt{selectSport("football")}
+    \item SportManager calls \texttt{SportFactory.}\allowbreak\texttt{createSport("football")}, which returns a FootballSport instance stored as type Sport in GameSession
+    \item SportManager calls \texttt{sport.}\allowbreak\texttt{createLeague(20)}, which generates 20 Football teams with players and coaches
     \item The league is stored in GameSession and DashboardController is displayed
 \end{enumerate}
 
@@ -602,10 +602,10 @@ scenarios.
 
 \begin{enumerate}
     \item The user selects a match from FixtureController and confirms the lineup in MatchController
-    \item MatchController calls \texttt{SportManager.startMatch(matchId)}
+    \item MatchController calls \texttt{SportManager.}\allowbreak\texttt{startMatch(matchId)}
     \item SportManager retrieves the match from \texttt{League.getMatchesOfWeek()} and calls \texttt{match.start()}
     \item For each segment, \texttt{match.play()} is called, generating events and updating scores
-    \item \texttt{match.finish()} is called, producing a MatchResult and triggering \texttt{sport.applyInjuries(match)}
+    \item \texttt{match.finish()} is called, producing a MatchResult and triggering \texttt{sport.}\allowbreak\texttt{applyInjuries(match)}
     \item SportManager calls \texttt{league.updateStandings(result)} and returns the result to MatchController
     \item MatchController displays the match segments, final score, and any injuries to the user
 \end{enumerate}
@@ -898,7 +898,7 @@ emoji icon, the application title ``SPORT MANAGER'', and a subtitle line. Below 
 vertically stacked action buttons are presented:
 
 \begin{itemize}
-    \item \textbf{New Game} — starts a new game session by calling \texttt{SportManager.startNewGame()}, which resets the GameSession and navigates to the Sport Selection screen.
+    \item \textbf{New Game} — starts a new game session by calling \texttt{SportManager.}\allowbreak\texttt{startNewGame()}, which resets the GameSession and navigates to the Sport Selection screen.
     \item \textbf{Load Game} — reserved for future functionality; currently displays an informational dialog.
     \item \textbf{Exit} — closes the application.
 \end{itemize}
@@ -934,7 +934,7 @@ Each sport card contains:
 Currently, Football is the only enabled sport, styled with full opacity and a hover glow effect.
 Future sports (Basketball, Tennis) are displayed at reduced opacity with the cursor blocked,
 visually communicating that they are planned but not yet implemented. When the user clicks
-an enabled card, \texttt{SportManager.selectSport(code)} is called, which triggers league generation
+an enabled card, \texttt{SportManager.}\allowbreak\texttt{selectSport(code)} is called, which triggers league generation
 and navigates forward.
 
 A Back button in the bottom bar returns the user to the Main Menu.
@@ -967,7 +967,7 @@ Teams are generated by \texttt{FootballSport.createLeague(20)} before this scree
 user sees all 20 randomly named clubs with realistic roster statistics. Clicking a card selects it,
 which highlights its border in amber. Clicking a different card deselects the previous one. The
 user confirms their choice with the Confirm Selection button at the bottom, which calls
-\texttt{SportManager.selectManagedTeam(team)} and navigates to the Dashboard.
+\texttt{SportManager.}\allowbreak\texttt{selectManagedTeam(team)} and navigates to the Dashboard.
 
 \begin{figure}[H]
     \centering
@@ -999,7 +999,7 @@ buttons:
 \begin{itemize}
     \item \textit{Week/Season card} — displays the current matchday number (e.g.\ ``Matchday 5 / 38''), the team's current league position (e.g.\ ``3rd place''), and the season record (W/D/L, points, goal difference).
 
-    \item \textit{Next Fixture card} — shows the upcoming match (e.g.\ ``Ironclad FC vs Silverbridge United''), the venue (Home/Away) and matchday number. The Play Match button triggers \texttt{SportManager.startMatch()}. A line beneath the button shows the lineup validity status — green if the starting XI is complete, amber warning if the lineup needs attention.
+    \item \textit{Next Fixture card} — shows the upcoming match (e.g.\ ``Ironclad FC vs Silverbridge United''), the venue (Home/Away) and matchday number. The Play Match button triggers \texttt{SportManager.}\allowbreak\texttt{startMatch()}. A line beneath the button shows the lineup validity status — green if the starting XI is complete, amber warning if the lineup needs attention.
 
     \item \textit{Injury Report card} — lists every currently injured player in the squad with their position and the number of matches remaining in their recovery. If no players are injured, a green confirmation message is shown.
 \end{itemize}
@@ -1024,7 +1024,7 @@ fixture card with a season-over banner displaying the champion's name.
 
 The Fixture screen displays the full season schedule across all matchdays (Requirement
 TM-2). It is reached from the Dashboard's Fixtures button and calls
-\texttt{SportManager.showFixtureData()} to retrieve all rounds.
+\texttt{SportManager.}\allowbreak\texttt{showFixtureData()} to retrieve all rounds.
 
 The screen body contains a single TableView with five columns: \textbf{Wk} (matchday number),
 \textbf{Home}, \textbf{Score}, \textbf{Away}, and \textbf{Status}. On load, the view automatically scrolls to the current
@@ -1120,7 +1120,7 @@ Half: 1\,--\,0'') are inserted between segments.
 
 The bottom bar holds the simulation button, whose label updates to reflect the next segment
 (e.g.\ ``$\blacktriangleright$ Play First Half'' $\rightarrow$ ``$\blacktriangleright$ Play Second Half''). After the match ends, the simulation button is
-replaced by a Continue button which calls \texttt{SportManager.advanceWeek()}, finalising the round
+replaced by a Continue button which calls \texttt{SportManager.}\allowbreak\texttt{advanceWeek()}, finalising the round
 and returning to the Dashboard.
 
 \begin{figure}[H]
@@ -1136,7 +1136,7 @@ and returning to the Dashboard.
 
 The League Table screen shows the full sorted standings for the current season (Requirement
 LM-7). It is accessible from the Dashboard's Table button and calls
-\texttt{SportManager.showLeagueTableData()} which returns a \texttt{List<StandingEntry>} already sorted by
+\texttt{SportManager.}\allowbreak\texttt{showLeagueTableData()} which returns a \texttt{List<StandingEntry>} already sorted by
 points $\rightarrow$ goal difference $\rightarrow$ goals for.
 
 The screen body contains a TableView with ten columns: \textbf{\#} (position), \textbf{Club}, \textbf{P} (played), \textbf{W}, \textbf{D},
