@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sportmanager.ui.controller.DashboardController"
+            styleClass="root-pane">
+
+    <!-- ── TOP NAV BAR ──────────────────────────────────────────────────── -->
+    <top>
+        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="16">
+            <padding><Insets top="12" right="24" bottom="12" left="24"/></padding>
+            <Label text="⚽" styleClass="nav-icon"/>
+            <Label fx:id="teamNameLabel" text="Team Name" styleClass="nav-team-name"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="📋  Fixtures"  onAction="#onViewFixtures" styleClass="nav-btn"/>
+            <Button text="👥  Squad"     onAction="#onViewSquad"    styleClass="nav-btn"/>
+            <Button text="📊  Table"     onAction="#onViewTable"    styleClass="nav-btn"/>
+            <Separator orientation="VERTICAL"/>
+            <Button text="Main Menu"     onAction="#onMainMenu"     styleClass="nav-btn-danger"/>
+        </HBox>
+    </top>
+
+    <!-- ── CENTRE LAYOUT ────────────────────────────────────────────────── -->
+    <center>
+        <HBox spacing="24" styleClass="dashboard-body">
+            <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+            <!-- LEFT: Season status + Next match -->
+            <VBox spacing="20" HBox.hgrow="ALWAYS" styleClass="dashboard-left">
+
+                <!-- Week banner -->
+                <VBox styleClass="card" spacing="6">
+                    <Label fx:id="weekLabel"    text="Matchday —" styleClass="card-heading"/>
+                    <Label fx:id="positionLabel" text="— place"   styleClass="stat-big"/>
+                    <Label fx:id="recordLabel"   text="0W 0D 0L"  styleClass="stat-small"/>
+                </VBox>
+
+                <!-- Next match card -->
+                <VBox styleClass="card card-accent" spacing="10">
+                    <Label text="NEXT FIXTURE" styleClass="section-label"/>
+                    <Label fx:id="nextMatchLabel"     text="—"     styleClass="match-title"/>
+                    <Label fx:id="nextMatchVenueLabel" text=""      styleClass="match-venue"/>
+                    <HBox spacing="12">
+                        <Button fx:id="playMatchButton" text="▶  Play Match"
+                                onAction="#onPlayMatch" styleClass="btn-primary" prefWidth="160"/>
+                        <Label fx:id="lineupStatusLabel" text="" styleClass="lineup-status"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Injury report -->
+                <VBox styleClass="card" spacing="8">
+                    <Label text="INJURY REPORT" styleClass="section-label"/>
+                    <VBox fx:id="injuryListBox" spacing="4"/>
+                </VBox>
+
+            </VBox>
+
+            <!-- RIGHT: Standings preview -->
+            <VBox spacing="8" prefWidth="320" styleClass="dashboard-right">
+                <VBox styleClass="card" spacing="8">
+                    <Label text="STANDINGS" styleClass="section-label"/>
+                    <VBox fx:id="standingsPreviewBox" spacing="4"/>
+                    <Button text="Full Table →" onAction="#onViewTable"
+                            styleClass="btn-link" alignment="CENTER_RIGHT"/>
+                </VBox>
+            </VBox>
+
+        </HBox>
+    </center>
+</BorderPane>

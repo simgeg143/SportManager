@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sportmanager.ui.controller.SquadController"
+            styleClass="root-pane">
+
+    <!-- ── TOP BAR ──────────────────────────────────────────────────────── -->
+    <top>
+        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="16">
+            <padding><Insets top="12" right="24" bottom="12" left="24"/></padding>
+            <Button text="← Back" onAction="#onBack" styleClass="nav-btn"/>
+            <Label text="👥" styleClass="nav-icon"/>
+            <Label fx:id="teamNameLabel" text="Squad" styleClass="nav-team-name"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="availableLabel" text="" styleClass="nav-subtitle"/>
+        </HBox>
+    </top>
+
+    <!-- ── BODY: PLAYERS + COACHES ──────────────────────────────────────── -->
+    <center>
+        <VBox spacing="16" styleClass="page-body">
+            <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+
+            <!-- Player table -->
+            <Label text="PLAYERS" styleClass="section-label"/>
+            <TableView fx:id="playerTable" VBox.vgrow="ALWAYS" styleClass="squad-table" prefHeight="400">
+                <columns>
+                    <TableColumn fx:id="nameCol"   text="Name"       prefWidth="180" minWidth="120"/>
+                    <TableColumn fx:id="posCol"    text="Position"   prefWidth="90"  minWidth="70"/>
+                    <TableColumn fx:id="skillCol"  text="Skill"      prefWidth="70"  minWidth="55"/>
+                    <TableColumn fx:id="statusCol" text="Status"     prefWidth="120" minWidth="80"/>
+                    <TableColumn fx:id="attribCol" text="Attributes" prefWidth="340" minWidth="200"/>
+                </columns>
+                <placeholder><Label text="No players in roster."/></placeholder>
+            </TableView>
+
+            <!-- Coach table -->
+            <Label text="COACHING STAFF" styleClass="section-label"/>
+            <TableView fx:id="coachTable" prefHeight="160" styleClass="squad-table">
+                <columns>
+                    <TableColumn fx:id="coachNameCol"  text="Name"       prefWidth="180" minWidth="120"/>
+                    <TableColumn fx:id="coachRoleCol"  text="Role"       prefWidth="140" minWidth="100"/>
+                    <TableColumn fx:id="coachShapeCol" text="Formation"  prefWidth="100" minWidth="70"/>
+                    <TableColumn fx:id="coachTrainCol" text="Training"   prefWidth="80"  minWidth="60"/>
+                    <TableColumn fx:id="coachMotivCol" text="Motivation" prefWidth="90"  minWidth="60"/>
+                </columns>
+                <placeholder><Label text="No coaching staff."/></placeholder>
+            </TableView>
+
+        </VBox>
+    </center>
+</BorderPane>

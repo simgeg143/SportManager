@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sportmanager.ui.controller.SportSelectionController"
+            styleClass="root-pane">
+
+    <!-- ── Top: page header ── -->
+    <top>
+        <VBox styleClass="page-header" BorderPane.alignment="CENTER">
+            <Label text="SELECT YOUR SPORT" styleClass="page-title"/>
+            <Label text="Choose the sport you want to manage this season" styleClass="page-subtitle"/>
+        </VBox>
+    </top>
+
+    <!-- ── Centre: sport cards populated dynamically ── -->
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="scroll-transparent">
+            <FlowPane fx:id="sportCardsPane"
+                      alignment="CENTER"
+                      hgap="30" vgap="30"
+                      styleClass="sport-cards-pane">
+                <padding><Insets top="40" bottom="40" left="40" right="40"/></padding>
+            </FlowPane>
+        </ScrollPane>
+    </center>
+
+    <!-- ── Bottom: navigation ── -->
+    <bottom>
+        <HBox styleClass="bottom-bar" alignment="CENTER_LEFT">
+            <Button text="← BACK" onAction="#onBack" styleClass="menu-btn"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

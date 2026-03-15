@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.sportmanager.ui.controller.MainMenuController"
+           styleClass="root-pane">
+
+    <!-- Full-screen gradient backdrop -->
+    <VBox alignment="CENTER" spacing="0" styleClass="main-menu-bg">
+
+        <!-- Hero block -->
+        <VBox alignment="CENTER" spacing="12" styleClass="hero-block">
+            <Label text="⚽" styleClass="hero-icon"/>
+            <Label text="SPORT MANAGER" styleClass="title-label"/>
+            <Label text="Build your dynasty. Own the season." styleClass="subtitle-label"/>
+        </VBox>
+
+        <!-- Spacer -->
+        <Region prefHeight="50"/>
+
+        <!-- Navigation buttons -->
+        <VBox alignment="CENTER" spacing="14" styleClass="menu-buttons-box">
+            <Button text="NEW GAME"   onAction="#onNewGame"   styleClass="menu-btn,menu-btn-primary" maxWidth="300" prefWidth="300"/>
+            <Button text="LOAD GAME"  onAction="#onLoadGame"  styleClass="menu-btn"                  maxWidth="300" prefWidth="300"/>
+            <Button text="EXIT"       onAction="#onExit"      styleClass="menu-btn,menu-btn-danger"   maxWidth="300" prefWidth="300"/>
+        </VBox>
+
+        <!-- Version stamp -->
+        <Region prefHeight="60"/>
+        <Label text="v1.0 · CE 216 Project" styleClass="version-label"/>
+
+    </VBox>
+</StackPane>
