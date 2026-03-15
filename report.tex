@@ -27,6 +27,11 @@
 \usepackage{parskip}
 \usepackage{microtype}
 \usepackage{setspace}
+\usepackage{wrapfig}
+\usepackage{placeins}
+
+% ── Custom column types ───────────────────────────────────────
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 
 % ── Page geometry ────────────────────────────────────────────
 \geometry{
@@ -101,6 +106,7 @@
     \rule{\linewidth}{0.6pt}\\[0.4cm]
     {\LARGE\bfseries CE 216}\\[0.3cm]
     {\Large\bfseries ``SPORTS MANAGER'' PROJECT}\\[0.3cm]
+    {\Large\bfseries TEAM: STACK UNDERFLOW}\\[0.3cm]
     {\large\bfseries DESIGN AND ARCHITECTURE DOCUMENT}\\[0.2cm]
     \rule{\linewidth}{0.6pt}\\[1.2cm]
 
@@ -643,6 +649,12 @@ can function without being tied to the specifics of a particular sport.
 
 As described in the System Architecture Principles section, Factory pattern will be used to
 create sport specific classes.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{sport abstraction}
+    \caption{Sport Abstraction}
+    \label{fig:abstractclasses}
+\end{figure}
 
 % ============================================================
 %  6. ABSTRACT CLASSES
@@ -721,6 +733,12 @@ Finally, the FootballLeague class, derived from the abstract class called League
 properties concerning football leagues.
 
 In this way, the sport of football can be easily incorporated into the system.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\textwidth]{figure3-core-layer.png}
+    \caption{Sport Implementation UML}
+    \label{fig:corelayer}
+\end{figure}
 
 % ============================================================
 %  8. DETAILED DESIGN: CLASSES AND METHODS
@@ -729,6 +747,13 @@ In this way, the sport of football can be easily incorporated into the system.
 
 \subsection{Core Layer}
 
+\begin{wrapfigure}{r}{0.60\textwidth}
+    \centering
+    \includegraphics[width=0.58\textwidth]{figure3-core-layer1.png}
+    \caption{Core Layer — SportManager, GameSession, and Domain Entities}
+    \label{fig:corelayer}
+\end{wrapfigure}
+
 The Core module represents the central part of the Sports Manager framework and contains
 the main domain model and application logic. It includes key entities which model the
 structure of a sports competition. SportManager and GameSession classes coordinate the
@@ -736,16 +761,14 @@ overall game flow, including league progression, match execution, and team manag
 This separation ensures that the core logic remains independent from the user interface and
 sport-specific implementations.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.65\textwidth]{figure3-core-layer.png}
-    \caption{Core Layer — SportManager, GameSession, and Domain Entities}
-    \label{fig:corelayer}
-\end{figure}
-
+\clearpage
 \subsection{Overall Package and Class Design}
 
 The diagram below shows the full picture of classes and relations between main modules.
+
+
+
+
 
 \begin{figure}[H]
     \centering
@@ -756,7 +779,18 @@ The diagram below shows the full picture of classes and relations between main m
 
 \subsection{Draft UI Classes}
 
+\begin{wrapfigure}{r}{0.60\textwidth}
+    \centering
+    \includegraphics[width=0.58\textwidth]{UIlayer.png}
+    \caption{UI Layer}
+    \label{fig:corelayer}
+\end{wrapfigure}
+
 UI controllers will be aligned with the graphical UI designs during the implementation phase.
+\clearpage
+
+
+
 
 % ============================================================
 %  9. DETAILED DESIGN: TRACEABILITY TO REQUIREMENTS
@@ -769,49 +803,54 @@ presented in the tables below.
 
 \subsubsection*{League Management Mapping}
 
-\begin{longtable}{L{1.3cm} L{2.4cm} L{2.8cm} L{2.5cm} L{4cm}}
+{\footnotesize
+\begin{longtable}{L{0.9cm} L{2.0cm} L{2.1cm} L{5.0cm} L{3.5cm}}
 \toprule
 \textbf{ID} & \textbf{Functional Req.} & \textbf{Primary Class} & \textbf{Related Method(s)} & \textbf{Explanation} \\
 \midrule
 \endhead
 LM-1 & Start a New Game        & SportManager            & \texttt{startNewGame()}                          & Starts a new game session and initializes the simulation state. \\[0.4em]
-LM-2 & Select a Sport          & SportManager, SportFactory & \texttt{selectSport()}, \texttt{createSport()}   & Creates the selected sport implementation through the factory. \\[0.4em]
-LM-3 & Generate a League       & Sport, League           & \texttt{createLeague()}, \texttt{addTeam()}, \texttt{generateFixtures()} & Creates the league structure and generates the fixture schedule. \\[0.4em]
-LM-4 & Generate Teams, Players, and Coaches & Sport, Team & \texttt{createTeam()}, \texttt{createPlayer()}, \texttt{addPlayer()} & Creates teams and populates them with players and coaches. \\[0.4em]
+LM-2 & Select a Sport          & SportManager, SportFactory & \texttt{selectSport()}\newline\texttt{createSport()}   & Creates the selected sport implementation through the factory. \\[0.4em]
+LM-3 & Generate a League       & Sport, League           & \texttt{createLeague()}\newline\texttt{addTeam()}\newline\texttt{generateFixtures()} & Creates the league structure and generates the fixture schedule. \\[0.4em]
+LM-4 & Generate Teams, Players, and Coaches & Sport, Team & \texttt{createTeam()}\newline\texttt{createPlayer()}\newline\texttt{addPlayer()} & Creates teams and populates them with players and coaches. \\[0.4em]
 LM-5 & Support Sport-Specific Attributes & Sport, Player & \texttt{createPlayer(name, position)} & Creates sport-specific player instances with appropriate attributes. \\[0.4em]
 LM-6 & Select a Team to Manage & SportManager            & \texttt{selectManagedTeam(teamId)} & Assigns the selected team to the active game session. \\[0.4em]
-LM-7 & View the League Table   & SportManager, League    & \texttt{showLeagueTable()}, \texttt{getTable()}  & Displays the current league standings. \\[0.4em]
-LM-8 & Update League Standings & League, Sport           & \texttt{updateStandings(result)}, \texttt{calculatePoints()} & Updates standings and points after each match. \\[0.4em]
-LM-9 & Finish a Season         & League, GameSession     & \texttt{advanceWeek()}, \texttt{getMatchesOfWeek()} & Season completion is inferred when all fixtures are played. \\[0.4em]
+LM-7 & View the League Table   & SportManager, League    & \texttt{showLeagueTable()}\newline\texttt{getTable()}  & Displays the current league standings. \\[0.4em]
+LM-8 & Update League Standings & League, Sport           & \texttt{updateStandings(result)}\newline\texttt{calculatePoints()} & Updates standings and points after each match. \\[0.4em]
+LM-9 & Finish a Season         & League, GameSession     & \texttt{advanceWeek()}\newline\texttt{getMatchesOfWeek()} & Season completion is inferred when all fixtures are played. \\[0.4em]
 LM-10 & Load Names and Visuals & —                       & —                           & Not represented directly in the UML; can be implemented with a ResourceLoader. \\[0.4em]
 LM-11 & Add New Sports         & SportFactory            & \texttt{createSport(sportCode)} & Allows the addition of new sport modules without modifying the UI. \\
 \bottomrule
 \caption{League Management Traceability}
 \end{longtable}
+}
 
 \subsubsection*{Team Management Mapping}
 
-\begin{longtable}{L{1.3cm} L{2.4cm} L{2.8cm} L{2.5cm} L{4cm}}
+{\footnotesize
+\begin{longtable}{L{0.9cm} L{2.0cm} L{2.1cm} L{5.0cm} L{3.5cm}}
 \toprule
 \textbf{ID} & \textbf{Functional Req.} & \textbf{Primary Class} & \textbf{Related Method(s)} & \textbf{Explanation} \\
 \midrule
 \endhead
 TM-1 & View the Player List   & Team                       & \texttt{getAvailablePlayers()} & Returns the list of players currently available for selection. \\[0.4em]
-TM-2 & View the Team Schedule & SportManager, League       & \texttt{showFixture()}, \texttt{getMatchesOfWeek()} & Displays the team's upcoming and past matches. \\[0.4em]
-TM-3 & Set Lineup Before a Match & Team, Lineup            & \texttt{setLineup()}, \texttt{isValid()} & Defines and validates the starting lineup and substitutes. \\[0.4em]
+TM-2 & View the Team Schedule & SportManager, League       & \texttt{showFixture()}\newline\texttt{getMatchesOfWeek()} & Displays the team's upcoming and past matches. \\[0.4em]
+TM-3 & Set Lineup Before a Match & Team, Lineup            & \texttt{setLineup()}\newline\texttt{isValid()} & Defines and validates the starting lineup and substitutes. \\[0.4em]
 TM-4 & Set Tactics Before a Match & Team                   & \texttt{setTactic(tactic)} & Allows the manager to configure tactical parameters. \\
 \bottomrule
 \caption{Team Management Traceability}
 \end{longtable}
+}
 
 \subsubsection*{Match Simulation Mapping}
 
-\begin{longtable}{L{1.3cm} L{2.4cm} L{2.8cm} L{2.5cm} L{4cm}}
+{\footnotesize
+\begin{longtable}{L{0.9cm} L{2.0cm} L{2.1cm} L{5.0cm} L{3.5cm}}
 \toprule
 \textbf{ID} & \textbf{Functional Req.} & \textbf{Primary Class} & \textbf{Related Method(s)} & \textbf{Explanation} \\
 \midrule
 \endhead
-MS-1 & Simulate Matches Automatically & SportManager, Match & \texttt{startMatch()}, \texttt{start()}, \texttt{play()}, \texttt{finish()} & Runs the automated match simulation. \\[0.4em]
+MS-1 & Simulate Matches Automatically & SportManager, Match & \texttt{startMatch()}\newline\texttt{start()}\newline\texttt{play()}\newline\texttt{finish()} & Runs the automated match simulation. \\[0.4em]
 MS-2 & Play Matches in Segments & Match, MatchSegment     & \texttt{play()}            & Processes the match flow through multiple segments. \\[0.4em]
 MS-3 & Change Tactics During Breaks & Team                 & \texttt{setTactic()}       & Allows tactical adjustments during match breaks. \\[0.4em]
 MS-4 & Substitute Players During Breaks & Team, Lineup     & \texttt{setLineup()}       & Allows substitutions during match intervals. \\[0.4em]
@@ -819,19 +858,22 @@ MS-5 & Apply Sport-Specific Scoring Rules & Sport          & \texttt{calculatePo
 \bottomrule
 \caption{Match Simulation Traceability}
 \end{longtable}
+}
 
 \subsubsection*{Injury Management Mapping}
 
-\begin{longtable}{L{1.3cm} L{2.4cm} L{2.8cm} L{2.5cm} L{4cm}}
+{\footnotesize
+\begin{longtable}{L{0.9cm} L{2.0cm} L{2.1cm} L{5.0cm} L{3.5cm}}
 \toprule
 \textbf{ID} & \textbf{Functional Req.} & \textbf{Primary Class} & \textbf{Related Method(s)} & \textbf{Explanation} \\
 \midrule
 \endhead
-IM-1 & Track Injuries by Number of Games & Sport, InjuryRecord, Player & \texttt{applyInjuries()}, \texttt{decrementGames()}, \texttt{recover()} & Tracks injuries based on the number of matches missed. \\[0.4em]
-IM-2 & Prevent Injured Players from Being Selected & Player, Team & \texttt{isAvailable()}, \texttt{getAvailablePlayers()} & Ensures injured players cannot be selected for matches. \\
+IM-1 & Track Injuries by Number of Games & Sport, InjuryRecord, Player & \texttt{applyInjuries()}\newline\texttt{decrementGames()}\newline\texttt{recover()} & Tracks injuries based on the number of matches missed. \\[0.4em]
+IM-2 & Prevent Injured Players from Being Selected & Player, Team & \texttt{isAvailable()}\newline\texttt{getAvailablePlayers()} & Ensures injured players cannot be selected for matches. \\
 \bottomrule
 \caption{Injury Management Traceability}
 \end{longtable}
+}
 
 % ============================================================
 %  10. DETAILED DESIGN: USER INTERFACES
@@ -899,9 +941,7 @@ A Back button in the bottom bar returns the user to the Main Menu.
 
 \begin{figure}[H]
     \centering
-    % Replace with: \includegraphics[width=0.8\textwidth]{screen-sport-selection.png}
-    \fbox{\parbox{0.8\textwidth}{\centering\vspace{4cm}
-          \textit{[Screenshot — Sport Selection Screen]}\vspace{4cm}}}
+    \includegraphics[width=0.8\textwidth]{screen-sport-selection.png}
     \caption{Sport Selection Screen}
     \label{fig:screen-sportselection}
 \end{figure}
@@ -931,9 +971,7 @@ user confirms their choice with the Confirm Selection button at the bottom, whic
 
 \begin{figure}[H]
     \centering
-    % Replace with: \includegraphics[width=0.8\textwidth]{screen-team-selection.png}
-    \fbox{\parbox{0.8\textwidth}{\centering\vspace{4cm}
-          \textit{[Screenshot — Team Selection Screen]}\vspace{4cm}}}
+    \includegraphics[width=0.8\textwidth]{screen-team-selection.png}
     \caption{Team Selection Screen}
     \label{fig:screen-teamselection}
 \end{figure}
@@ -975,9 +1013,7 @@ fixture card with a season-over banner displaying the champion's name.
 
 \begin{figure}[H]
     \centering
-    % Replace with: \includegraphics[width=0.9\textwidth]{screen-dashboard.png}
-    \fbox{\parbox{0.9\textwidth}{\centering\vspace{4.5cm}
-          \textit{[Screenshot — Dashboard Screen]}\vspace{4.5cm}}}
+    \includegraphics[width=0.9\textwidth]{screen-dashboard.png}
     \caption{Dashboard Screen}
     \label{fig:screen-dashboard}
 \end{figure}
@@ -1008,9 +1044,7 @@ button in the top bar returns to the Dashboard.
 
 \begin{figure}[H]
     \centering
-    % Replace with: \includegraphics[width=0.9\textwidth]{screen-fixture.png}
-    \fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}
-          \textit{[Screenshot — Fixture Screen]}\vspace{4cm}}}
+    \includegraphics[width=0.9\textwidth]{screen-fixture.png}
     \caption{Fixture Screen}
     \label{fig:screen-fixture}
 \end{figure}
@@ -1046,9 +1080,7 @@ A Back button returns to the Dashboard.
 
 \begin{figure}[H]
     \centering
-    % Replace with: \includegraphics[width=0.9\textwidth]{screen-squad.png}
-    \fbox{\parbox{0.9\textwidth}{\centering\vspace{4.5cm}
-          \textit{[Screenshot — Squad Screen]}\vspace{4.5cm}}}
+    \includegraphics[width=0.9\textwidth]{screen-squad.png}
     \caption{Squad Screen}
     \label{fig:screen-squad}
 \end{figure}
@@ -1093,9 +1125,7 @@ and returning to the Dashboard.
 
 \begin{figure}[H]
     \centering
-    % Replace with: \includegraphics[width=0.9\textwidth]{screen-match.png}
-    \fbox{\parbox{0.9\textwidth}{\centering\vspace{4.5cm}
-          \textit{[Screenshot — Match Screen]}\vspace{4.5cm}}}
+    \includegraphics[width=0.9\textwidth]{screen-match.png}
     \caption{Match Screen}
     \label{fig:screen-match}
 \end{figure}
@@ -1119,9 +1149,7 @@ Dashboard.
 
 \begin{figure}[H]
     \centering
-    % Replace with: \includegraphics[width=0.9\textwidth]{screen-league-table.png}
-    \fbox{\parbox{0.9\textwidth}{\centering\vspace{4cm}
-          \textit{[Screenshot — League Table Screen]}\vspace{4cm}}}
+    \includegraphics[width=0.9\textwidth]{screen-league-table.png}
     \caption{League Table Screen}
     \label{fig:screen-leaguetable}
 \end{figure}
