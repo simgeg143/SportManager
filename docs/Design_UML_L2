@@ -1,0 +1,227 @@
+@startuml
+skinparam classAttributeIconSize 0
+left to right direction
+skinparam packageStyle rectangle
+
+package "UI Layer" {
+
+class MainMenuController
+class SportSelectionController
+class DashboardController
+class SquadController
+class MatchController
+class StandingsController
+class FixtureController
+
+}
+
+package "Core Layer" {
+
+class SportManager {
++ startNewGame()
++ selectSport(sportCode : String)
++ selectManagedTeam(teamId : String)
++ advanceWeek()
++ startMatch(matchId : String)
++ showLeagueTable()
++ showFixture()
+}
+
+class GameSession {
+- currentWeek : int
+- selectedSport : Sport
+- managedTeam : Team
+- league : League
+}
+
+abstract class League {
+- name : String
+- currentWeek : int
+- teams : List<Team>
+- fixtures : List<Match>
+- standings : List<StandingEntry>
++ addTeam(team : Team)
++ generateFixtures()
++ getMatchesOfWeek(week : int) : List<Match>
++ updateStandings(result : MatchResult)
++ getTable() : List<StandingEntry>
++ advanceWeek()
+}
+
+abstract class Team {
+- name : String
+- logoPath : String
+- players : List<Player>
+- coaches : List<Coach>
+- currentLineup : Lineup
+- currentTactic : Tactic
++ addPlayer(player : Player)
++ getAvailablePlayers() : List<Player>
++ setLineup(lineup : Lineup)
++ setTactic(tactic : Tactic)
+}
+
+abstract class Player {
+- name : String
+- age : int
+- position : String
+- fitness : int
+- injuredMatches : int
++ isAvailable() : boolean
++ recover()
+}
+
+class Coach {
+- name : String
+- role : String
+}
+
+abstract class Match {
+- weekNo : int
+- homeTeam : Team
+- awayTeam : Team
+- homeScore : int
+- awayScore : int
+- segments : List<MatchSegment>
+- result : MatchResult
++ start()
++ play()
++ finish()
+}
+
+class MatchSegment {
+- segmentNo : int
+- label : String
+- homePartialScore : int
+- awayPartialScore : int
+- events : List<String>
+}
+
+class MatchResult {
+- homeScore : int
+- awayScore : int
+- winner : Team
+- injuries : List<InjuryRecord>
+}
+
+class StandingEntry {
+- team : Team
+- played : int
+- wins : int
+- draws : int
+- losses : int
+- points : int
+}
+
+class Lineup {
+- starters : List<Player>
+- substitutes : List<Player>
++ isValid() : boolean
+}
+
+class Tactic {
+- name : String
+- shape : String
+- offenseLevel : int
+- defenseLevel : int
+}
+
+class InjuryRecord {
+- player : Player
+- gamesRemaining : int
+- description : String
++ decrementGames()
++ isRecovered() : boolean
+}
+
+}
+
+package "Sport Abstraction" {
+
+interface Sport {
+
++ getName() : String
++ createLeague(teamCount : int) : League
++ createTeam(name : String) : Team
++ createPlayer(name : String, position : String) : Player
++ createMatch(home : Team, away : Team, weekNo : int) : Match
+
++ calculatePoints(result : MatchResult, team : Team) : int
++ applyInjuries(match : Match)
+
+}
+
+class SportFactory {
++ createSport(sportCode : String) : Sport
+}
+
+}
+
+package "Football Module" {
+
+class FootballSport
+class FootballLeague
+class FootballTeam
+class FootballPlayer
+class FootballMatch
+
+}
+
+' UI → Core
+MainMenuController --> SportManager
+SportSelectionController --> SportManager
+DashboardController --> SportManager
+SquadController --> SportManager
+MatchController --> SportManager
+StandingsController --> SportManager
+FixtureController --> SportManager
+
+' Core relations
+SportManager --> GameSession
+SportManager --> SportFactory
+
+GameSession --> Sport
+GameSession --> League
+GameSession --> Team
+
+League "1" o-- "*" Team
+League "1" o-- "*" Match
+League "1" o-- "*" StandingEntry
+
+Team "1" o-- "*" Player
+Team "1" o-- "*" Coach
+
+Team --> Lineup
+Team --> Tactic
+
+Match --> Team : homeTeam
+Match --> Team : awayTeam
+Match "1" o-- "*" MatchSegment
+Match --> MatchResult
+
+MatchResult --> InjuryRecord
+StandingEntry --> Team
+Lineup "*" --> "*" Player
+InjuryRecord --> Player
+
+' Abstraction
+SportFactory ..> Sport
+
+Sport --> League
+Sport --> Team
+Sport --> Player
+Sport --> Match
+
+' Football implementation
+FootballSport ..|> Sport
+FootballLeague --|> League
+FootballTeam --|> Team
+FootballPlayer --|> Player
+FootballMatch --|> Match
+
+FootballSport --> FootballLeague
+FootballSport --> FootballTeam
+FootballSport --> FootballPlayer
+FootballSport --> FootballMatch
+
+@enduml
