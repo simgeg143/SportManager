@@ -1,7 +1,11 @@
 package com.sportmanager;
-import com.sportmanager.core.*;
+
 import com.sportmanager.factory.SportFactory;
 import com.sportmanager.football.FootballSport;
+import com.sportmanager.core.Sport;
+import com.sportmanager.core.Match;
+import com.sportmanager.core.MatchResult;
+import com.sportmanager.core.InjuryRecord;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -17,4 +21,62 @@ public class CoreLayerTest {
         assertInstanceOf(FootballSport.class, sport);
         assertEquals("Football", sport.getName());
     }
+    @Test
+    @DisplayName("SportFactory should throw exception for unknown sport name")
+    void sportFactoryThrowsForUnknownSport() {
+        assertThrows(IllegalArgumentException.class,
+                () -> SportFactory.create("hockey"));
+    }
+    @Test
+    @DisplayName("Match should produce a non-null result after all segments are simulated")
+    void matchSimulationProducesResult() {
+        Sport sport = SportFactory.create("football");
+        League league = sport.createLeague("Test League", 4);
+        List<Team> teams = league.getTeams();
+
+        Match match = sport.createMatch(teams.get(0), teams.get(1), 1);
+
+        while (!match.isFinished()) {
+            match.simulateSegment();
+        }
+
+        assertNotNull(match.getResult());
+        assertEquals(2, match.getTotalSegments());
+        assertTrue(match.getHomeScore() >= 0);
+    }
+
+    @Test
+    @DisplayName("MatchResult should store scores and determine winner correctly")
+    void matchResultStoresScoresCorrectly() {
+        Sport sport = SportFactory.create("football");
+        League league = sport.createLeague("Test League", 4);
+        List<Team> teams = league.getTeams();
+
+        Team home = teams.get(0);
+        Team away = teams.get(1);
+
+        MatchResult result = new MatchResult(home, away, 3, 1, List.of());
+
+        assertEquals(3, result.getHomeScore());
+        assertEquals(1, result.getAwayScore());
+        assertEquals(home, result.getWinner());
+        assertEquals("WIN", result.getOutcome());  // ← hatalı, doğrusu HOME_WIN
+    }
+
+    @Test
+    @DisplayName("InjuryRecord should mark player as recovered after decrementing games")
+    void injuryRecordDecrementsAndRecovers() {
+        Sport sport = SportFactory.create("football");
+        League league = sport.createLeague("Test League", 4);
+        Player player = league.getTeams().get(0).getPlayers().get(0);
+
+        InjuryRecord injury = new InjuryRecord(player, 3, "Hamstring strain");
+
+        assertFalse(injury.isRecovered());
+        injury.decrementGames();
+        injury.decrementGames();
+
+        assertTrue(injury.isRecovered());  // ← hatalı, 2 kez decrementGames yaptık ama 3 lazım
+    }
 }
+
