@@ -20,7 +20,7 @@ public class FootballPlayer extends Player {
     private final int physical;
 
     public FootballPlayer(String name, String position, int skillLevel, Random rng) {
-        super(name, position, skillLevel);
+        super(name, 20, position, skillLevel);
 
         int base = skillLevel;
         int pac = clamp(base + rng.nextInt(21) - 10, 40, 99);
