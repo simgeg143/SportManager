@@ -6,42 +6,27 @@ package com.sportmanager.core;
  * Used by League.getTable() and displayed by StandingsController.
  * As defined in the architecture document.
  */
-public class StandingEntry {
+public class StandingEntry implements Comparable<StandingEntry> {
 
     private final Team team;
-    private final int  position;
+    private int points;
 
-    public StandingEntry(Team team, int position) {
+    public StandingEntry(Team team) {
         this.team     = team;
-        this.position = position;
+        this.points = 0;
     }
 
     // ── Delegated to Team ─────────────────────────────────────────────────────
 
     public Team   getTeam()           { return team; }
-    public String getTeamName()       { return team.getName(); }
-    public int    getPosition()       { return position; }
-    public int    getPlayed()         { return team.getMatchesPlayed(); }
-    public int    getWon()            { return team.getWins(); }
-    public int    getDrawn()          { return team.getDraws(); }
-    public int    getLost()           { return team.getLosses(); }
-    public int    getGoalsFor()       { return team.getGoalsFor(); }
-    public int    getGoalsAgainst()   { return team.getGoalsAgainst(); }
-    public int    getGoalDifference() { return team.getGoalDifference(); }
-    public int    getPoints()         { return team.getPoints(); }
+    public int    getPoints()         { return points; }
 
-    public String getGoalDifferenceDisplay() {
-        int gd = getGoalDifference();
-        return (gd >= 0 ? "+" : "") + gd;
+
+    public void addPoints(int p) {
+        this.points += p;
     }
-
-    @Override public String toString() {
-        return position + ". " + team.getName()
-                + "  P=" + getPlayed()
-                + "  W=" + getWon()
-                + "  D=" + getDrawn()
-                + "  L=" + getLost()
-                + "  GD=" + getGoalDifferenceDisplay()
-                + "  Pts=" + getPoints();
+    @Override
+    public int compareTo(StandingEntry other) {
+        return Integer.compare(other.getPoints(), this.getPoints());
     }
 }

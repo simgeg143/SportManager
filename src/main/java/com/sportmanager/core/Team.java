@@ -15,45 +15,46 @@ public abstract class Team {
     protected String logoPath;
 
     protected List<Player> roster;
-    protected List<Player> startingLineup;
-    protected List<Player> substitutes;
     protected List<Coach>  coaches;          // coaching staff
-    protected String       currentTactic;    // tactic name string (e.g. "4-3-3")
-
-    // Season statistics
-    protected int wins, draws, losses;
-    protected int goalsFor, goalsAgainst;
+    protected Lineup currentLineup;
+    protected Tactic currentTactic;    // tactic name string (e.g. "4-3-3")
 
     protected Team(String name) {
         this.name           = name;
         this.roster         = new ArrayList<>();
-        this.startingLineup = new ArrayList<>();
-        this.substitutes    = new ArrayList<>();
         this.coaches        = new ArrayList<>();
     }
 
     // ── Identity ─────────────────────────────────────────────────────────────
 
     public String getName()    { return name; }
-    public String getLogoPath() { return logoPath; }
-    public void   setLogoPath(String path) { this.logoPath = path; }
 
     // ── Squad management ─────────────────────────────────────────────────────
 
-    public List<Player> getRoster()         { return roster; }
-    public List<Player> getStartingLineup() { return startingLineup; }
-    public List<Player> getSubstitutes()    { return substitutes; }
+    public List<Player> getPlayers()         { return roster; }
     public List<Coach>  getCoaches()        { return coaches; }
+    public void addCoach(Coach coach) {
+        coaches.add(coach);
+    }
 
-    public String getCurrentTactic()         { return currentTactic; }
-    public void   setCurrentTactic(String t) { this.currentTactic = t; }
+    public Tactic getCurrentTactic()         { return currentTactic; }
+    public void   setCurrentTactic(Tactic tactic) { this.currentTactic = tactic; }
+    public void addPlayer(Player player) {
+        roster.add(player);
+    }
+    public void removePlayer(Player player) {
+        roster.remove(player);
+    }
 
     /**
      * Returns a Lineup wrapper around the current starting XI and substitutes.
      * Controllers use this for lineup validation (isValid()).
      */
     public Lineup getLineup() {
-        return new Lineup(startingLineup, substitutes);
+        return currentLineup;
+    }
+    public void setLineup(Lineup lineup) {
+        this.currentLineup = lineup;
     }
 
     /**
@@ -62,7 +63,7 @@ public abstract class Team {
      */
     public List<Player> getAvailablePlayers() {
         return roster.stream()
-                .filter(p -> !p.isInjured())
+                .filter(Player::isAvailable)
                 .collect(Collectors.toList());
     }
 
@@ -72,35 +73,8 @@ public abstract class Team {
 
     /** @return true if starting XI is full and contains no injured players. */
     public boolean hasValidLineup() {
-        return getLineup().isValid(getRequiredLineupSize());
+        return currentLineup != null && currentLineup.isValid(getRequiredLineupSize());
     }
-
-    // ── Season statistics ────────────────────────────────────────────────────
-
-    public int getWins()           { return wins; }
-    public int getDraws()          { return draws; }
-    public int getLosses()         { return losses; }
-    public int getGoalsFor()       { return goalsFor; }
-    public int getGoalsAgainst()   { return goalsAgainst; }
-    public int getGoalDifference() { return goalsFor - goalsAgainst; }
-    public int getMatchesPlayed()  { return wins + draws + losses; }
-    public int getPoints()         { return wins * 3 + draws; }
-
-    public void recordWin(int scored, int conceded) {
-        wins++; goalsFor += scored; goalsAgainst += conceded;
-    }
-    public void recordDraw(int scored, int conceded) {
-        draws++; goalsFor += scored; goalsAgainst += conceded;
-    }
-    public void recordLoss(int scored, int conceded) {
-        losses++; goalsFor += scored; goalsAgainst += conceded;
-    }
-
-    // ── Abstract sport-specific rules ────────────────────────────────────────
-
-    public abstract int  getRequiredLineupSize();
-    public abstract int  getMaxSubstituteCount();
-    public abstract void generateDefaultLineup();
-
+    public abstract int getRequiredLineupSize();
     @Override public String toString() { return name; }
 }

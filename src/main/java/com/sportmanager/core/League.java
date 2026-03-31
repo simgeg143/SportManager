@@ -1,6 +1,7 @@
 package com.sportmanager.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,6 +18,8 @@ public abstract class League {
     protected String            name;
     protected Sport             sport;
     protected List<Team>        teams;
+    protected List<StandingEntry> standings;
+    protected int currentWeek;
     protected List<List<Match>> rounds;      // outer = matchday, inner = that day's matches
     protected int               currentRound; // 0-based
 
@@ -25,7 +28,9 @@ public abstract class League {
         this.sport        = sport;
         this.teams        = new ArrayList<>();
         this.rounds       = new ArrayList<>();
+        this.standings = new ArrayList<>();
         this.currentRound = 0;
+        this.currentWeek = 1;
     }
 
     // ── Season state ─────────────────────────────────────────────────────────
@@ -34,6 +39,11 @@ public abstract class League {
     public Sport      getSport()        { return sport; }
     public List<Team> getTeams()        { return teams; }
     public int        getCurrentRound() { return currentRound; }
+
+    public int getCurrentWeek() {
+        return currentWeek;
+    }
+
     public int        getTotalRounds()  { return rounds.size(); }
     public boolean    isSeasonOver()    { return currentRound >= rounds.size(); }
 
@@ -44,6 +54,24 @@ public abstract class League {
     public List<Match> getRoundMatches(int round) {
         if (round >= 0 && round < rounds.size()) return rounds.get(round);
         return new ArrayList<>();
+    }
+    public void addTeam(Team team){
+        teams.add(team);
+        standings.add(new StandingEntry(team));
+    }
+    public List<StandingEntry> getTable(){
+        Collections.sort(standings);
+        return standings;
+    }
+    public void updateStandings(Team team, int points) {
+        for (StandingEntry entry : standings) {
+            if (entry.getTeam().equals(team)) {
+                entry.addPoints(points);
+            }
+        }
+    }
+    public void advanceWeek() {
+        currentWeek++;
     }
 
     /**
@@ -67,15 +95,6 @@ public abstract class League {
      * Returns the current league standings as a sorted list of StandingEntry.
      * Ordered by Pts → GD → GF (sport-specific tie-breaking may differ). (LM-7)
      */
-    public abstract List<StandingEntry> getTable();
-
-    /**
-     * Applies a MatchResult to the two teams' season statistics. (LM-8)
-     * Called by GameSession/SportManager after every match is finalised.
-     */
-    public abstract void updateStandings(MatchResult result);
-
-    /** Returns teams ordered by points for convenience. */
     public abstract List<Team> getSortedStandings();
 
     /** Returns the team leading the table (champion at end of season). */

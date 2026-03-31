@@ -9,12 +9,14 @@ import java.util.Map;
 public abstract class Player {
 
     protected String name;
+    protected int age;
     protected String position;
     protected int skillLevel;          // 40–99
     protected int injuryMatchesRemaining; // 0 = healthy
 
-    protected Player(String name, String position, int skillLevel) {
+    protected Player(String name, int age, String position, int skillLevel) {
         this.name = name;
+        this.age = age;
         this.position = position;
         this.skillLevel = Math.max(40, Math.min(99, skillLevel));
         this.injuryMatchesRemaining = 0;
@@ -23,8 +25,28 @@ public abstract class Player {
     // ── Getters / setters ────────────────────────────────────────────────────
 
     public String getName()     { return name; }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public String getPosition() { return position; }
     public int getSkillLevel()  { return skillLevel; }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public void setSkillLevel(int skillLevel) {
+        this.skillLevel = Math.max(40, Math.min(99, skillLevel));
+    }
 
     public int  getInjuryMatchesRemaining()             { return injuryMatchesRemaining; }
     public void setInjuryMatchesRemaining(int matches)  { this.injuryMatchesRemaining = Math.max(0, matches); }
@@ -34,6 +56,13 @@ public abstract class Player {
     /** Called at the start of each new week to count down injury duration. */
     public void decrementInjury() {
         if (injuryMatchesRemaining > 0) injuryMatchesRemaining--;
+    }
+
+    public boolean isAvailable(){
+        return injuryMatchesRemaining==0;
+    }
+    public void train() {
+        skillLevel = Math.min(99, skillLevel + 1);
     }
 
     // ── Abstract API ─────────────────────────────────────────────────────────
