@@ -54,18 +54,4 @@ public abstract class League {
     public void advanceWeek() {
         currentWeek++;
     }
-
-    // ── Abstract API ─────────────────────────────────────────────────────────
-
-    /** Generates the full home-and-away round-robin fixture list. */
-    public abstract void generateFixtures();
-
-    /**
-     * Returns the current league standings as a sorted list of StandingEntry.
-     * Ordered by Pts → GD → GF (sport-specific tie-breaking may differ). (LM-7)
-     */
-    public abstract List<Team> getSortedStandings();
-
-    /** Returns the team leading the table (champion at end of season). */
-    public abstract Team getChampion();
 }
