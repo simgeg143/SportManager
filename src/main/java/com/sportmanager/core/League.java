@@ -16,45 +16,26 @@ import java.util.List;
 public abstract class League {
 
     protected String            name;
-    protected Sport             sport;
     protected List<Team>        teams;
     protected List<StandingEntry> standings;
     protected int currentWeek;
-    protected List<List<Match>> rounds;      // outer = matchday, inner = that day's matches
-    protected int               currentRound; // 0-based
 
-    protected League(String name, Sport sport) {
+    protected League(String name) {
         this.name         = name;
-        this.sport        = sport;
         this.teams        = new ArrayList<>();
-        this.rounds       = new ArrayList<>();
         this.standings = new ArrayList<>();
-        this.currentRound = 0;
         this.currentWeek = 1;
     }
 
     // ── Season state ─────────────────────────────────────────────────────────
 
     public String     getName()         { return name; }
-    public Sport      getSport()        { return sport; }
     public List<Team> getTeams()        { return teams; }
-    public int        getCurrentRound() { return currentRound; }
 
     public int getCurrentWeek() {
         return currentWeek;
     }
 
-    public int        getTotalRounds()  { return rounds.size(); }
-    public boolean    isSeasonOver()    { return currentRound >= rounds.size(); }
-
-    public List<Match> getCurrentRoundMatches() {
-        return getRoundMatches(currentRound);
-    }
-
-    public List<Match> getRoundMatches(int round) {
-        if (round >= 0 && round < rounds.size()) return rounds.get(round);
-        return new ArrayList<>();
-    }
     public void addTeam(Team team){
         teams.add(team);
         standings.add(new StandingEntry(team));
@@ -72,18 +53,6 @@ public abstract class League {
     }
     public void advanceWeek() {
         currentWeek++;
-    }
-
-    /**
-     * Returns all matches for the given 1-based week number.
-     * Called by FixtureController / SportManager.showFixtureData(). (TM-2)
-     */
-    public List<Match> getMatchesOfWeek(int weekNo) {
-        return getRoundMatches(weekNo - 1);   // weekNo is 1-based, rounds is 0-based
-    }
-
-    public void advanceRound() {
-        if (!isSeasonOver()) currentRound++;
     }
 
     // ── Abstract API ─────────────────────────────────────────────────────────

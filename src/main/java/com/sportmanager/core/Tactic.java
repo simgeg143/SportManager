@@ -7,30 +7,30 @@ package com.sportmanager.core;
  */
 public class Tactic {
 
-    private final String name;         // e.g. "4-3-3"
-    private final String shape;        // e.g. "Attacking", "Balanced", "Defensive"
-    private final int    offenseLevel; // 1–10
-    private final int    defenseLevel; // 1–10
-    private final String description;
+    private String name;
+    private String style;
 
-    public Tactic(String name, String shape, int offenseLevel, int defenseLevel, String description) {
-        this.name         = name;
-        this.shape        = shape;
-        this.offenseLevel = Math.max(1, Math.min(10, offenseLevel));
-        this.defenseLevel = Math.max(1, Math.min(10, defenseLevel));
-        this.description  = description;
+
+    public Tactic(String name, String style) {
+        this.name = name;
+        this.style  = style;
     }
 
-    public String getName()         { return name; }
-    public String getShape()        { return shape; }
-    public int    getOffenseLevel() { return offenseLevel; }
-    public int    getDefenseLevel() { return defenseLevel; }
-    public String getDescription()  { return description; }
+    public String getName() {
+        return name;
+    }
 
-    /** Attack multiplier used by the match simulation engine (1.0 = baseline). */
-    public double getAttackMultiplier()  { return 0.8 + offenseLevel * 0.04; }
-    /** Defence multiplier used by the match simulation engine (1.0 = baseline). */
-    public double getDefenceMultiplier() { return 0.8 + defenseLevel * 0.04; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    @Override public String toString() { return name; }
+    public String getStyle() {
+        return style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
+    }
+
+    @Override public String toString() { return name + "-" + style; }
 }

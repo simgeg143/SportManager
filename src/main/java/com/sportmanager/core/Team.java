@@ -17,7 +17,7 @@ public abstract class Team {
     protected List<Player> roster;
     protected List<Coach>  coaches;          // coaching staff
     protected Lineup currentLineup;
-    protected Tactic currentTactic;    // tactic name string (e.g. "4-3-3")
+    protected Tactic currentTactic;
 
     protected Team(String name) {
         this.name           = name;
@@ -37,8 +37,12 @@ public abstract class Team {
         coaches.add(coach);
     }
 
-    public Tactic getCurrentTactic()         { return currentTactic; }
-    public void   setCurrentTactic(Tactic tactic) { this.currentTactic = tactic; }
+    public Tactic getCurrentTactic(){
+        return currentTactic;
+    }
+    public void setCurrentTactic(Tactic tactic) {
+        this.currentTactic = tactic;
+    }
     public void addPlayer(Player player) {
         roster.add(player);
     }
@@ -73,7 +77,10 @@ public abstract class Team {
 
     /** @return true if starting XI is full and contains no injured players. */
     public boolean hasValidLineup() {
-        return currentLineup != null && currentLineup.isValid(getRequiredLineupSize());
+        if (currentLineup==null){
+            return false;
+        }
+        return currentLineup.isValid(getRequiredLineupSize());
     }
     public abstract int getRequiredLineupSize();
     @Override public String toString() { return name; }

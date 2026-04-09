@@ -29,7 +29,7 @@ public class Lineup {
      * @param requiredStarterCount sport-specific required count (e.g. 11 for football)
      */
     public boolean isValid(int requiredStarterCount) {
-        if (starters == null) return false;
+        if (starters.size()!= requiredStarterCount) return false;
         if (starters.stream().distinct().count() != starters.size()) return false;
         return starters.stream().allMatch(Player::isAvailable);
     }

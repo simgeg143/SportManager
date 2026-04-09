@@ -18,7 +18,7 @@ public abstract class Player {
         this.name = name;
         this.age = age;
         this.position = position;
-        this.skillLevel = Math.max(40, Math.min(99, skillLevel));
+        this.skillLevel = Math.max(40,Math.min(99,skillLevel));
         this.injuryMatchesRemaining = 0;
     }
 
@@ -45,24 +45,25 @@ public abstract class Player {
     }
 
     public void setSkillLevel(int skillLevel) {
-        this.skillLevel = Math.max(40, Math.min(99, skillLevel));
+        this.skillLevel = skillLevel;
     }
 
     public int  getInjuryMatchesRemaining()             { return injuryMatchesRemaining; }
     public void setInjuryMatchesRemaining(int matches)  { this.injuryMatchesRemaining = Math.max(0, matches); }
 
-    public boolean isInjured() { return injuryMatchesRemaining > 0; }
-
-    /** Called at the start of each new week to count down injury duration. */
-    public void decrementInjury() {
-        if (injuryMatchesRemaining > 0) injuryMatchesRemaining--;
+    public boolean isInjured(){
+        return injuryMatchesRemaining>0;
     }
-
     public boolean isAvailable(){
-        return injuryMatchesRemaining==0;
+        return !isInjured();
     }
-    public void train() {
-        skillLevel = Math.min(99, skillLevel + 1);
+    public void recover(){
+        if(injuryMatchesRemaining>0){
+            injuryMatchesRemaining--;
+        }
+    }
+    public void train(){
+        skillLevel = Math.min(99,skillLevel+1);
     }
 
     // ── Abstract API ─────────────────────────────────────────────────────────
