@@ -118,6 +118,10 @@ public final class SportManager {
     /** @return 1-based current week number within the season. */
     public int getCurrentWeek()   { return session.getCurrentWeek(); }
 
+    /** @return total number of matchdays in the season. */
+    public int getTotalWeeks()    { return session.getLeague() != null
+                                        ? session.getLeague().getTotalRounds() : 0; }
+
     /** @return true when all fixtures have been played. */
     public boolean isSeasonFinished() { return session.isSeasonFinished(); }
 
@@ -133,6 +137,19 @@ public final class SportManager {
         return session.getLeague().getTable();
     }
 
+    /**
+     * Returns all matches across the entire season, grouped by week.
+     * Called by FixtureController. (TM-2)
+     */
+    public List<List<Match>> showFixtureData() {
+        if (session.getLeague() == null) return List.of();
+        League league = session.getLeague();
+        java.util.List<java.util.List<Match>> all = new java.util.ArrayList<>();
+        for (int i = 0; i < league.getTotalRounds(); i++) {
+            all.add(league.getRoundMatches(i));
+        }
+        return all;
+    }
 
     /**
      * Returns available (non-injured) players for the managed team. (TM-1, IM-2)
