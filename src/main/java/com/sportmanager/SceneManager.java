@@ -1,5 +1,6 @@
 package com.sportmanager;
 
+import com.sportmanager.settings.AppSettings;
 import com.sportmanager.ui.controller.AppToolbarController;
 import javafx.animation.*;
 import javafx.fxml.FXMLLoader;
@@ -34,6 +35,8 @@ public class SceneManager {
     private static final String FXML_BASE    = "/com/sportmanager/fxml/";
     private static final String TOOLBAR_FXML = FXML_BASE + "app-toolbar.fxml";
     private static final String CSS_PATH     = "/com/sportmanager/css/style.css";
+    private static final String CSS_AMBER    = "/com/sportmanager/css/theme-amber.css";
+    private static final String CSS_PURPLE   = "/com/sportmanager/css/theme-purple.css";
 
     private static final double SCENE_W = 1280;
     private static final double SCENE_H = 768;
@@ -49,7 +52,8 @@ public class SceneManager {
     private Node       toolbarNode;
     private AppToolbarController toolbarController;
 
-    private boolean splashShown = false;
+    private boolean splashShown  = false;
+    private String  previousFxml = null;  // for goBack() from settings
 
     private SceneManager() {}
 
@@ -81,6 +85,40 @@ public class SceneManager {
     public void showMatchScreen()    { navigate("match-screen.fxml");    }
     public void showFixture()        { navigate("fixture.fxml");         }
     public void showSquad()          { navigate("squad.fxml");           }
+
+    /** Navigate to settings, remembering the current screen for goBack(). */
+    public void showSettings(String fromFxml) {
+        previousFxml = fromFxml;
+        navigate("settings.fxml");
+    }
+
+    /** Return to the screen that opened settings (falls back to dashboard). */
+    public void goBack() {
+        String target = (previousFxml != null) ? previousFxml : "dashboard.fxml";
+        previousFxml = null;
+        navigate(target);
+    }
+
+    /**
+     * Applies or removes the accent-colour theme override stylesheet on the live scene.
+     * Called immediately when the user selects a theme in SettingsController.
+     */
+    public void applyTheme(String theme) {
+        Scene scene = primaryStage.getScene();
+        if (scene == null) return;
+
+        // Remove any existing theme overrides
+        scene.getStylesheets().removeIf(s -> s.contains("theme-amber") || s.contains("theme-purple"));
+
+        URL overrideUrl = switch (theme) {
+            case "Amber"  -> getClass().getResource(CSS_AMBER);
+            case "Purple" -> getClass().getResource(CSS_PURPLE);
+            default       -> null; // Teal is the default — no override needed
+        };
+        if (overrideUrl != null) scene.getStylesheets().add(overrideUrl.toExternalForm());
+
+        AppSettings.getInstance().setAccentTheme(theme);
+    }
 
     public Stage getStage() { return primaryStage; }
 

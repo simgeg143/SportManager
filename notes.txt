@@ -513,5 +513,76 @@ DATE: Mar 14, 2026
   TOTAL: 23/24 logic tests passing
 
 ================================================================================
+CHANGE #31 — Add Settings Panel (AppSettings, settings.fxml, SettingsController)
+Date: 2026-04-12
+Files changed:
+  + src/main/java/com/sportmanager/settings/AppSettings.java
+  + src/main/resources/com/sportmanager/fxml/settings.fxml
+  + src/main/java/com/sportmanager/ui/controller/SettingsController.java
+  + src/main/resources/com/sportmanager/css/theme-amber.css
+  + src/main/resources/com/sportmanager/css/theme-purple.css
+  ~ SceneManager.java, AppToolbarController.java, app-toolbar.fxml
+  ~ FootballMatch.java, MatchScreenController.java, GameSession.java
+  ~ style.css
+
+What changed / why:
+  AppSettings singleton — max subs (3/5), injury frequency (Low/Normal/High),
+    difficulty (Easy/Normal/Hard), auto-advance toggle, start year, accent theme
+    (Teal/Amber/Purple), show detailed events toggle.
+  Settings screen — two-column card layout (Gameplay / Display) with ToggleButton
+    groups, CheckBoxes, TextField for year, live preview card.
+  Theme CSS overrides — theme-amber.css and theme-purple.css replace every teal
+    accent across all screens; applied/removed live via SceneManager.applyTheme().
+  FootballMatch — 0.04 injury chance replaced by AppSettings.getInjuryChance();
+    applyDifficulty() multiplies AI team scores by getDifficultyMultiplier().
+  MatchScreenController — MAX_SUBS replaced by live maxSubs(); auto-advance after
+    2-second pause when enabled; events filtered to goals-only in compact mode.
+  GameSession — currentSeasonYear reads AppSettings.getStartYear() on init+reset.
+  Toolbar — ⚙ gear button added (always visible); onSettings() navigates to
+    settings screen with back-navigation support.
+  style.css — ~160 lines of settings-screen styles added.
+
+Result: mvn compile clean; 28/29 tests pass (JavaFX headless skip unchanged).
+
+================================================================================
+CHANGE #32 — Fix team selection UX: two-click confirm pattern
+Date: 2026-04-12
+Files changed:
+  ~ src/main/java/com/sportmanager/ui/controller/TeamSelectionController.java
+  ~ src/main/resources/com/sportmanager/fxml/team-selection.fxml
+  ~ src/main/resources/com/sportmanager/css/style.css
+
+What changed:
+  The "Confirm Selection" button was hidden below the fold — users could
+  highlight a team but had no visible way to proceed.
+  Fixed with a two-click pattern:
+    1st click  → selects and highlights card; reveals "▶ Manage this club"
+                 label inside the card (fade-in + pulse animation); bottom
+                 hint updates to prompt second click.
+    2nd click  → immediately calls selectManagedTeam() → Dashboard.
+  The Confirm button at the bottom is retained as an explicit fallback.
+  Added .team-card-confirm CSS class (teal, bold, cursor:hand).
+
+Why: User reported "after selecting nothing happens".
+
+Result: mvn compile clean. Navigation works on double-click of the same card.
+
+================================================================================
+CHANGE #33 — Fix InjuryRecord.toString() showing raw Java object reference
+Date: 2026-04-12
+Files changed:
+  ~ src/main/java/com/sportmanager/core/InjuryRecord.java
+
+What changed:
+  Added toString() override returning:
+    "Marcus Webb (CB)  —  out for 2 matches"
+  Previously displayed: com.sportmanager.core.InjuryRecord@63da74cb
+
+Why: Full-time screen showed raw hashcode because InjuryRecord never
+overrode Object.toString().
+
+Result: mvn compile clean. Injury list now readable at full time.
+
+================================================================================
 END OF LOG
 ================================================================================

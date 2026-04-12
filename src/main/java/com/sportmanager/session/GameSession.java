@@ -1,6 +1,7 @@
 package com.sportmanager.session;
 
 import com.sportmanager.core.*;
+import com.sportmanager.settings.AppSettings;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class GameSession {
     private static final GameSession INSTANCE = new GameSession();
 
     // ── State fields (doc §4.4b) ──────────────────────────────────────────────
-    private int    currentSeasonYear = 2025;
+    private int    currentSeasonYear = AppSettings.getInstance().getStartYear();
     private int    currentWeek       = 1;    // 1-based; mirrors league.currentRound + 1
     private Sport  selectedSport;
     private Team   managedTeam;
@@ -42,6 +43,7 @@ public class GameSession {
         currentMatch      = null;
         substitutionsUsed = 0;
         currentWeek       = 1;
+        currentSeasonYear = AppSettings.getInstance().getStartYear();
     }
 
     /** Initialises sport + league after the user picks a sport. */

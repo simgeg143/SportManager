@@ -1126,6 +1126,14 @@ Label {
     -fx-font-size: 11px;
     -fx-text-fill: #485d7a;
 }
+.team-card-confirm {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #00dfa2;
+    -fx-padding: 4 0 0 0;
+    -fx-letter-spacing: 1px;
+    -fx-cursor: hand;
+}
 
 /* ══════════════════════════════════════════════════════════════════
    22. SPORT SELECTION  (card variant)
@@ -1237,4 +1245,183 @@ Label {
 .dialog-pane .button-bar .button:hover {
     -fx-background-color: #0e2a22;
     -fx-text-fill: #eef2ff;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SETTINGS SCREEN
+══════════════════════════════════════════════════════════════════ */
+
+.card-heading {
+    -fx-font-family: "Segoe UI", system-ui, sans-serif;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #485d7a;
+    -fx-letter-spacing: 3px;
+    -fx-padding: 0 0 6 0;
+    -fx-border-color: transparent transparent #1e2d40 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.section-label {
+    -fx-font-family: "Segoe UI", system-ui, sans-serif;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #485d7a;
+    -fx-letter-spacing: 2px;
+}
+
+.hint-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #2a3a50;
+    -fx-font-style: italic;
+    -fx-padding: 2 0 0 0;
+}
+
+/* Settings toggle button group */
+.settings-toggle-group {
+    -fx-background-color: #141b27;
+    -fx-background-radius: 7px;
+    -fx-border-color: #253042;
+    -fx-border-width: 1px;
+    -fx-border-radius: 7px;
+}
+
+.settings-toggle {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8ba0bf;
+    -fx-font-family: "Segoe UI", system-ui, sans-serif;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 20 8 20;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+.settings-toggle-left {
+    -fx-background-radius: 6 0 0 6;
+    -fx-border-radius: 6 0 0 6;
+}
+.settings-toggle-mid {
+    -fx-border-color: transparent #253042 transparent #253042;
+    -fx-border-width: 0 1 0 1;
+}
+.settings-toggle-right {
+    -fx-background-radius: 0 6 6 0;
+    -fx-border-radius: 0 6 6 0;
+}
+.settings-toggle:hover {
+    -fx-background-color: #1e2c3f;
+    -fx-text-fill: #eef2ff;
+}
+.settings-toggle:selected {
+    -fx-background-color: #00dfa2;
+    -fx-text-fill: #0c1018;
+    -fx-effect: none;
+}
+.settings-toggle:selected:hover {
+    -fx-background-color: #4dffc3;
+}
+
+/* Checkbox */
+.settings-check {
+    -fx-text-fill: #8ba0bf;
+    -fx-font-size: 13px;
+}
+.settings-check .box {
+    -fx-background-color: #1b2333;
+    -fx-border-color: #253042;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+.settings-check:selected .box {
+    -fx-background-color: #00dfa2;
+    -fx-border-color: #00dfa2;
+}
+.settings-check:selected .mark {
+    -fx-background-color: #0c1018;
+}
+
+/* Settings text field */
+.settings-text-field {
+    -fx-background-color: #1b2333;
+    -fx-text-fill: #eef2ff;
+    -fx-font-size: 13px;
+    -fx-border-color: #253042;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 6 10 6 10;
+}
+.settings-text-field:focused {
+    -fx-border-color: #00dfa2;
+}
+
+/* Theme colour dots */
+.theme-dot-teal {
+    -fx-background-color: #00dfa2;
+    -fx-background-radius: 50%;
+    -fx-min-width: 10px;
+    -fx-max-width: 10px;
+    -fx-min-height: 10px;
+    -fx-max-height: 10px;
+}
+.theme-dot-amber {
+    -fx-background-color: #f59e0b;
+    -fx-background-radius: 50%;
+    -fx-min-width: 10px;
+    -fx-max-width: 10px;
+    -fx-min-height: 10px;
+    -fx-max-height: 10px;
+}
+.theme-dot-purple {
+    -fx-background-color: #8b5cf6;
+    -fx-background-radius: 50%;
+    -fx-min-width: 10px;
+    -fx-max-width: 10px;
+    -fx-min-height: 10px;
+    -fx-max-height: 10px;
+}
+
+/* Settings preview card */
+.settings-preview-card {
+    -fx-background-color: #141b27;
+    -fx-background-radius: 8px;
+    -fx-border-color: #253042;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-padding: 14 16 14 16;
+}
+
+/* Settings page body */
+.page-body {
+    -fx-background-color: #0f1520;
+    -fx-min-height: 680;
+}
+
+/* Top bar in settings */
+.top-bar {
+    -fx-background-color: linear-gradient(to right, #0f1520, #141b27);
+    -fx-padding: 12 24 12 24;
+    -fx-border-color: transparent transparent #1e2d40 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.nav-btn {
+    -fx-background-color: #1b2333;
+    -fx-text-fill: #8ba0bf;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 6 14 6 14;
+    -fx-background-radius: 6px;
+    -fx-border-color: #253042;
+    -fx-border-radius: 6px;
+    -fx-cursor: hand;
+}
+.nav-btn:hover {
+    -fx-background-color: #253042;
+    -fx-text-fill: #eef2ff;
+}
+
+.nav-icon {
+    -fx-font-size: 18px;
+    -fx-text-fill: #485d7a;
 }

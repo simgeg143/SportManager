@@ -50,4 +50,11 @@
                 onAction="#onMainMenu"/>
     </HBox>
 
+    <!-- ── Settings gear (always visible) ── -->
+    <Separator orientation="VERTICAL"
+               style="-fx-padding: 0 4 0 4; -fx-opacity:0.3;"/>
+    <Button fx:id="btnSettings" text="⚙" styleClass="toolbar-nav-btn"
+            style="-fx-font-size:14px; -fx-padding: 5 10 5 10;"
+            onAction="#onSettings"/>
+
 </HBox>

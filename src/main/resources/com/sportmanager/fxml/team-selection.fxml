@@ -32,10 +32,13 @@
     </center>
 
     <bottom>
-        <HBox styleClass="bottom-bar" alignment="CENTER" spacing="20">
-            <padding><Insets top="12" right="24" bottom="12" left="24"/></padding>
+        <HBox styleClass="bottom-bar" alignment="CENTER_LEFT" spacing="20">
+            <padding><Insets top="10" right="24" bottom="10" left="24"/></padding>
+            <Label fx:id="confirmHintLabel"
+                   text="Click a club to select it — click again to confirm"
+                   styleClass="page-subtitle" HBox.hgrow="ALWAYS"/>
             <Button text="Confirm Selection" onAction="#onConfirm"
-                    styleClass="btn-primary" prefWidth="200"/>
+                    styleClass="btn-primary" prefWidth="180"/>
         </HBox>
     </bottom>
 

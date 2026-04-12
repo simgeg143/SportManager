@@ -27,4 +27,10 @@ public class InjuryRecord {
         if (gamesRemaining > 0) gamesRemaining--;
         if (isRecovered()) player.setInjuryMatchesRemaining(0);
     }
+
+    @Override
+    public String toString() {
+        String games = gamesRemaining == 1 ? "1 match" : gamesRemaining + " matches";
+        return player.getName() + " (" + player.getPosition() + ")  —  out for " + games;
+    }
 }
