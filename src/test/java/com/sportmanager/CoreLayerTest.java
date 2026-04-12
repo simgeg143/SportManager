@@ -6,6 +6,8 @@ import com.sportmanager.core.Sport;
 import com.sportmanager.core.Match;
 import com.sportmanager.core.MatchResult;
 import com.sportmanager.core.InjuryRecord;
+import com.sportmanager.core.League;
+import com.sportmanager.session.GameSession;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -78,5 +80,22 @@ class CoreLayerTest {
         injury.decrementGames();
         injury.decrementGames();
         assertTrue(injury.isRecovered());
+    }
+    @Test
+    @DisplayName("GameSession advanceWeek should increment currentWeek after finalizeRound")
+    void gameSessionAdvanceWeekIncrementsAfterFinalize() {
+        GameSession session = GameSession.getInstance();
+        session.reset();
+
+        Sport sport = SportFactory.create("football");
+        League league = sport.createLeague("Test League", 4);
+        session.init(sport, league);
+        session.setManagedTeam(league.getTeams().get(0));
+
+        assertEquals(1, session.getCurrentWeek());
+
+        session.finalizeRound();
+
+        assertEquals(2, session.getCurrentWeek());
     }
 }
