@@ -270,12 +270,12 @@ Alternatively, the application can be launched directly with the Java executable
 java --module-path target/javafx-libs
 --add-modules javafx.controls,javafx.fxml
 --enable-native-access=javafx.graphics
--Duser.home=D:/javafx-cache
+-Djavafx.cachedir=target/javafx-cache
 -cp target/classes
 com.sportmanager.App
 \end{verbatim}
 
-The -Duser.home argument redirects the JavaFX native DLL extraction cache to an ASCII-only path, preventing a runtime failure on Windows systems with non-ASCII usernames.
+The \texttt{-Djavafx.cachedir} argument points the JavaFX native DLL extraction cache at a path relative to the project root (\texttt{target/javafx-cache}).
 
 \subsection*{Running the Tests}
 

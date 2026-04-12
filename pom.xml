@@ -54,11 +54,11 @@
                 <version>3.1.0</version>
                 <configuration>
                     <mainClass>com.sportmanager.App</mainClass>
-                    <!-- Set before the app class loads so OpenJFX extracts natives here (ASCII path). -->
+                    <!-- Relative to project root (user.dir when running mvn from the repo). -->
                     <systemProperties>
                         <property>
                             <key>javafx.cachedir</key>
-                            <value>${project.build.directory}/javafx-cache</value>
+                            <value>target/javafx-cache</value>
                         </property>
                     </systemProperties>
                     <!-- JavaFX keeps daemon threads; do not interrupt them on exit. -->
