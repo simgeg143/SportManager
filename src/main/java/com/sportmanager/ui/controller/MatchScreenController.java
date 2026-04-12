@@ -1,13 +1,17 @@
 package com.sportmanager.ui.controller;
 
+import com.sportmanager.SceneManager;
 import com.sportmanager.SportManager;
 import com.sportmanager.core.*;
+import com.sportmanager.settings.AppSettings;
 import com.sportmanager.ui.component.TacticPitchCanvas;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.List;
@@ -53,7 +57,8 @@ public class MatchScreenController implements Initializable {
     private Match        match;
     private Team         managedTeam;
 
-    private static final int MAX_SUBS = 3;
+    /** Live read from AppSettings so changes in Settings screen take effect immediately. */
+    private int maxSubs() { return AppSettings.getInstance().getMaxSubstitutions(); }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -105,7 +110,7 @@ public class MatchScreenController implements Initializable {
 
     private void updateSubCountLabel() {
         int used = sm.getSubstitutionsUsed();
-        subCountLabel.setText("Substitutions used: " + used + " / " + MAX_SUBS);
+        subCountLabel.setText("Substitutions used: " + used + " / " + maxSubs());
     }
 
     // ── Simulation ────────────────────────────────────────────────────────────
@@ -135,8 +140,15 @@ public class MatchScreenController implements Initializable {
         if (match.isFinished()) {
             simulateButton.setVisible(false);
             subPanel.setVisible(false);
-            continueButton.setVisible(true);
             renderFullTimeBanner();
+            if (AppSettings.getInstance().isAutoAdvance()) {
+                // Auto-advance after 2 seconds so the player can read the result
+                PauseTransition pause = new PauseTransition(Duration.seconds(2));
+                pause.setOnFinished(e -> onContinue());
+                pause.play();
+                continueButton.setText("Auto-advancing…");
+            }
+            continueButton.setVisible(true);
         }
     }
 
@@ -145,8 +157,11 @@ public class MatchScreenController implements Initializable {
         segLabel.getStyleClass().add("segment-header");
         eventsBox.getChildren().add(segLabel);
 
+        boolean detailed = AppSettings.getInstance().isShowDetailedEvents();
         for (String ev : seg.getEvents()) {
-            if (ev.startsWith("──")) continue;  // skip separator lines we already show
+            if (ev.startsWith("──")) continue;
+            // In compact mode, only show goals and tactical events
+            if (!detailed && (ev.startsWith("🚑") || ev.startsWith("🟨"))) continue;
             Label evLabel = new Label(ev);
             evLabel.setWrapText(true);
             evLabel.getStyleClass().add(
@@ -201,8 +216,8 @@ public class MatchScreenController implements Initializable {
         Player out = removePlayerCombo.getValue();
         Player in  = addPlayerCombo.getValue();
         if (out == null || in == null) return;
-        if (sm.getSubstitutionsUsed() >= MAX_SUBS) {
-            subCountLabel.setText("Maximum " + MAX_SUBS + " substitutions used.");
+        if (sm.getSubstitutionsUsed() >= maxSubs()) {
+            subCountLabel.setText("Maximum " + maxSubs() + " substitutions used.");
             return;
         }
 

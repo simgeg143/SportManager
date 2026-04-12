@@ -23,6 +23,10 @@ public class AppToolbarController {
     @FXML private Button btnFixtures;
     @FXML private Button btnSquad;
     @FXML private Button btnTable;
+    @FXML private Button btnSettings;
+
+    /** FXML file that was active before opening Settings, for goBack(). */
+    private String lastFxml = "dashboard.fxml";
 
     private static final String ACTIVE_STYLE   = "toolbar-nav-btn toolbar-nav-btn-active";
     private static final String INACTIVE_STYLE = "toolbar-nav-btn";
@@ -36,6 +40,7 @@ public class AppToolbarController {
      * @param fxmlFile the filename of the FXML that was just loaded (e.g. "dashboard.fxml")
      */
     public void updateForScreen(String fxmlFile) {
+        if (!fxmlFile.equals("settings.fxml")) lastFxml = fxmlFile;
         String screenName = toScreenName(fxmlFile);
         screenLabel.setText(screenName);
 
@@ -77,6 +82,7 @@ public class AppToolbarController {
     @FXML private void onSquad()     { SceneManager.getInstance().showSquad();        }
     @FXML private void onTable()     { SceneManager.getInstance().showLeagueTable();  }
     @FXML private void onMainMenu()  { SceneManager.getInstance().showMainMenu();     }
+    @FXML private void onSettings()  { SceneManager.getInstance().showSettings(lastFxml); }
 
     // ── Private helpers ───────────────────────────────────────────────────────
 
@@ -96,6 +102,7 @@ public class AppToolbarController {
             case "squad.fxml"          -> "SQUAD";
             case "league-table.fxml"   -> "LEAGUE TABLE";
             case "match-screen.fxml"   -> "MATCH";
+            case "settings.fxml"       -> "SETTINGS";
             default -> fxmlFile.replace(".fxml", "").toUpperCase().replace("-", " ");
         };
     }

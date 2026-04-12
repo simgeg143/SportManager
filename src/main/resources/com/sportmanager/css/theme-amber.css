@@ -1,0 +1,136 @@
+/*
+ * theme-amber.css
+ * Accent colour override: Teal (#00dfa2) → Amber (#f59e0b)
+ * Loaded as a second stylesheet on top of style.css.
+ * Replaces every accent reference across the app.
+ */
+
+/* ── Toolbar ───────────────────────────────────────────────────── */
+.toolbar-app-name {
+    -fx-text-fill: #f59e0b;
+}
+.toolbar-nav-btn-active {
+    -fx-background-color: #2a1800;
+    -fx-text-fill: #f59e0b;
+    -fx-border-color: #f59e0b;
+}
+.toolbar-nav-btn-active:hover {
+    -fx-background-color: #2a1800;
+    -fx-text-fill: #fbbf24;
+}
+
+/* ── Loading spinner ────────────────────────────────────────────── */
+.loading-spinner {
+    -fx-accent: #f59e0b;
+    -fx-progress-color: #f59e0b;
+}
+.loading-spinner .arc {
+    -fx-stroke: #f59e0b;
+}
+
+/* ── Hero / main menu ───────────────────────────────────────────── */
+.hero-icon {
+    -fx-effect: dropshadow(gaussian, rgba(245,158,11,0.55), 32, 0.4, 0, 0);
+}
+.title-label {
+    -fx-effect: dropshadow(gaussian, rgba(245,158,11,0.25), 24, 0.3, 0, 2);
+}
+.menu-btn-primary {
+    -fx-background-color: linear-gradient(to bottom, #f59e0b, #d97706);
+    -fx-text-fill: #0c1018;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(245,158,11,0.40), 14, 0.3, 0, 3);
+}
+.menu-btn-primary:hover {
+    -fx-background-color: linear-gradient(to bottom, #fbbf24, #f59e0b);
+    -fx-text-fill: #0c1018;
+}
+
+/* ── Sport selection card ───────────────────────────────────────── */
+.sport-card:hover {
+    -fx-border-color: #f59e0b;
+    -fx-effect: dropshadow(gaussian, rgba(245,158,11,0.30), 22, 0.4, 0, 5);
+}
+
+/* ── Data tables ────────────────────────────────────────────────── */
+.data-table .table-row-cell:selected {
+    -fx-background-color: #2a1800;
+    -fx-border-color: #f59e0b transparent #f59e0b transparent;
+}
+.skill-high { -fx-text-fill: #f59e0b; }
+.row-managed {
+    -fx-background-color: #1a1200 !important;
+    -fx-border-color: #f59e0b transparent !important;
+}
+.row-current-week {
+    -fx-border-color: #f59e0b transparent !important;
+}
+
+/* ── Tabs ───────────────────────────────────────────────────────── */
+.main-tab-pane .tab:selected {
+    -fx-border-color: transparent transparent #f59e0b transparent;
+}
+.main-tab-pane .tab:selected .tab-label {
+    -fx-text-fill: #f59e0b;
+}
+
+/* ── Team / screen labels ───────────────────────────────────────── */
+.team-name-header   { -fx-text-fill: #f59e0b; }
+.nav-team-name      { -fx-text-fill: #f59e0b; }
+.stat-big           { -fx-text-fill: #f59e0b; }
+.card-accent        { -fx-border-color: #f59e0b; }
+.score-display {
+    -fx-text-fill: #f59e0b;
+    -fx-effect: dropshadow(gaussian, rgba(245,158,11,0.45), 18, 0.3, 0, 0);
+}
+
+/* ── Match screen ───────────────────────────────────────────────── */
+.halftime-panel {
+    -fx-border-color: #f59e0b transparent transparent transparent;
+}
+.halftime-heading   { -fx-text-fill: #f59e0b; }
+.break-label        { -fx-text-fill: #f59e0b; }
+.fulltime-banner {
+    -fx-text-fill: #f59e0b;
+    -fx-effect: dropshadow(gaussian, rgba(245,158,11,0.35), 10, 0.3, 0, 0);
+}
+.match-progress-bar .bar {
+    -fx-background-color: linear-gradient(to right, #d97706, #f59e0b);
+}
+.swap-btn           { -fx-text-fill: #f59e0b; }
+.swap-btn:hover     { -fx-border-color: #f59e0b; }
+
+/* ── Event log ──────────────────────────────────────────────────── */
+.event-goal         { -fx-text-fill: #f59e0b; }
+
+/* ── Squad / player list ────────────────────────────────────────── */
+.player-list .list-cell:selected { -fx-background-color: #2a1800; }
+.standing-name-managed           { -fx-text-fill: #f59e0b; }
+.status-current                  { -fx-text-fill: #f59e0b; }
+
+/* ── Buttons ────────────────────────────────────────────────────── */
+.btn-primary {
+    -fx-background-color: linear-gradient(to bottom, #f59e0b, #d97706);
+    -fx-text-fill: #0c1018;
+    -fx-effect: dropshadow(gaussian, rgba(245,158,11,0.30), 10, 0.3, 0, 2);
+}
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to bottom, #fbbf24, #f59e0b);
+}
+.btn-link       { -fx-text-fill: #f59e0b; }
+.btn-link:hover { -fx-text-fill: #fbbf24; }
+
+/* ── Team selection card ────────────────────────────────────────── */
+.team-card-selected {
+    -fx-border-color: #f59e0b !important;
+    -fx-background-color: #1a1200 !important;
+}
+
+/* ── Settings toggle selected state ────────────────────────────── */
+.settings-toggle:selected {
+    -fx-background-color: #f59e0b;
+    -fx-text-fill: #0c1018;
+}
+.settings-toggle:selected:hover {
+    -fx-background-color: #fbbf24;
+}

@@ -1,0 +1,137 @@
+/*
+ * theme-purple.css
+ * Accent colour override: Teal (#00dfa2) → Purple (#8b5cf6)
+ * Loaded as a second stylesheet on top of style.css.
+ */
+
+/* ── Toolbar ───────────────────────────────────────────────────── */
+.toolbar-app-name {
+    -fx-text-fill: #8b5cf6;
+}
+.toolbar-nav-btn-active {
+    -fx-background-color: #1e1040;
+    -fx-text-fill: #8b5cf6;
+    -fx-border-color: #8b5cf6;
+}
+.toolbar-nav-btn-active:hover {
+    -fx-background-color: #1e1040;
+    -fx-text-fill: #c4b5fd;
+}
+
+/* ── Loading spinner ────────────────────────────────────────────── */
+.loading-spinner {
+    -fx-accent: #8b5cf6;
+    -fx-progress-color: #8b5cf6;
+}
+.loading-spinner .arc {
+    -fx-stroke: #8b5cf6;
+}
+
+/* ── Hero / main menu ───────────────────────────────────────────── */
+.hero-icon {
+    -fx-effect: dropshadow(gaussian, rgba(139,92,246,0.65), 32, 0.4, 0, 0);
+}
+.title-label {
+    -fx-effect: dropshadow(gaussian, rgba(139,92,246,0.30), 24, 0.3, 0, 2);
+}
+.menu-btn-primary {
+    -fx-background-color: linear-gradient(to bottom, #8b5cf6, #7c3aed);
+    -fx-text-fill: #eef2ff;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(139,92,246,0.45), 14, 0.3, 0, 3);
+}
+.menu-btn-primary:hover {
+    -fx-background-color: linear-gradient(to bottom, #c4b5fd, #8b5cf6);
+    -fx-text-fill: #0c1018;
+}
+
+/* ── Sport selection card ───────────────────────────────────────── */
+.sport-card:hover {
+    -fx-border-color: #8b5cf6;
+    -fx-effect: dropshadow(gaussian, rgba(139,92,246,0.30), 22, 0.4, 0, 5);
+}
+
+/* ── Data tables ────────────────────────────────────────────────── */
+.data-table .table-row-cell:selected {
+    -fx-background-color: #1e1040;
+    -fx-border-color: #8b5cf6 transparent #8b5cf6 transparent;
+}
+.skill-high { -fx-text-fill: #8b5cf6; }
+.row-managed {
+    -fx-background-color: #150d30 !important;
+    -fx-border-color: #8b5cf6 transparent !important;
+}
+.row-current-week {
+    -fx-border-color: #8b5cf6 transparent !important;
+}
+
+/* ── Tabs ───────────────────────────────────────────────────────── */
+.main-tab-pane .tab:selected {
+    -fx-border-color: transparent transparent #8b5cf6 transparent;
+}
+.main-tab-pane .tab:selected .tab-label {
+    -fx-text-fill: #8b5cf6;
+}
+
+/* ── Team / screen labels ───────────────────────────────────────── */
+.team-name-header   { -fx-text-fill: #8b5cf6; }
+.nav-team-name      { -fx-text-fill: #8b5cf6; }
+.stat-big           { -fx-text-fill: #8b5cf6; }
+.card-accent        { -fx-border-color: #8b5cf6; }
+.score-display {
+    -fx-text-fill: #8b5cf6;
+    -fx-effect: dropshadow(gaussian, rgba(139,92,246,0.50), 18, 0.3, 0, 0);
+}
+
+/* ── Match screen ───────────────────────────────────────────────── */
+.halftime-panel {
+    -fx-border-color: #8b5cf6 transparent transparent transparent;
+}
+.halftime-heading   { -fx-text-fill: #8b5cf6; }
+.break-label        { -fx-text-fill: #8b5cf6; }
+.fulltime-banner {
+    -fx-text-fill: #8b5cf6;
+    -fx-effect: dropshadow(gaussian, rgba(139,92,246,0.35), 10, 0.3, 0, 0);
+}
+.match-progress-bar .bar {
+    -fx-background-color: linear-gradient(to right, #7c3aed, #8b5cf6);
+}
+.swap-btn           { -fx-text-fill: #8b5cf6; }
+.swap-btn:hover     { -fx-border-color: #8b5cf6; }
+
+/* ── Event log ──────────────────────────────────────────────────── */
+.event-goal         { -fx-text-fill: #8b5cf6; }
+
+/* ── Squad / player list ────────────────────────────────────────── */
+.player-list .list-cell:selected { -fx-background-color: #1e1040; }
+.standing-name-managed           { -fx-text-fill: #8b5cf6; }
+.status-current                  { -fx-text-fill: #8b5cf6; }
+
+/* ── Buttons ────────────────────────────────────────────────────── */
+.btn-primary {
+    -fx-background-color: linear-gradient(to bottom, #8b5cf6, #7c3aed);
+    -fx-text-fill: #eef2ff;
+    -fx-effect: dropshadow(gaussian, rgba(139,92,246,0.35), 10, 0.3, 0, 2);
+}
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to bottom, #c4b5fd, #8b5cf6);
+    -fx-text-fill: #0c1018;
+}
+.btn-link       { -fx-text-fill: #8b5cf6; }
+.btn-link:hover { -fx-text-fill: #c4b5fd; }
+
+/* ── Team selection card ────────────────────────────────────────── */
+.team-card-selected {
+    -fx-border-color: #8b5cf6 !important;
+    -fx-background-color: #150d30 !important;
+}
+
+/* ── Settings toggle selected state ────────────────────────────── */
+.settings-toggle:selected {
+    -fx-background-color: #8b5cf6;
+    -fx-text-fill: #eef2ff;
+}
+.settings-toggle:selected:hover {
+    -fx-background-color: #c4b5fd;
+    -fx-text-fill: #0c1018;
+}

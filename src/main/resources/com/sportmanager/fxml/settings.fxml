@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.sportmanager.ui.controller.SettingsController"
+            styleClass="root-pane">
+
+    <!-- ── TOP BAR ──────────────────────────────────────────────────────── -->
+    <top>
+        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="16">
+            <padding><Insets top="12" right="24" bottom="12" left="24"/></padding>
+            <Button text="← Back" onAction="#onBack" styleClass="nav-btn"/>
+            <Label text="⚙" styleClass="nav-icon"/>
+            <Label text="SETTINGS" styleClass="nav-team-name"/>
+        </HBox>
+    </top>
+
+    <!-- ── BODY ─────────────────────────────────────────────────────────── -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="scroll-transparent">
+            <VBox spacing="20" styleClass="page-body">
+                <padding><Insets top="28" right="32" bottom="28" left="32"/></padding>
+
+                <!-- Two-column layout -->
+                <HBox spacing="20" alignment="TOP_LEFT">
+
+                    <!-- ── LEFT: GAMEPLAY ── -->
+                    <VBox HBox.hgrow="ALWAYS" spacing="16" styleClass="card">
+                        <Label text="GAMEPLAY" styleClass="card-heading"/>
+
+                        <!-- Max Substitutions -->
+                        <VBox spacing="6">
+                            <Label text="MAX SUBSTITUTIONS PER MATCH" styleClass="section-label"/>
+                            <HBox spacing="0" styleClass="settings-toggle-group">
+                                <ToggleButton fx:id="subs3Btn"  text="3 Subs"
+                                              styleClass="settings-toggle,settings-toggle-left"
+                                              onAction="#onSubsChanged"/>
+                                <ToggleButton fx:id="subs5Btn"  text="5 Subs"
+                                              styleClass="settings-toggle,settings-toggle-right"
+                                              onAction="#onSubsChanged"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Injury Frequency -->
+                        <VBox spacing="6">
+                            <Label text="INJURY FREQUENCY" styleClass="section-label"/>
+                            <HBox spacing="0" styleClass="settings-toggle-group">
+                                <ToggleButton fx:id="injLowBtn"    text="Low"
+                                              styleClass="settings-toggle,settings-toggle-left"
+                                              onAction="#onInjuryChanged"/>
+                                <ToggleButton fx:id="injNormalBtn" text="Normal"
+                                              styleClass="settings-toggle,settings-toggle-mid"
+                                              onAction="#onInjuryChanged"/>
+                                <ToggleButton fx:id="injHighBtn"   text="High"
+                                              styleClass="settings-toggle,settings-toggle-right"
+                                              onAction="#onInjuryChanged"/>
+                            </HBox>
+                            <Label fx:id="injuryHintLabel" text="" styleClass="hint-label"/>
+                        </VBox>
+
+                        <!-- Match Difficulty -->
+                        <VBox spacing="6">
+                            <Label text="MATCH DIFFICULTY" styleClass="section-label"/>
+                            <HBox spacing="0" styleClass="settings-toggle-group">
+                                <ToggleButton fx:id="diffEasyBtn"   text="Easy"
+                                              styleClass="settings-toggle,settings-toggle-left"
+                                              onAction="#onDifficultyChanged"/>
+                                <ToggleButton fx:id="diffNormalBtn" text="Normal"
+                                              styleClass="settings-toggle,settings-toggle-mid"
+                                              onAction="#onDifficultyChanged"/>
+                                <ToggleButton fx:id="diffHardBtn"   text="Hard"
+                                              styleClass="settings-toggle,settings-toggle-right"
+                                              onAction="#onDifficultyChanged"/>
+                            </HBox>
+                            <Label fx:id="difficultyHintLabel" text="" styleClass="hint-label"/>
+                        </VBox>
+
+                        <!-- Auto-Advance -->
+                        <VBox spacing="6">
+                            <Label text="AFTER MATCH" styleClass="section-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <CheckBox fx:id="autoAdvanceCheck"
+                                          styleClass="settings-check"
+                                          onAction="#onAutoAdvanceChanged"/>
+                                <Label text="Auto-advance to next week after match ends"
+                                       styleClass="match-info-text"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Starting Year -->
+                        <VBox spacing="6">
+                            <Label text="STARTING SEASON YEAR" styleClass="section-label"/>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <TextField fx:id="startYearField"
+                                           prefWidth="100"
+                                           styleClass="settings-text-field"/>
+                                <Label text="(applies to new games only)"
+                                       styleClass="hint-label"/>
+                            </HBox>
+                        </VBox>
+
+                    </VBox>
+
+                    <!-- ── RIGHT: DISPLAY ── -->
+                    <VBox HBox.hgrow="ALWAYS" spacing="16" styleClass="card">
+                        <Label text="DISPLAY" styleClass="card-heading"/>
+
+                        <!-- Accent Theme -->
+                        <VBox spacing="6">
+                            <Label text="ACCENT COLOUR" styleClass="section-label"/>
+                            <HBox spacing="0" styleClass="settings-toggle-group">
+                                <ToggleButton fx:id="themeTealBtn"
+                                              styleClass="settings-toggle,settings-toggle-left"
+                                              onAction="#onThemeChanged">
+                                    <graphic>
+                                        <HBox spacing="6" alignment="CENTER">
+                                            <Region styleClass="theme-dot-teal"/>
+                                            <Label text="Teal" style="-fx-text-fill:inherit;"/>
+                                        </HBox>
+                                    </graphic>
+                                </ToggleButton>
+                                <ToggleButton fx:id="themeAmberBtn"
+                                              styleClass="settings-toggle,settings-toggle-mid"
+                                              onAction="#onThemeChanged">
+                                    <graphic>
+                                        <HBox spacing="6" alignment="CENTER">
+                                            <Region styleClass="theme-dot-amber"/>
+                                            <Label text="Amber" style="-fx-text-fill:inherit;"/>
+                                        </HBox>
+                                    </graphic>
+                                </ToggleButton>
+                                <ToggleButton fx:id="themePurpleBtn"
+                                              styleClass="settings-toggle,settings-toggle-right"
+                                              onAction="#onThemeChanged">
+                                    <graphic>
+                                        <HBox spacing="6" alignment="CENTER">
+                                            <Region styleClass="theme-dot-purple"/>
+                                            <Label text="Purple" style="-fx-text-fill:inherit;"/>
+                                        </HBox>
+                                    </graphic>
+                                </ToggleButton>
+                            </HBox>
+                            <Label text="Theme takes effect immediately across the entire app."
+                                   styleClass="hint-label"/>
+                        </VBox>
+
+                        <!-- Show Detailed Events -->
+                        <VBox spacing="6">
+                            <Label text="MATCH EVENT LOG" styleClass="section-label"/>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <CheckBox fx:id="detailedEventsCheck"
+                                          styleClass="settings-check"
+                                          onAction="#onDetailedEventsChanged"/>
+                                <Label text="Show detailed events (injuries, yellow cards)"
+                                       styleClass="match-info-text"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Preview card showing current theme colours -->
+                        <VBox spacing="8">
+                            <Label text="PREVIEW" styleClass="section-label"/>
+                            <VBox spacing="6" styleClass="settings-preview-card">
+                                <Label text="Sample Heading" styleClass="team-name-header"/>
+                                <Label text="Stat value" styleClass="stat-big"/>
+                                <HBox spacing="8">
+                                    <Button text="Primary Action" styleClass="btn-primary"/>
+                                    <Button text="Secondary"      styleClass="btn-secondary"/>
+                                </HBox>
+                            </VBox>
+                        </VBox>
+
+                    </VBox>
+                </HBox>
+
+                <!-- ── STATUS / ACTION BAR ── -->
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Label fx:id="statusLabel" text="" styleClass="status-fit"
+                           style="-fx-font-size:12px;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Reset to Defaults" onAction="#onReset"
+                            styleClass="btn-secondary"/>
+                    <Button text="✓  Save Settings"  onAction="#onSave"
+                            styleClass="btn-primary"/>
+                </HBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

@@ -1,6 +1,8 @@
 package com.sportmanager.football;
 
 import com.sportmanager.core.*;
+import com.sportmanager.session.GameSession;
+import com.sportmanager.settings.AppSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,10 +55,10 @@ public class FootballMatch extends Match {
         MatchSegment segment = new MatchSegment(currentSegment, label);
         segment.addEvent("── " + label.toUpperCase() + " ──");
 
-        double homeAtk = teamAttack(homeTeam) * 1.05;     // home advantage
-        double homeDef = teamDefense(homeTeam);
-        double awayAtk = teamAttack(awayTeam);
-        double awayDef = teamDefense(awayTeam);
+        double homeAtk = applyDifficulty(homeTeam, teamAttack(homeTeam)) * 1.05; // home advantage
+        double homeDef = applyDifficulty(homeTeam, teamDefense(homeTeam));
+        double awayAtk = applyDifficulty(awayTeam, teamAttack(awayTeam));
+        double awayDef = applyDifficulty(awayTeam, teamDefense(awayTeam));
 
         double[] homeMods = tacticMods(homeTeam.getCurrentTactic());
         double[] awayMods = tacticMods(awayTeam.getCurrentTactic());
@@ -127,7 +129,7 @@ public class FootballMatch extends Match {
 
     private void simulateIncidents(Team team, MatchSegment seg) {
         for (Player p : team.getStartingLineup()) {
-            if (!p.isInjured() && rng.nextDouble() < 0.04) {
+            if (!p.isInjured() && rng.nextDouble() < AppSettings.getInstance().getInjuryChance()) {
                 int dur = 1 + rng.nextInt(3);
                 p.setInjuryMatchesRemaining(dur);
                 seg.addEvent("🚑 INJURY  " + p.getName() + " (" + team.getName()
@@ -158,6 +160,16 @@ public class FootballMatch extends Match {
                         ? fp.getDefenseScore()
                         : p.getSkillLevel() * 0.8)
                 .average().orElse(60.0);
+    }
+
+    /**
+     * Applies the difficulty multiplier to AI (non-managed) teams.
+     * The managed team's score is never modified so difficulty only affects opponents.
+     */
+    private double applyDifficulty(Team team, double score) {
+        Team managed = GameSession.getInstance().getManagedTeam();
+        if (team == managed) return score;
+        return score * AppSettings.getInstance().getDifficultyMultiplier();
     }
 
     private double[] tacticMods(String tactic) {
