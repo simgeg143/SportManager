@@ -1,57 +1,76 @@
 package com.sportmanager.core;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Abstract base for a full-season league competition.
  * Holds all teams, the generated fixture rounds, and the current round pointer.
  *
- * Extended in the architecture document with:
- *  – getMatchesOfWeek(weekNo)  (TM-2 fixture view)
- *  – getTable()                (LM-7 standings, returns List<StandingEntry>)
- *  – updateStandings(result)   (LM-8, called after every match)
+ * Concrete sport leagues implement fixture generation and standings sorting.
  */
 public abstract class League {
 
-    protected String            name;
-    protected List<Team>        teams;
-    protected List<StandingEntry> standings;
-    protected int currentWeek;
+    protected String             name;
+    protected Sport              sport;
+    protected List<Team>         teams;
+    protected List<List<Match>>  rounds;
+    protected int                currentRound;
 
-    protected League(String name) {
+    protected League(String name, Sport sport) {
         this.name         = name;
+        this.sport        = sport;
         this.teams        = new ArrayList<>();
-        this.standings = new ArrayList<>();
-        this.currentWeek = 1;
+        this.rounds       = new ArrayList<>();
+        this.currentRound = 0;
     }
 
-    // ── Season state ─────────────────────────────────────────────────────────
+    // ── Accessors ─────────────────────────────────────────────────────────────
 
-    public String     getName()         { return name; }
-    public List<Team> getTeams()        { return teams; }
+    public String     getName()  { return name; }
+    public List<Team> getTeams() { return teams; }
+    public Sport      getSport() { return sport; }
+    public int        getCurrentRound() { return currentRound; }
 
-    public int getCurrentWeek() {
-        return currentWeek;
+    public int getTotalRounds() { return rounds.size(); }
+
+    /**
+     * Returns all matches scheduled for the given 1-based week number.
+     * Returns an empty list if the week is out of range.
+     */
+    public List<Match> getMatchesOfWeek(int weekNo) {
+        int idx = weekNo - 1;
+        if (idx < 0 || idx >= rounds.size()) return new ArrayList<>();
+        return rounds.get(idx);
     }
 
-    public void addTeam(Team team){
-        teams.add(team);
-        standings.add(new StandingEntry(team));
+    /** Advances the internal round pointer by one. */
+    public void advanceRound() { currentRound++; }
+
+    /** Returns all matches in the current round. */
+    public List<Match> getCurrentRoundMatches() {
+        return getMatchesOfWeek(currentRound + 1);
     }
-    public List<StandingEntry> getTable(){
-        Collections.sort(standings);
-        return standings;
+
+    /** Returns true when all rounds have been played. */
+    public boolean isSeasonOver() {
+        return currentRound >= rounds.size();
     }
-    public void updateStandings(Team team, int points) {
-        for (StandingEntry entry : standings) {
-            if (entry.getTeam().equals(team)) {
-                entry.addPoints(points);
-            }
-        }
-    }
-    public void advanceWeek() {
-        currentWeek++;
-    }
+
+    // ── Abstract contract ─────────────────────────────────────────────────────
+
+    /** Generates the complete fixture schedule and populates {@code rounds}. */
+    public abstract void generateFixtures();
+
+    /** Returns the full standings table, each entry wrapping a team and its position. */
+    public abstract List<StandingEntry> getTable();
+
+    /** Updates both teams' season statistics based on the given match result. */
+    public abstract void updateStandings(MatchResult result);
+
+    /** Returns teams sorted by the sport-specific tiebreaker rules. */
+    public abstract List<Team> getSortedStandings();
+
+    /** Returns the current league leader (champion candidate). */
+    public abstract Team getChampion();
 }

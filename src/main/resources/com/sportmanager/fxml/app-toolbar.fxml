@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.sportmanager.ui.controller.AppToolbarController"
+      styleClass="global-toolbar"
+      spacing="4"
+      alignment="CENTER_LEFT">
+
+    <!-- ── Branding ── -->
+    <Label text="⚽" styleClass="toolbar-logo-icon"/>
+    <Label text="SPORT MANAGER" styleClass="toolbar-app-name"/>
+
+    <!-- ── Spacer ── -->
+    <Region HBox.hgrow="ALWAYS"/>
+
+    <!-- ── Current context: team / week (only visible in-game) ── -->
+    <VBox fx:id="contextBox" spacing="1" alignment="CENTER" visible="false" managed="false"
+          style="-fx-padding: 0 16 0 16;">
+        <Label fx:id="teamLabel"  styleClass="toolbar-team-label" text=""/>
+        <Label fx:id="weekLabel"  styleClass="toolbar-week-label" text=""/>
+    </VBox>
+
+    <!-- ── Screen breadcrumb ── -->
+    <Label fx:id="screenLabel" styleClass="toolbar-screen-label" text="MAIN MENU"
+           style="-fx-padding: 0 20 0 0;"/>
+
+    <!-- ── Navigation (only visible in-game) ── -->
+    <HBox fx:id="navBox" spacing="4" alignment="CENTER" visible="false" managed="false">
+        <Button fx:id="btnDashboard" text="⊞  DASHBOARD" styleClass="toolbar-nav-btn"
+                onAction="#onDashboard"/>
+        <Button fx:id="btnFixtures"  text="📋  FIXTURES"  styleClass="toolbar-nav-btn"
+                onAction="#onFixtures"/>
+        <Button fx:id="btnSquad"     text="👥  SQUAD"     styleClass="toolbar-nav-btn"
+                onAction="#onSquad"/>
+        <Button fx:id="btnTable"     text="🏆  TABLE"     styleClass="toolbar-nav-btn"
+                onAction="#onTable"/>
+
+        <!-- vertical divider -->
+        <Region style="-fx-background-color: #253042; -fx-min-width: 1px; -fx-max-width: 1px;
+                       -fx-min-height: 24px; -fx-max-height: 24px; -fx-margin: 0 8 0 8;"/>
+
+        <Button text="✕  MAIN MENU" styleClass="toolbar-main-menu-btn"
+                onAction="#onMainMenu"/>
+    </HBox>
+
+</HBox>

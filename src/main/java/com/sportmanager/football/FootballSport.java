@@ -69,8 +69,8 @@ public class FootballSport implements Sport {
     @Override public List<String> getTactics()          { return TACTICS; }
     @Override public int          getSegmentCount()     { return 2; }
     @Override public String       getSegmentLabel()     { return "Half"; }
-    @Override public int          getRequiredLineupSize(){ return 11; }
-    @Override public int          getMaxSubstituteCount(){ return 7; }
+    @Override public int  getRequiredLineupSize() { return FootballTeam.LINEUP_SIZE; }
+    @Override public int  getMaxSubstituteCount() { return FootballTeam.MAX_SUBS; }
 
     @Override
     public Team createTeam(String name) {

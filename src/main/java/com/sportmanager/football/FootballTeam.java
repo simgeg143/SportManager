@@ -2,6 +2,7 @@ package com.sportmanager.football;
 
 import com.sportmanager.core.Player;
 import com.sportmanager.core.Team;
+import com.sportmanager.core.Lineup;
 
 import java.util.Comparator;
 import java.util.List;
@@ -13,8 +14,10 @@ import java.util.Map;
  */
 public class FootballTeam extends Team {
 
-    private static final int LINEUP_SIZE = 11;
-    private static final int MAX_SUBS    = 7;
+    // Single source of truth — FootballSport.getRequiredLineupSize/getMaxSubstituteCount
+    // delegate to these so the values are never duplicated.
+    static final int LINEUP_SIZE = 11;
+    static final int MAX_SUBS    = 7;
 
     private static final Map<String, Integer> POSITION_PRIORITY =
             Map.ofEntries(
@@ -53,6 +56,9 @@ public class FootballTeam extends Team {
             else if (substitutes.size()    < MAX_SUBS)    substitutes.add(p);
             else break;
         }
+
+        // Keep currentLineup in sync so hasValidLineup() reflects the actual XI
+        this.currentLineup = new Lineup(startingLineup, substitutes);
     }
 
     /** Returns the roster sorted by positional order for the squad display. */

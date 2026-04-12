@@ -1,14 +1,20 @@
 package com.sportmanager.core;
 
+import java.util.List;
+
+/** Contract that every sport module must satisfy. */
 public interface Sport {
 
-    String getName();
+    String       getName();
+    List<String> getPositions();
+    List<String> getTactics();
+
+    int  getSegmentCount();
+    String getSegmentLabel();
+    int  getRequiredLineupSize();
+    int  getMaxSubstituteCount();
 
     League createLeague(String leagueName, int teamCount);
-
-    Team createTeam(String name);
-
-    Match createMatch(Team home, Team away, int weekNo);
-
-    int getRequiredLineupSize();
+    Team   createTeam(String name);
+    Match  createMatch(Team home, Team away, int weekNo);
 }

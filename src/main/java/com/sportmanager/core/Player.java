@@ -58,10 +58,11 @@ public abstract class Player {
         return !isInjured();
     }
     public void recover(){
-        if(injuryMatchesRemaining>0){
-            injuryMatchesRemaining--;
-        }
+        if(injuryMatchesRemaining>0) injuryMatchesRemaining--;
     }
+
+    /** Alias used by GameSession when processing end-of-round injuries. */
+    public void decrementInjury() { recover(); }
     public void train(){
         skillLevel = Math.min(99,skillLevel+1);
     }

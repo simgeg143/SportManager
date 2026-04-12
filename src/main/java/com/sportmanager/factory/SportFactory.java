@@ -7,15 +7,14 @@ public final class SportFactory {
 
     private SportFactory() {}
 
-    public static Sport create(String sportName) {
-
-        if (sportName == null) {
-            throw new IllegalArgumentException("Sport name cannot be null");
+    public static Sport create(String sportCode) {
+        if (sportCode == null || sportCode.isBlank()) {
+            throw new IllegalArgumentException("Sport code cannot be null or blank");
         }
 
-        return switch (sportName.trim().toLowerCase()) {
+        return switch (sportCode.trim().toLowerCase()) {
             case "football" -> new FootballSport();
-            default -> throw new IllegalArgumentException("Unknown sport: " + sportName);
+            default -> throw new IllegalArgumentException("Unsupported sport: " + sportCode.trim().toLowerCase());
         };
     }
 }

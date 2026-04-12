@@ -118,6 +118,12 @@ public final class SportManager {
     /** @return 1-based current week number within the season. */
     public int getCurrentWeek()   { return session.getCurrentWeek(); }
 
+    /** @return total number of matchdays (rounds) in the season. */
+    public int getTotalWeeks() {
+        League l = session.getLeague();
+        return l != null ? l.getTotalRounds() : 0;
+    }
+
     /** @return true when all fixtures have been played. */
     public boolean isSeasonFinished() { return session.isSeasonFinished(); }
 
@@ -131,6 +137,19 @@ public final class SportManager {
     public List<StandingEntry> showLeagueTableData() {
         if (session.getLeague() == null) return List.of();
         return session.getLeague().getTable();
+    }
+
+    /**
+     * Returns all fixture rounds for the current season.
+     * Called by FixtureController. (TM-2)
+     */
+    public List<List<Match>> showFixtureData() {
+        League l = session.getLeague();
+        if (l == null) return List.of();
+        int total = l.getTotalRounds();
+        List<List<Match>> all = new java.util.ArrayList<>();
+        for (int w = 1; w <= total; w++) all.add(l.getMatchesOfWeek(w));
+        return all;
     }
 
 

@@ -6,26 +6,28 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TeamTest {
-    class TestPlayer extends Player{
-        public TestPlayer(String name,int age,String position,int skill){
-            super(name,age,position,skill);
+
+    static class TestPlayer extends Player {
+        public TestPlayer(String name, int age, String position, int skill) {
+            super(name, age, position, skill);
         }
-        public Map<String,Integer> getSpecificAttributes(){return null;}
-        public String getStatusDisplay(){return "OK";}
+        public Map<String, Integer> getSpecificAttributes() { return Collections.emptyMap(); }
+        public String getStatusDisplay() { return isInjured() ? "INJ" : "FIT"; }
     }
 
-    class TestTeam extends Team{
-        public TestTeam(String name){super(name);}
-        public int getRequiredLineupSize(){return 5;}
+    static class TestTeam extends Team {
+        public TestTeam(String name) { super(name); }
+        @Override public int getRequiredLineupSize()  { return 5; }
+        @Override public int getMaxSubstituteCount()  { return 3; }
+        @Override public void generateDefaultLineup() { }
     }
 
     @Test
-    void getAvailablePlayers_shouldExcludeInjuredPlayers(){
+    void getAvailablePlayers_shouldExcludeInjuredPlayers() {
         TestTeam team = new TestTeam("Team");
 
-        TestPlayer healthy = new TestPlayer("Ali",20,"Forward",80);
-        TestPlayer injured = new TestPlayer("Ahmet",22,"Midfielder",75);
-
+        TestPlayer healthy = new TestPlayer("Ali",   20, "Forward",    80);
+        TestPlayer injured = new TestPlayer("Ahmet", 22, "Midfielder", 75);
         injured.setInjuryMatchesRemaining(2);
 
         team.addPlayer(healthy);
@@ -33,9 +35,8 @@ public class TeamTest {
 
         List<Player> available = team.getAvailablePlayers();
 
-        assertEquals(1,available.size());
+        assertEquals(1, available.size());
         assertTrue(available.contains(healthy));
         assertFalse(available.contains(injured));
-
     }
 }

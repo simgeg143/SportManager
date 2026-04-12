@@ -24,25 +24,35 @@ public class FootballLeague extends League {
         int n = teams.size();
         if (n < 2) return;
 
+        // Circle method requires an even number of teams.
+        // If odd, add a null sentinel as a "bye" slot — any match involving
+        // null is simply not added to the round, giving that team a bye.
         List<Team> rotation = new ArrayList<>(teams);
+        boolean hasBye = (n % 2 != 0);
+        if (hasBye) rotation.add(null);          // null == BYE
+
+        int size = rotation.size();              // now always even
+        int totalRounds = size - 1;
         List<List<Match>> homeRounds = new ArrayList<>();
 
-        for (int round = 0; round < n - 1; round++) {
-            int weekNo = round + 1;                       // 1-based
+        for (int round = 0; round < totalRounds; round++) {
+            int weekNo = round + 1;
             List<Match> roundMatches = new ArrayList<>();
-            for (int i = 0; i < n / 2; i++) {
+            for (int i = 0; i < size / 2; i++) {
                 Team home = rotation.get(i);
-                Team away = rotation.get(n - 1 - i);
-                roundMatches.add(sport.createMatch(home, away, weekNo));
+                Team away = rotation.get(size - 1 - i);
+                if (home != null && away != null) {         // skip bye slots
+                    roundMatches.add(sport.createMatch(home, away, weekNo));
+                }
             }
             homeRounds.add(roundMatches);
 
-            // Rotate: fix element 0, shift the rest clockwise
-            Team last = rotation.remove(n - 1);
+            // Rotate: fix element 0, shift the rest one position clockwise
+            Team last = rotation.remove(size - 1);
             rotation.add(1, last);
         }
 
-        // Away legs (home/away swapped)
+        // Away legs: reverse every home fixture
         List<List<Match>> awayRounds = new ArrayList<>();
         for (int r = 0; r < homeRounds.size(); r++) {
             int weekNo = homeRounds.size() + r + 1;

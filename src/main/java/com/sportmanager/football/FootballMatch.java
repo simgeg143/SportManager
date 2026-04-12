@@ -93,22 +93,19 @@ public class FootballMatch extends Match {
 
     private void buildResult() {
         List<InjuryRecord> injuries = new ArrayList<>();
-        for (MatchSegment seg : segments) {
-            for (String ev : seg.getEvents()) {
-                // Events tagged as injury have already been set on the Player object;
-                // here we just collect InjuryRecord objects for the MatchResult
+
+        // Collect all players who were injured during simulation.
+        // simulateIncidents() sets injuryMatchesRemaining directly on the Player,
+        // so we scan both teams' starting XIs and benches after the match.
+        for (Team team : List.of(homeTeam, awayTeam)) {
+            for (Player p : team.getStartingLineup()) {
+                if (p.isInjured())
+                    injuries.add(new InjuryRecord(p, p.getInjuryMatchesRemaining(), "Injured in match"));
             }
-        }
-        // Collect injuries from both rosters (injuryMatchesRemaining > 0 set during sim)
-        for (Player p : homeTeam.getStartingLineup()) {
-            if (p.isInjured())
-                injuries.add(new InjuryRecord(p, p.getInjuryMatchesRemaining(),
-                        "Injured in match"));
-        }
-        for (Player p : awayTeam.getStartingLineup()) {
-            if (p.isInjured())
-                injuries.add(new InjuryRecord(p, p.getInjuryMatchesRemaining(),
-                        "Injured in match"));
+            for (Player p : team.getSubstitutes()) {
+                if (p.isInjured())
+                    injuries.add(new InjuryRecord(p, p.getInjuryMatchesRemaining(), "Injured in warm-up"));
+            }
         }
         this.result = new MatchResult(homeTeam, awayTeam, homeScore, awayScore, injuries);
     }
@@ -146,14 +143,20 @@ public class FootballMatch extends Match {
     private double teamAttack(Team team) {
         List<Player> xi = team.getStartingLineup();
         if (xi.isEmpty()) return 60.0;
-        return xi.stream().mapToDouble(p -> ((FootballPlayer) p).getAttackScore())
+        return xi.stream()
+                .mapToDouble(p -> p instanceof FootballPlayer fp
+                        ? fp.getAttackScore()
+                        : p.getSkillLevel() * 0.8)
                 .average().orElse(60.0);
     }
 
     private double teamDefense(Team team) {
         List<Player> xi = team.getStartingLineup();
         if (xi.isEmpty()) return 60.0;
-        return xi.stream().mapToDouble(p -> ((FootballPlayer) p).getDefenseScore())
+        return xi.stream()
+                .mapToDouble(p -> p instanceof FootballPlayer fp
+                        ? fp.getDefenseScore()
+                        : p.getSkillLevel() * 0.8)
                 .average().orElse(60.0);
     }
 

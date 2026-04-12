@@ -2,6 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import com.sportmanager.ui.component.TacticPitchCanvas?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.sportmanager.ui.controller.MatchScreenController"
@@ -27,7 +28,7 @@
         </VBox>
     </top>
 
-    <!-- ── CENTRE: events + break panel ────────────────────────────────── -->
+    <!-- ── CENTRE: events + half-time panel ─────────────────────────────── -->
     <center>
         <HBox spacing="16" styleClass="match-center">
             <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
@@ -42,12 +43,13 @@
                 </ScrollPane>
             </VBox>
 
-            <!-- Right panel: substitution + tactic -->
-            <VBox fx:id="subPanel" spacing="12" prefWidth="280" styleClass="card"
+            <!-- ── Half-time panel: substitutions + tactic + pitch canvas ── -->
+            <VBox fx:id="subPanel" spacing="10" prefWidth="300" styleClass="card"
                   visible="false" managed="true">
                 <Label text="HALF TIME" styleClass="section-label"/>
 
-                <Label text="Substitution (max 3)" styleClass="label-small"/>
+                <!-- Substitution section -->
+                <Label text="SUBSTITUTION  (max 3)" styleClass="card-heading"/>
                 <Label text="Remove from XI:" styleClass="label-small"/>
                 <ComboBox fx:id="removePlayerCombo" maxWidth="Infinity"
                           styleClass="tactic-combo"/>
@@ -58,12 +60,19 @@
                 <Button text="Make Substitution" onAction="#onMakeSubstitution"
                         maxWidth="Infinity" styleClass="btn-secondary"/>
 
-                <Separator/>
+                <Separator style="-fx-background-color:#253042;"/>
 
-                <Label text="Change Tactic:" styleClass="label-small"/>
+                <!-- Tactic section -->
+                <Label text="FORMATION" styleClass="card-heading"/>
                 <ComboBox fx:id="tacticCombo" maxWidth="Infinity" styleClass="tactic-combo"/>
-                <Button text="Apply Tactic" onAction="#onApplyTactic"
-                        maxWidth="Infinity" styleClass="btn-secondary"/>
+
+                <!-- Formation pitch canvas — updates live on combo change -->
+                <TacticPitchCanvas fx:id="tacticCanvas"
+                                   width="276" height="220"
+                                   style="-fx-background-radius:8px;"/>
+
+                <Button text="Apply Formation" onAction="#onApplyTactic"
+                        maxWidth="Infinity" styleClass="btn-primary"/>
             </VBox>
         </HBox>
     </center>

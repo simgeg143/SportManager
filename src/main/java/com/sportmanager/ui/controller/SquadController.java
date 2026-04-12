@@ -4,6 +4,7 @@ import com.sportmanager.SportManager;
 import com.sportmanager.core.Coach;
 import com.sportmanager.core.Player;
 import com.sportmanager.core.Team;
+import com.sportmanager.ui.component.TacticPitchCanvas;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -12,15 +13,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
  * Displays the full squad roster with player attributes and availability. (TM-1)
- * Also shows the coaching staff. (LM-4)
- * Called by SportManager.showSquad().
- *
- * Separate screen from the Dashboard per the architecture document's
- * SquadController specification.
+ * Also shows coaching staff and a live tactic formation selector with pitch canvas.
  */
 public class SquadController implements Initializable {
 
@@ -44,7 +42,22 @@ public class SquadController implements Initializable {
     @FXML private TableColumn<Coach, Number>    coachTrainCol;
     @FXML private TableColumn<Coach, Number>    coachMotivCol;
 
+    // ── Tactic panel ─────────────────────────────────────────────────────────
+    @FXML private TacticPitchCanvas squadTacticCanvas;
+    @FXML private ComboBox<String>  squadTacticCombo;
+    @FXML private Label             tacticDescLabel;
+    @FXML private Label             tacticStatusLabel;
+
     private SportManager sm;
+
+    // Short descriptions for each formation
+    private static final Map<String, String> TACTIC_DESCRIPTIONS = Map.of(
+        "4-3-3",   "Attacking wide play with wingers. High pressing, quick build-up.",
+        "4-4-2",   "Balanced and compact. Strong defensive shape, direct counter-attacks.",
+        "4-2-3-1", "Double pivot shields defence. Playmaker behind the striker.",
+        "3-5-2",   "Wing-backs provide width. Midfield dominance with two strikers.",
+        "5-3-2",   "Defensively solid. Wing-backs join attacks from deep."
+    );
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -58,6 +71,7 @@ public class SquadController implements Initializable {
 
         setupPlayerTable(team);
         setupCoachTable(team);
+        setupTacticPanel(team);
     }
 
     // ── Player table ─────────────────────────────────────────────────────────
@@ -79,7 +93,6 @@ public class SquadController implements Initializable {
             return new SimpleStringProperty(summary);
         });
 
-        // Colour injured rows
         playerTable.setRowFactory(tv -> new TableRow<>() {
             @Override protected void updateItem(Player p, boolean empty) {
                 super.updateItem(p, empty);
@@ -88,18 +101,16 @@ public class SquadController implements Initializable {
             }
         });
 
-        // Status cell colour
         statusCol.setCellFactory(col -> new TableCell<>() {
             @Override protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? null : item);
-                getStyleClass().removeAll("status-fit","status-injured");
+                getStyleClass().removeAll("status-fit", "status-injured");
                 if (!empty && item != null)
                     getStyleClass().add(item.startsWith("INJ") ? "status-injured" : "status-fit");
             }
         });
 
-        // Sort by position then skill descending by default
         playerTable.setItems(FXCollections.observableArrayList(team.getRoster()));
         skillCol.setSortType(TableColumn.SortType.DESCENDING);
         playerTable.getSortOrder().add(posCol);
@@ -121,6 +132,40 @@ public class SquadController implements Initializable {
 
         coachTable.setItems(FXCollections.observableArrayList(team.getCoaches()));
         coachTable.setPlaceholder(new Label("No coaching staff assigned."));
+    }
+
+    // ── Tactic panel ─────────────────────────────────────────────────────────
+
+    private void setupTacticPanel(Team team) {
+        if (sm.getSport() != null) {
+            squadTacticCombo.getItems().setAll(sm.getSport().getTactics());
+        }
+
+        String current = team.getCurrentTactic();
+        squadTacticCombo.setValue(current);
+        updateTacticPreview(current);
+
+        // Live update: canvas and description react instantly on selection change
+        squadTacticCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) updateTacticPreview(newVal);
+        });
+
+        tacticStatusLabel.setText("");
+    }
+
+    private void updateTacticPreview(String tactic) {
+        if (squadTacticCanvas != null) squadTacticCanvas.drawFormation(tactic);
+        tacticDescLabel.setText(TACTIC_DESCRIPTIONS.getOrDefault(tactic, ""));
+    }
+
+    @FXML
+    private void onApplySquadTactic() {
+        String chosen = squadTacticCombo.getValue();
+        Team team = sm.getManagedTeam();
+        if (chosen != null && team != null) {
+            team.setCurrentTactic(chosen);
+            tacticStatusLabel.setText("✓  Formation set to " + chosen);
+        }
     }
 
     // ── Navigation ────────────────────────────────────────────────────────────

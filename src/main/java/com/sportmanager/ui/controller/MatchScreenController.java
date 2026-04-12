@@ -2,6 +2,7 @@ package com.sportmanager.ui.controller;
 
 import com.sportmanager.SportManager;
 import com.sportmanager.core.*;
+import com.sportmanager.ui.component.TacticPitchCanvas;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -45,7 +46,8 @@ public class MatchScreenController implements Initializable {
     @FXML private Label   subCountLabel;
 
     // ── Tactic panel ─────────────────────────────────────────────────────────
-    @FXML private ComboBox<String> tacticCombo;
+    @FXML private ComboBox<String>  tacticCombo;
+    @FXML private TacticPitchCanvas tacticCanvas;
 
     private SportManager sm;
     private Match        match;
@@ -91,8 +93,14 @@ public class MatchScreenController implements Initializable {
         Sport sport = sm.getSport();
         if (sport != null) {
             tacticCombo.getItems().setAll(sport.getTactics());
-            tacticCombo.setValue(managedTeam.getCurrentTactic());
+            String current = managedTeam.getCurrentTactic();
+            tacticCombo.setValue(current);
+            if (tacticCanvas != null) tacticCanvas.drawFormation(current);
         }
+        // Live preview: redraw canvas whenever selection changes
+        tacticCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && tacticCanvas != null) tacticCanvas.drawFormation(newVal);
+        });
     }
 
     private void updateSubCountLabel() {
@@ -168,7 +176,7 @@ public class MatchScreenController implements Initializable {
         ft.getStyleClass().add("fulltime-banner");
 
         MatchResult res = match.getResult();
-        String outcome  = res != null ? res.getSummary() : match.getScoreDisplay();
+        String outcome  = res != null ? res.getScore() : match.getScoreDisplay();
         Label result    = new Label(outcome);
         result.getStyleClass().add("fulltime-result");
 
