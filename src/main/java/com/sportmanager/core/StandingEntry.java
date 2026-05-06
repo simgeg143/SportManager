@@ -1,12 +1,14 @@
 package com.sportmanager.core;
 
+import java.io.Serializable;
+
 /**
  * A snapshot of one team's standing in the league table.
  * Derives all values from the Team's accumulated season statistics.
  * Used by League.getTable() and displayed by StandingsController.
  * As defined in the architecture document.
  */
-public class StandingEntry implements Comparable<StandingEntry> {
+public class StandingEntry implements Comparable<StandingEntry>, Serializable {
 
     private final Team team;
 

@@ -1,5 +1,6 @@
 package com.sportmanager.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,7 +10,7 @@ import java.util.stream.Collectors;
  * Tracks the full squad (roster), coaching staff, the selected lineup,
  * the current tactic string, and accumulated season statistics.
  */
-public abstract class Team {
+public abstract class Team implements Serializable {
 
     protected String name;
     protected String logoPath;
@@ -20,14 +21,14 @@ public abstract class Team {
     protected List<Player> substitutes;
     protected List<Coach>  coaches;
     protected Lineup       currentLineup;
-    protected String       currentTactic;   // formation string, e.g. "4-3-3"
+    protected Tactic       currentTactic;   // formation string, e.g. "4-3-3"
 
     // ── Season statistics ─────────────────────────────────────────────────────
     protected int wins;
     protected int draws;
     protected int losses;
-    protected int goalsFor;
-    protected int goalsAgainst;
+    protected int scoreFor;
+    protected int scoreAgainst;
 
     protected Team(String name) {
         this.name           = name;
@@ -35,12 +36,28 @@ public abstract class Team {
         this.startingLineup = new ArrayList<>();
         this.substitutes    = new ArrayList<>();
         this.coaches        = new ArrayList<>();
-        this.currentTactic  = "4-4-2";
+        this.currentTactic  =
+                new Tactic(
+                        "Balanced",
+                        "Balanced"
+                );
     }
 
     // ── Identity ──────────────────────────────────────────────────────────────
 
     public String getName()     { return name; }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLogoPath() {
+        return logoPath;
+    }
+
+    public void setLogoPath(String logoPath) {
+        this.logoPath = logoPath;
+    }
     @Override public String toString() { return name; }
 
     // ── Squad access ──────────────────────────────────────────────────────────
@@ -65,8 +82,8 @@ public abstract class Team {
 
     // ── Tactic ────────────────────────────────────────────────────────────────
 
-    public String getCurrentTactic()              { return currentTactic; }
-    public void   setCurrentTactic(String tactic) { this.currentTactic = tactic; }
+    public Tactic getCurrentTactic()              { return currentTactic; }
+    public void   setCurrentTactic(Tactic tactic) { this.currentTactic = tactic; }
 
     // ── Lineup ────────────────────────────────────────────────────────────────
 
@@ -91,31 +108,31 @@ public abstract class Team {
     public int getWins()          { return wins; }
     public int getDraws()         { return draws; }
     public int getLosses()        { return losses; }
-    public int getGoalsFor()      { return goalsFor; }
-    public int getGoalsAgainst()  { return goalsAgainst; }
-    public int getGoalDifference(){ return goalsFor - goalsAgainst; }
+    public int getScoreFor()      { return scoreFor; }
+    public int getScoreAgainst()  { return scoreAgainst; }
+    public int getScoreDifference(){ return scoreFor - scoreAgainst; }
     public int getMatchesPlayed() { return wins + draws + losses; }
     public int getPoints()        { return wins * 3 + draws; }
 
-    public void recordWin(int gf, int ga) {
+    public void recordWin(int scored, int conceded) {
         wins++;
-        goalsFor      += gf;
-        goalsAgainst  += ga;
+        scoreFor      += scored;
+        scoreAgainst  += conceded;
     }
 
-    public void recordDraw(int gf, int ga) {
+    public void recordDraw(int scored, int conceded) {
         draws++;
-        goalsFor     += gf;
-        goalsAgainst += ga;
+        scoreFor     += scored;
+        scoreAgainst += conceded;
     }
 
-    public void recordLoss(int gf, int ga) {
+    public void recordLoss(int scored, int conceded) {
         losses++;
-        goalsFor     += gf;
-        goalsAgainst += ga;
+        scoreFor     += scored;
+        scoreAgainst += conceded;
     }
 
     public void resetStats() {
-        wins = draws = losses = goalsFor = goalsAgainst = 0;
+        wins = draws = losses = scoreFor = scoreAgainst = 0;
     }
 }

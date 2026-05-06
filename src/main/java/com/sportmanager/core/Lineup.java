@@ -1,5 +1,7 @@
 package com.sportmanager.core;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +10,7 @@ import java.util.List;
  * Provides isValid() to enforce sport-specific lineup constraints,
  * as defined in the architecture document.
  */
-public class Lineup {
+public class Lineup implements Serializable {
 
     private final List<Player> starters;
     private final List<Player> substitutes;

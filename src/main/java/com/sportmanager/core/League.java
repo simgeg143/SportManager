@@ -1,5 +1,6 @@
 package com.sportmanager.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  *
  * Concrete sport leagues implement fixture generation and standings sorting.
  */
-public abstract class League {
+public abstract class League implements Serializable {
 
     protected String             name;
     protected Sport              sport;
