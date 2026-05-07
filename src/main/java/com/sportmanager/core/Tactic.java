@@ -1,11 +1,13 @@
 package com.sportmanager.core;
 
+import java.io.Serializable;
+
 /**
  * Represents a tactical configuration for a team.
  * Stores the formation name, shape description, and attack/defence bias values.
  * As defined in the architecture document: name, shape, offenseLevel, defenseLevel.
  */
-public class Tactic {
+public class Tactic implements Serializable {
 
     private String name;
     private String style;

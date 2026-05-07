@@ -1,12 +1,13 @@
 package com.sportmanager.core;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * Abstract base for every player across all sports.
  * Sport-specific attributes are exposed via {@link #getSpecificAttributes()}.
  */
-public abstract class Player {
+public abstract class Player implements Serializable {
 
     protected String name;
     protected int age;

@@ -36,6 +36,8 @@
     </dependencies>
 
     <build>
+        <!-- From the project root: `mvn` runs compile then exec:java (works on macOS and Windows). -->
+        <defaultGoal>compile exec:java</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -52,6 +54,15 @@
                 <version>3.1.0</version>
                 <configuration>
                     <mainClass>com.sportmanager.App</mainClass>
+                    <!-- Relative to project root (user.dir when running mvn from the repo). -->
+                    <systemProperties>
+                        <property>
+                            <key>javafx.cachedir</key>
+                            <value>target/javafx-cache</value>
+                        </property>
+                    </systemProperties>
+                    <!-- JavaFX keeps daemon threads; do not interrupt them on exit. -->
+                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
                 </configuration>
             </plugin>
 

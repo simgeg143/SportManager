@@ -1,8 +1,7 @@
 @echo off
 REM ─────────────────────────────────────────────────────────────────
 REM  Sport Manager — quick launcher
-REM  Workaround: redirects JavaFX native-DLL cache to D:/javafx-cache
-REM  so it avoids the non-ASCII character in %USERPROFILE%.
+REM  JavaFX native DLL cache under target/ (relative to project root).
 REM ─────────────────────────────────────────────────────────────────
 title Sport Manager
 
@@ -19,7 +18,7 @@ java ^
   --module-path "target\javafx-libs" ^
   --add-modules javafx.controls,javafx.fxml ^
   --enable-native-access=javafx.graphics ^
-  -Duser.home=D:/javafx-cache ^
+  -Djavafx.cachedir=target/javafx-cache ^
   -cp "target\classes" ^
   com.sportmanager.App
 
