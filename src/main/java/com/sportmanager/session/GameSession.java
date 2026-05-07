@@ -3,6 +3,7 @@ import java.io.Serializable;
 import com.sportmanager.core.*;
 import com.sportmanager.settings.AppSettings;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
