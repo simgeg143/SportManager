@@ -1,5 +1,5 @@
 package com.sportmanager.core;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +7,7 @@ import java.util.List;
  * Abstract base for a single match between two teams.
  * Concrete sport implementations provide segment-based simulation.
  */
-public abstract class Match {
+public abstract class Match implements Serializable {
 
     protected Team homeTeam;
     protected Team awayTeam;

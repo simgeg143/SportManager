@@ -1,9 +1,10 @@
 package com.sportmanager.core;
+import java.io.Serializable;
 
 import java.util.List;
 
 /** Contract that every sport module must satisfy. */
-public interface Sport {
+public interface Sport extends Serializable {
 
     String       getName();
     List<String> getPositions();

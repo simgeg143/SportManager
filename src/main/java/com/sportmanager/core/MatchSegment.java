@@ -1,4 +1,5 @@
 package com.sportmanager.core;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
  * Represents one segment of a match (e.g. a half in football).
  * Stores the events that occurred and the partial score for that segment.
  */
-public class MatchSegment {
+public class MatchSegment implements Serializable {
 
     private final int    segmentNumber;
     private final String label;

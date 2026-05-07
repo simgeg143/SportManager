@@ -1,4 +1,5 @@
 package com.sportmanager.core;
+import java.io.Serializable;
 
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  * Holds final scores, the outcome constant, the winner reference,
  * and any injuries sustained during the match.
  */
-public class MatchResult {
+public class MatchResult implements Serializable {
 
     public static final String HOME_WIN = "HOME_WIN";
     public static final String AWAY_WIN = "AWAY_WIN";
