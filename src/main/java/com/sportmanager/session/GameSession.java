@@ -1,5 +1,5 @@
 package com.sportmanager.session;
-
+import java.io.Serializable;
 import com.sportmanager.core.*;
 import com.sportmanager.settings.AppSettings;
 
@@ -55,6 +55,29 @@ public class GameSession {
 
     public void setManagedTeam(Team team) {
         this.managedTeam = team;
+    }
+
+    public SessionSnapshot createSnapshot() {
+        return new SessionSnapshot(
+                currentSeasonYear,
+                currentWeek,
+                selectedSport,
+                managedTeam,
+                league,
+                currentMatch,
+                substitutionsUsed
+        );
+    }
+
+    public void restoreFromSnapshot(SessionSnapshot snapshot) {
+        if (snapshot == null) return;
+        this.currentSeasonYear = snapshot.currentSeasonYear();
+        this.currentWeek = snapshot.currentWeek();
+        this.selectedSport = snapshot.selectedSport();
+        this.managedTeam = snapshot.managedTeam();
+        this.league = snapshot.league();
+        this.currentMatch = snapshot.currentMatch();
+        this.substitutionsUsed = snapshot.substitutionsUsed();
     }
 
     // ── Current match ─────────────────────────────────────────────────────────
@@ -179,4 +202,14 @@ public class GameSession {
             default         -> { home.recordDraw(hScore, aScore); away.recordDraw(aScore, hScore); }
         }
     }
+
+    public record SessionSnapshot(
+            int currentSeasonYear,
+            int currentWeek,
+            Sport selectedSport,
+            Team managedTeam,
+            League league,
+            Match currentMatch,
+            int substitutionsUsed
+    ) implements Serializable {}
 }
