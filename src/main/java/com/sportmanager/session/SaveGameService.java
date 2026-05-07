@@ -17,10 +17,19 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
- * Handles saving and loading game state to disk.
- * Save files stored under ~/.sportmanager/saves/
+ * Multiple save files under ~/.sportmanager/saves/. Each file stores a
+ * SaveGameBundle (display name, timestamp, session snapshot).
+ * The legacy single file ~/.sportmanager/savegame.dat is still loadable.
  */
 public final class SaveGameService {
+
+    public static final String LEGACY_SAVE_ID = "__legacy__";
+
+    private static final Path LEGACY_SINGLE_FILE = Path.of(
+            System.getProperty("user.home"),
+            ".sportmanager",
+            "savegame.dat"
+    );
 
     private static final Path SAVES_DIR = Path.of(
             System.getProperty("user.home"),
@@ -49,6 +58,9 @@ public final class SaveGameService {
         long now = System.currentTimeMillis();
         String id = now + "_" + UUID.randomUUID().toString().replace("-", "").substring(0, 12) + ".sav";
         Path file = SAVES_DIR.resolve(id);
+        if (!file.normalize().startsWith(SAVES_DIR.normalize())) {
+            throw new IOException("Invalid save path");
+        }
         SaveGameBundle bundle = new SaveGameBundle(name, now, snapshot);
         try (ObjectOutputStream out = new ObjectOutputStream(Files.newOutputStream(file))) {
             out.writeObject(bundle);
@@ -69,19 +81,74 @@ public final class SaveGameService {
                         });
             } catch (IOException ignored) {}
         }
+        if (Files.isRegularFile(LEGACY_SINGLE_FILE)) {
+            try (ObjectInputStream in = new ObjectInputStream(Files.newInputStream(LEGACY_SINGLE_FILE))) {
+                Object o = in.readObject();
+                GameSession.SessionSnapshot snap;
+                if (o instanceof SaveGameBundle bundle) {
+                    snap = bundle.snapshot();
+                } else if (o instanceof GameSession.SessionSnapshot legacy) {
+                    snap = legacy;
+                } else {
+                    throw new ClassNotFoundException();
+                }
+                long ts = Files.getLastModifiedTime(LEGACY_SINGLE_FILE).toMillis();
+                list.add(new SaveSlotSummary(
+                        LEGACY_SAVE_ID,
+                        "Older single-file save",
+                        ts,
+                        buildDetails(snap)));
+            } catch (Exception ignored) {}
+        }
         list.sort(Comparator.comparingLong(SaveSlotSummary::savedAtEpochMs).reversed());
         return list;
     }
 
     public static GameSession.SessionSnapshot loadById(String saveId) throws IOException, ClassNotFoundException {
-        Path file = SAVES_DIR.resolve(saveId);
+        if (saveId == null || saveId.isBlank()) {
+            throw new IllegalArgumentException("No save selected.");
+        }
+        if (LEGACY_SAVE_ID.equals(saveId)) {
+            return loadLegacyRaw();
+        }
+        if (!isSafeSaveFileName(saveId)) {
+            throw new IllegalArgumentException("Invalid save id.");
+        }
+        Path file = SAVES_DIR.resolve(saveId).normalize();
+        if (!file.startsWith(SAVES_DIR.normalize()) || !Files.isRegularFile(file)) {
+            throw new IOException("Save file not found.");
+        }
         SaveGameBundle bundle = readBundle(file);
         return bundle.snapshot();
     }
 
     public static void deleteById(String saveId) throws IOException {
-        Path file = SAVES_DIR.resolve(saveId);
+        if (saveId == null || saveId.isBlank()) return;
+        if (LEGACY_SAVE_ID.equals(saveId)) {
+            Files.deleteIfExists(LEGACY_SINGLE_FILE);
+            return;
+        }
+        if (!isSafeSaveFileName(saveId)) {
+            throw new IllegalArgumentException("Invalid save id.");
+        }
+        Path file = SAVES_DIR.resolve(saveId).normalize();
+        if (!file.startsWith(SAVES_DIR.normalize())) {
+            throw new IOException("Invalid path");
+        }
         Files.deleteIfExists(file);
+    }
+
+    private static GameSession.SessionSnapshot loadLegacyRaw() throws IOException, ClassNotFoundException {
+        try (ObjectInputStream in = new ObjectInputStream(Files.newInputStream(LEGACY_SINGLE_FILE))) {
+            Object o = in.readObject();
+            if (o instanceof SaveGameBundle bundle) {
+                return bundle.snapshot();
+            }
+            if (o instanceof GameSession.SessionSnapshot snap) {
+                return snap;
+            }
+            throw new ClassNotFoundException("Unknown save format");
+        }
     }
 
     private static SaveGameBundle readBundle(Path file) throws IOException, ClassNotFoundException {
@@ -89,6 +156,9 @@ public final class SaveGameService {
             Object o = in.readObject();
             if (o instanceof SaveGameBundle bundle) {
                 return bundle;
+            }
+            if (o instanceof GameSession.SessionSnapshot snap) {
+                return new SaveGameBundle("Save", Files.getLastModifiedTime(file).toMillis(), snap);
             }
             throw new ClassNotFoundException("Unknown save format");
         }
@@ -102,9 +172,26 @@ public final class SaveGameService {
         if (snap == null) return "";
         Sport s = snap.selectedSport();
         Team t = snap.managedTeam();
+        League l = snap.league();
         String sport = s != null ? s.getName() : "—";
         String team = t != null ? t.getName() : "—";
         int week = snap.currentWeek();
-        return team + " · " + sport + " · Week " + week;
+        int year = snap.currentSeasonYear();
+        String leagueName = l != null ? l.getName() : "—";
+        return team + " · " + sport + " · Week " + week + " · " + year + " · " + leagueName;
+    }
+
+    private static boolean isSafeSaveFileName(String name) {
+        if (name.length() > 120 || name.isEmpty()) return false;
+        for (int i = 0; i < name.length(); i++) {
+            char c = name.charAt(i);
+            if (!(c >= 'a' && c <= 'z')
+                    && !(c >= 'A' && c <= 'Z')
+                    && !(c >= '0' && c <= '9')
+                    && c != '.' && c != '_' && c != '-') {
+                return false;
+            }
+        }
+        return name.endsWith(".sav");
     }
 }
