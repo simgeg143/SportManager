@@ -1,6 +1,7 @@
 package com.sportmanager.football;
 
 import com.sportmanager.core.Player;
+import com.sportmanager.core.Tactic;
 import com.sportmanager.core.Team;
 import com.sportmanager.core.Lineup;
 
@@ -29,7 +30,11 @@ public class FootballTeam extends Team {
 
     public FootballTeam(String name) {
         super(name);
-        this.currentTactic = "4-3-3";
+        this.currentTactic =
+                new Tactic(
+                        "4-3-3",
+                        "Attacking"
+                );
     }
 
     @Override public int getRequiredLineupSize() { return LINEUP_SIZE; }

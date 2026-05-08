@@ -12,6 +12,8 @@ public class App extends Application {
         primaryStage.setHeight(800);
         primaryStage.setMinWidth(1024);
         primaryStage.setMinHeight(680);
+        primaryStage.setFullScreenExitHint("");
+        primaryStage.setFullScreen(true);
 
         SceneManager.getInstance().init(primaryStage);
         SceneManager.getInstance().showMainMenu();

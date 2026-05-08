@@ -18,14 +18,17 @@ public class FootballMatch extends Match {
 
     private static final int TOTAL_SEGMENTS = 2;
     private final Random rng;
+    private MatchSegment activeSegment;
+    private int liveEventsRemaining;
+    private boolean segmentStarted;
 
     private static final java.util.Map<String, double[]> TACTIC_MODS =
             java.util.Map.of(
-                    "4-3-3",   new double[]{1.10, 0.95},
-                    "4-4-2",   new double[]{1.00, 1.00},
+                    "4-3-3", new double[]{1.10, 0.95},
+                    "4-4-2", new double[]{1.00, 1.00},
                     "4-2-3-1", new double[]{1.05, 1.00},
-                    "3-5-2",   new double[]{1.00, 0.90},
-                    "5-3-2",   new double[]{0.90, 1.10}
+                    "3-5-2", new double[]{1.00, 0.90},
+                    "5-3-2", new double[]{0.90, 1.10}
             );
 
     public FootballMatch(Team home, Team away, int weekNo) {
@@ -35,8 +38,15 @@ public class FootballMatch extends Match {
 
     // ── Match abstract implementation ─────────────────────────────────────────
 
-    @Override public int     getTotalSegments() { return TOTAL_SEGMENTS; }
-    @Override public boolean isAtBreak()        { return currentSegment == 1 && !finished; }
+    @Override
+    public int getTotalSegments() {
+        return TOTAL_SEGMENTS;
+    }
+
+    @Override
+    public boolean isAtBreak() {
+        return currentSegment == 1 && !finished;
+    }
 
     @Override
     public String getSegmentLabel(int idx) {
@@ -50,45 +60,54 @@ public class FootballMatch extends Match {
     @Override
     public void simulateSegment() {
         if (finished) return;
+        beginSegmentSimulation();
+        while (hasPendingSegmentEvents()) {
+            simulateNextSegmentEvent();
+        }
+    }
 
+    @Override
+    public void beginSegmentSimulation() {
+        if (finished || segmentStarted) return;
         String label = getSegmentLabel(currentSegment);
-        MatchSegment segment = new MatchSegment(currentSegment, label);
-        segment.addEvent("── " + label.toUpperCase() + " ──");
+        activeSegment = new MatchSegment(currentSegment, label);
+        activeSegment.addEvent("── " + label.toUpperCase() + " ──");
+        segments.add(activeSegment);
+        liveEventsRemaining = 9 + rng.nextInt();
+        segmentStarted = true;
+    }
 
-        double homeAtk = applyDifficulty(homeTeam, teamAttack(homeTeam)) * 1.05; // home advantage
-        double homeDef = applyDifficulty(homeTeam, teamDefense(homeTeam));
-        double awayAtk = applyDifficulty(awayTeam, teamAttack(awayTeam));
-        double awayDef = applyDifficulty(awayTeam, teamDefense(awayTeam));
+    @Override
+    public boolean hasPendingSegmentEvents() {
+        return segmentStarted && liveEventsRemaining >= 0 && !finished;
+    }
 
-        double[] homeMods = tacticMods(homeTeam.getCurrentTactic());
-        double[] awayMods = tacticMods(awayTeam.getCurrentTactic());
-        homeAtk *= homeMods[0]; homeDef *= homeMods[1];
-        awayAtk *= awayMods[0]; awayDef *= awayMods[1];
-
-        int hGoals = simulateGoals(homeAtk, awayDef, homeTeam, segment);
-        int aGoals = simulateGoals(awayAtk, homeDef, awayTeam, segment);
-
-        homeScore += hGoals;
-        awayScore += aGoals;
-        for (int g = 0; g < hGoals; g++) segment.addHomeGoal();
-        for (int g = 0; g < aGoals; g++) segment.addAwayGoal();
-
-        simulateIncidents(homeTeam, segment);
-        simulateIncidents(awayTeam, segment);
-
-        // Copy segment events to the flat events list (backward compat)
-        events.addAll(segment.getEvents());
-        segments.add(segment);
-
-        currentSegment++;
-        if (currentSegment >= TOTAL_SEGMENTS) {
+    @Override
+    public String simulateNextSegmentEvent() {
+        if (!segmentStarted || activeSegment == null) return null;
+        if (liveEventsRemaining == 0) {
+            String end = "End of " + activeSegment.getLabel() + ": " + homeScore + " - " + awayScore;
+            activeSegment.addEvent(end);
+            events.add(end);
+            liveEventsRemaining = -1;
+            segmentStarted = false;
+            currentSegment++;
+            if (currentSegment >= TOTAL_SEGMENTS) {
             finished = true;
             String ft = "Full Time: " + homeTeam.getName() + " "
                     + homeScore + " – " + awayScore + " " + awayTeam.getName();
-            segment.addEvent(ft);
+            activeSegment.addEvent(ft);
             events.add(ft);
             buildResult();
+            }
+            return end;
         }
+
+        liveEventsRemaining--;
+        String ev = generateLiveEvent();
+        activeSegment.addEvent(ev);
+        events.add(ev);
+        return ev;
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
@@ -112,36 +131,47 @@ public class FootballMatch extends Match {
         this.result = new MatchResult(homeTeam, awayTeam, homeScore, awayScore, injuries);
     }
 
-    private int simulateGoals(double attack, double defense, Team attacker, MatchSegment seg) {
-        double ratio    = attack / (attack + defense);
-        double goalProb = 0.12 + (ratio - 0.5) * 0.28;
-        int    chances  = 3 + rng.nextInt(4);
-        int    goals    = 0;
-        for (int i = 0; i < chances; i++) {
-            if (rng.nextDouble() < goalProb) {
-                goals++;
-                String scorer = randomPlayerName(attacker.getStartingLineup(), "GK");
-                seg.addEvent("⚽ GOAL!  " + scorer + " (" + attacker.getName() + ")");
-            }
-        }
-        return goals;
-    }
+    private String generateLiveEvent() {
+        boolean homeAttack = rng.nextBoolean();
+        Team attacker = homeAttack ? homeTeam : awayTeam;
+        Team defender = homeAttack ? awayTeam : homeTeam;
 
-    private void simulateIncidents(Team team, MatchSegment seg) {
-        for (Player p : team.getStartingLineup()) {
-            if (!p.isInjured() && rng.nextDouble() < AppSettings.getInstance().getInjuryChance()) {
+        double atk = applyDifficulty(attacker, teamAttack(attacker));
+        double def = applyDifficulty(defender, teamDefense(defender));
+        double[] aMods = tacticMods(attacker.getCurrentTactic().getName());
+        double[] dMods = tacticMods(defender.getCurrentTactic().getName());
+        atk *= aMods[0];
+        def *= dMods[1];
+        double ratio    = atk / (atk + def);
+        double goalProb = 0.09 + (ratio - 0.5) * 0.30;
+        goalProb = Math.max(0.03, Math.min(0.24, goalProb));
+        if (rng.nextDouble() < goalProb) {
+            String scorer = randomPlayerName(attacker.getStartingLineup(), "GK");
+            if (homeAttack) {
+                homeScore++;
+                activeSegment.addHomeGoal();
+            } else {
+                awayScore++;
+                activeSegment.addAwayGoal();
+            }
+            return "⚽ GOAL!  " + scorer + " (" + attacker.getName() + ")";
+        }
+        if (rng.nextDouble() < AppSettings.getInstance().getInjuryChance() * 0.8) {
+            Player injured = attacker.getStartingLineup().isEmpty() ? null
+                    : attacker.getStartingLineup().get(rng.nextInt(attacker.getStartingLineup().size()));
+            if (injured != null && !injured.isInjured()) {
                 int dur = 1 + rng.nextInt(3);
-                p.setInjuryMatchesRemaining(dur);
-                seg.addEvent("🚑 INJURY  " + p.getName() + " (" + team.getName()
-                        + ") – out for " + dur + " match(es)");
+                injured.setInjuryMatchesRemaining(dur);
+                return "🚑 " + injured.getName() + " injured (" + dur + " match(es))";
             }
         }
-        if (!team.getStartingLineup().isEmpty() && rng.nextDouble() < 0.35) {
-            String carded = randomPlayerName(team.getStartingLineup(), "");
-            seg.addEvent("🟨 Yellow card – " + carded + " (" + team.getName() + ")");
+        if (rng.nextDouble() < 0.22) {
+            String carded = randomPlayerName(defender.getStartingLineup(), "");
+            return "🟨 Yellow card – " + carded + " (" + defender.getName() + ")";
         }
-    }
 
+        return "• Possession battle between " + attacker.getName() + " and " + defender.getName();
+    }
     private double teamAttack(Team team) {
         List<Player> xi = team.getStartingLineup();
         if (xi.isEmpty()) return 60.0;
