@@ -264,7 +264,7 @@ public class MatchScreenController implements Initializable {
         Sport sport = sm.getSport();
         if (sport == null) return;
         tacticCombo.getItems().setAll(sport.getTactics());
-        String current = managedTeam.getCurrentTactic();
+        String current = managedTeam.getCurrentTacticName();
         tacticCombo.setValue(current);
         if (tacticCanvas != null) tacticCanvas.drawFormation(current);
         tacticCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -479,7 +479,7 @@ public class MatchScreenController implements Initializable {
         if (match.isAtBreak() && !match.isFinished()) {
             maybeRunBotDecision(true);
             userPaused = true;
-            String rivalFormation = getRivalTeam().getCurrentTactic();
+            String rivalFormation = getRivalTeam().getCurrentTacticName();
             pauseReasonLabel.setText("Break reached. Rival formation: " + rivalFormation
                     + ". You can adjust tactics or substitute.");
             addBreakDivider();
@@ -908,7 +908,7 @@ public class MatchScreenController implements Initializable {
     private void applyBotTacticChange() {
         List<String> options = sm.getSport() != null ? sm.getSport().getTactics() : List.of();
         if (options.isEmpty()) return;
-        String current = botTeam.getCurrentTactic();
+        String current = botTeam.getCurrentTacticName();
         List<String> candidates = options.stream().filter(t -> !t.equals(current)).toList();
         if (candidates.isEmpty()) return;
         String next = candidates.get(botRng.nextInt(candidates.size()));
@@ -1019,7 +1019,7 @@ public class MatchScreenController implements Initializable {
             lineup = new ArrayList<>(team.getPlayers().subList(0, fallbackCount));
         }
         if (lineup.isEmpty()) return;
-        List<Dot> formationDots = resolveFormationDots(team.getCurrentTactic(), lineup.size());
+        List<Dot> formationDots = resolveFormationDots(team.getCurrentTacticName(), lineup.size());
         int n = Math.min(lineup.size(), formationDots.size());
         for (int i = 0; i < n; i++) {
             Dot d = formationDots.get(i);
@@ -1282,7 +1282,7 @@ public class MatchScreenController implements Initializable {
         if (rivalFormationLabel == null) return;
         Team rival = getRivalTeam();
         String formation = (rival != null && rival.getCurrentTactic() != null)
-                ? rival.getCurrentTactic()
+                ? rival.getCurrentTacticName()
                 : "-";
         rivalFormationLabel.setText("Rival Formation: " + formation);
     }

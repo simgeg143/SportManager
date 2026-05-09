@@ -3,32 +3,17 @@ package com.sportmanager.basketball;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-<<<<<<< Updated upstream
 
-
-=======
-<<<<<<< HEAD
 /**
  * Offensive formations (NBA-style spacing) and simulation tuning.
  * Diagram dots: normalized half-court coords, x = sideline to sideline (0–1),
  * y = basket endline (0) toward mid-court (1). Attacking toward the top (y ≈ 0).
  */
-=======
-
-
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
 public final class BasketballTactics {
 
     private BasketballTactics() {}
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
     /** User-selectable offensive sets (shown in tactic combo + canvas). */
-=======
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
     public static final List<String> OFFENSIVE_SETS = List.of(
             "5-Out",
             "4-Out 1-In",
@@ -43,16 +28,10 @@ public final class BasketballTactics {
             "Balanced", "Fast Break", "Half Court", "Zone Defense"
     );
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
     /**
      * If {@code formation} is a basketball offensive set (or legacy label), returns the diagram key;
      * otherwise {@code null} so the canvas can draw football.
      */
-=======
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
     public static String diagramKeyForTactic(String formation) {
         if (formation == null || formation.isBlank()) return null;
         if (OFFENSE_DIAGRAM.containsKey(formation)) return formation;
@@ -62,15 +41,9 @@ public final class BasketballTactics {
 
     public record Dot(double x, double y, String label) {}
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
     /**
      * Five-man spacing for each set; labels match roster positions (PG–C).
      */
-=======
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
     public static final Map<String, List<Dot>> OFFENSE_DIAGRAM = Map.of(
             "5-Out", List.of(
                     new Dot(0.50, 0.86, "PG"),
@@ -109,13 +82,7 @@ public final class BasketballTactics {
             )
     );
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
     /** Multiplier on effective offensive rating (pace / shot quality). */
-=======
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
     public static double offensiveRatingModifier(String tactic) {
         if (tactic == null) return 1.0;
         return switch (tactic) {
@@ -128,13 +95,7 @@ public final class BasketballTactics {
         };
     }
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
     /** Probability a made field goal is a three (0–1). */
-=======
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
     public static double threePointRate(String tactic) {
         if (tactic == null) return 0.38;
         return switch (tactic) {
@@ -147,13 +108,7 @@ public final class BasketballTactics {
         };
     }
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
     /** Base turnover chance per possession before defense modifier. */
-=======
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
     public static double turnoverBaseChance(String tactic) {
         if (tactic == null) return 0.12;
         return switch (tactic) {
@@ -166,13 +121,7 @@ public final class BasketballTactics {
         };
     }
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
     /** Normalize unknown saved tactics to a valid set. */
-=======
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
     public static String normalizeOffense(String tactic) {
         if (tactic == null || tactic.isBlank()) return DEFAULT_OFFENSE;
         if (OFFENSE_DIAGRAM.containsKey(tactic)) return tactic;

@@ -72,8 +72,6 @@ public class AppSettings {
     public void setRivalBotMode(String v)        { rivalBotMode      = v; }
     public void setTimeoutPreset(String v)       { timeoutPreset     = v; }
     public void setAutoAdvance(boolean v)        { autoAdvance       = v; }
-    public void setRivalBotMode(String v)        { rivalBotMode      = v; }
-    public void setTimeoutPreset(String v)       { timeoutPreset     = v; }
     public void setStartYear(int v)              { startYear         = v; }
     public void setAccentTheme(String v)         { accentTheme       = v; }
     public void setShowDetailedEvents(boolean v) { showDetailedEvents = v; }
@@ -90,13 +88,7 @@ public class AppSettings {
         accentTheme        = "Teal";
         showDetailedEvents = true;
     }
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
 
-=======
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
     /**
      * Timeout budget by sport and selected preset.
      * Football is intentionally more restrictive than basketball.

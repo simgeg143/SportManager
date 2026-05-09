@@ -20,6 +20,9 @@ import java.util.List;
  */
 public final class SportManager {
 
+    /** Row for the load-game picker (UI uses this instead of importing session types). */
+    public record SaveGameEntry(String id, String displayName, long savedAtEpochMs, String detailsLine) {}
+
     private static final SportManager INSTANCE = new SportManager();
     private final GameSession session = GameSession.getInstance();
 
