@@ -15,7 +15,7 @@ public final class SportFactory {
 
         return switch (sportCode.trim().toLowerCase()) {
             case "football" -> new FootballSport();
-            case "basketball", "basketbal" -> new BasketballSport();
+            case "basketball" -> new BasketballSport();
             default -> throw new IllegalArgumentException("Unsupported sport: " + sportCode.trim().toLowerCase());
         };
     }
