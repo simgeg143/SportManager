@@ -1366,6 +1366,10 @@ Label {
     -fx-padding: 0;
 }
 
+.match-bottom-outer {
+    -fx-background-color: #0f1520;
+}
+
 .match-bottom-scroll {
     -fx-fit-to-height: true;
     -fx-background-color: transparent;
