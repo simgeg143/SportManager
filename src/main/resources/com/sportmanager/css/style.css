@@ -1255,6 +1255,31 @@ Label {
     -fx-padding: 20px;
 }
 
+/* Substitution hub: vertical wheel/trackpad scroll without visible bars */
+.sub-modal-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+.sub-modal-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+.sub-modal-scroll > .corner {
+    -fx-background-color: transparent;
+}
+.sub-modal-scroll .scroll-bar:vertical {
+    -fx-pref-width: 0;
+    -fx-min-width: 0;
+    -fx-opacity: 0;
+    -fx-padding: 0;
+}
+.sub-modal-scroll .scroll-bar:horizontal {
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+    -fx-opacity: 0;
+    -fx-padding: 0;
+}
+
 .sub-modal {
     -fx-background-color: #0f1520;
     -fx-background-radius: 12px;

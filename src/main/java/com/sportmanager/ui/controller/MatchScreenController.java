@@ -103,6 +103,7 @@ public class MatchScreenController implements Initializable {
     @FXML private javafx.scene.control.ComboBox<String> tacticCombo;
     @FXML private TacticPitchCanvas tacticCanvas;
     @FXML private StackPane subOverlay;
+    @FXML private VBox subModalRoot;
     @FXML private Label subOverlayReasonLabel;
     @FXML private ListView<Player> overlayCurrentList;
     @FXML private ListView<Player> overlayBenchList;

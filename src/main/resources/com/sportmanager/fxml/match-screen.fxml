@@ -124,7 +124,9 @@
 
         <!-- In-window substitution modal overlay -->
         <StackPane fx:id="subOverlay" visible="false" managed="false" styleClass="sub-overlay">
-            <VBox spacing="12" maxWidth="980" minWidth="0" styleClass="sub-modal">
+            <ScrollPane fitToWidth="true" minHeight="0" hbarPolicy="NEVER" vbarPolicy="NEVER" pannable="true"
+                        styleClass="sub-modal-scroll">
+                <VBox fx:id="subModalRoot" spacing="12" maxWidth="980" minWidth="0" styleClass="sub-modal">
                 <HBox alignment="CENTER_LEFT">
                     <Label text="SUBSTITUTION HUB" styleClass="card-heading"/>
                     <Region HBox.hgrow="ALWAYS"/>
@@ -182,6 +184,7 @@
                     <Button text="Apply Substitution" onAction="#onApplyOverlaySubstitution" styleClass="btn-primary"/>
                 </HBox>
             </VBox>
+            </ScrollPane>
         </StackPane>
         </StackPane>
     </center>
