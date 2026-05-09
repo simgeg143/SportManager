@@ -20,14 +20,14 @@
     <!-- ── BODY ─────────────────────────────────────────────────────────── -->
     <center>
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="scroll-transparent">
-            <VBox spacing="20" styleClass="page-body">
+            <VBox spacing="20" styleClass="page-body" minWidth="0" maxWidth="Infinity">
                 <padding><Insets top="28" right="32" bottom="28" left="32"/></padding>
 
                 <!-- Two-column layout -->
-                <HBox spacing="20" alignment="TOP_LEFT">
+                <HBox spacing="20" alignment="TOP_LEFT" minWidth="0">
 
                     <!-- ── LEFT: GAMEPLAY ── -->
-                    <VBox HBox.hgrow="ALWAYS" spacing="16" styleClass="card">
+                    <VBox HBox.hgrow="ALWAYS" minWidth="0" spacing="16" styleClass="card">
                         <Label text="GAMEPLAY" styleClass="card-heading"/>
 
                         <!-- Max Substitutions -->
@@ -141,7 +141,7 @@
                     </VBox>
 
                     <!-- ── RIGHT: DISPLAY ── -->
-                    <VBox HBox.hgrow="ALWAYS" spacing="16" styleClass="card">
+                    <VBox HBox.hgrow="ALWAYS" minWidth="0" spacing="16" styleClass="card">
                         <Label text="DISPLAY" styleClass="card-heading"/>
 
                         <!-- Accent Theme -->

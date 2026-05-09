@@ -59,15 +59,15 @@
             <!-- RIGHT: tactic + player card — scroll vertically when the window is short -->
             <VBox spacing="0" prefWidth="280" minWidth="240" maxWidth="360" maxHeight="Infinity"
                    styleClass="card" VBox.vgrow="ALWAYS">
-                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
+                <ScrollPane fx:id="squadRightScroll" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
                             styleClass="squad-right-scroll" minHeight="0" maxHeight="Infinity"
                             VBox.vgrow="ALWAYS">
                     <content>
-                        <VBox spacing="12" maxWidth="Infinity">
+                        <VBox spacing="12" maxWidth="Infinity" minWidth="0">
                             <Label text="FORMATION" styleClass="card-heading"/>
 
+                            <!-- Width/height bound in controller to viewport so narrow panels do not clip -->
                             <TacticPitchCanvas fx:id="squadTacticCanvas"
-                                               width="256" height="300"
                                                style="-fx-background-radius:8px;"/>
 
                             <Label text="SELECT FORMATION" styleClass="section-label"
@@ -86,15 +86,15 @@
 
                             <Separator/>
                             <Label text="PLAYER CARD" styleClass="card-heading"/>
-                            <VBox styleClass="player-card" spacing="8" maxWidth="Infinity">
-                                <HBox alignment="CENTER_LEFT">
-                                    <VBox spacing="2" HBox.hgrow="ALWAYS">
+                            <VBox styleClass="player-card" spacing="8" maxWidth="Infinity" minWidth="0">
+                                <HBox alignment="CENTER_LEFT" spacing="8">
+                                    <VBox spacing="2" HBox.hgrow="ALWAYS" minWidth="0">
                                         <Label fx:id="squadCardNameLabel" text="Select a player" styleClass="match-team-name" wrapText="true"/>
                                         <Label fx:id="squadCardMetaLabel" text="-" styleClass="label-small" wrapText="true"/>
                                     </VBox>
                                     <Label fx:id="squadCardOverallLabel" text="OVR 0" styleClass="overall-badge"/>
                                 </HBox>
-                                <Canvas fx:id="squadRadarCanvas" width="240" height="180"/>
+                                <Canvas fx:id="squadRadarCanvas"/>
                                 <VBox fx:id="squadCardStatsBox" spacing="4" maxWidth="Infinity"/>
                                 <Label fx:id="squadCardExtraLabel" text="-" styleClass="label-small" wrapText="true" maxWidth="Infinity"/>
                             </VBox>

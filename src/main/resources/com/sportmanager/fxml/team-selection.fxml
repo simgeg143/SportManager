@@ -24,7 +24,7 @@
 
             <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
                         VBox.vgrow="ALWAYS" styleClass="team-scroll">
-                <GridPane fx:id="teamGrid" hgap="16" vgap="16">
+                <GridPane fx:id="teamGrid" hgap="16" vgap="16" minWidth="0" maxWidth="Infinity">
                     <padding><Insets top="4" right="4" bottom="4" left="4"/></padding>
                 </GridPane>
             </ScrollPane>

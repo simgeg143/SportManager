@@ -55,14 +55,15 @@
                                    styleClass="live-field-frame">
                             <Canvas fx:id="liveFieldCanvas"/>
                             <Pane fx:id="liveFieldOverlayLayer" mouseTransparent="true" pickOnBounds="false">
-                                <VBox fx:id="hoverPlayerCard" visible="false" managed="false" spacing="8" styleClass="hover-player-card">
+                                <VBox fx:id="hoverPlayerCard" visible="false" managed="false" spacing="8" styleClass="hover-player-card"
+                                      minWidth="0" maxWidth="Infinity">
                                     <HBox alignment="CENTER_LEFT" spacing="8">
                                         <Label fx:id="hoverCardNameLabel" text="-" styleClass="hover-player-name"/>
                                         <Region HBox.hgrow="ALWAYS"/>
                                         <Label fx:id="hoverCardOverallLabel" text="OVR 0" styleClass="overall-badge"/>
                                     </HBox>
                                     <Label fx:id="hoverCardMetaLabel" text="-" styleClass="hover-player-meta"/>
-                                    <Canvas fx:id="hoverRadarCanvas" width="210" height="150"/>
+                                    <Canvas fx:id="hoverRadarCanvas"/>
                                     <Label fx:id="hoverCardStatsLabel" text="-" wrapText="true" styleClass="hover-player-stats"/>
                                 </VBox>
                             </Pane>
@@ -74,7 +75,7 @@
                         <Label text="MATCH EVENTS" styleClass="live-field-title"/>
                         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
                                     VBox.vgrow="ALWAYS" styleClass="events-scroll">
-                            <VBox fx:id="eventsBox" spacing="4" styleClass="events-inner">
+                            <VBox fx:id="eventsBox" spacing="4" styleClass="events-inner" minWidth="0" maxWidth="Infinity">
                                 <padding><Insets top="4" right="8" bottom="4" left="8"/></padding>
                             </VBox>
                         </ScrollPane>
@@ -94,7 +95,7 @@
                         managed="false"
                         styleClass="events-scroll">
                 <content>
-                    <VBox fx:id="subPanel" spacing="10" styleClass="card">
+                    <VBox fx:id="subPanel" spacing="10" styleClass="card" minWidth="0" maxWidth="Infinity">
                         <Label fx:id="breakPanelTitleLabel" text="HALF TIME" styleClass="section-label"/>
                         <Label fx:id="pauseReasonLabel" text="Match paused for tactical intervention."
                                styleClass="label-small" wrapText="true"/>
@@ -112,7 +113,6 @@
 
                         <!-- Formation pitch canvas — updates live on combo change -->
                         <TacticPitchCanvas fx:id="tacticCanvas"
-                                           width="276" height="220"
                                            style="-fx-background-radius:8px;"/>
 
                         <Button text="Apply Formation" onAction="#onApplyTactic"
@@ -124,7 +124,7 @@
 
         <!-- In-window substitution modal overlay -->
         <StackPane fx:id="subOverlay" visible="false" managed="false" styleClass="sub-overlay">
-            <VBox spacing="12" maxWidth="980" styleClass="sub-modal">
+            <VBox spacing="12" maxWidth="980" minWidth="0" styleClass="sub-modal">
                 <HBox alignment="CENTER_LEFT">
                     <Label text="SUBSTITUTION HUB" styleClass="card-heading"/>
                     <Region HBox.hgrow="ALWAYS"/>
@@ -133,15 +133,15 @@
                 <Label fx:id="subOverlayReasonLabel" text="Compare players and confirm your substitution."
                        styleClass="label-small"/>
 
-                <HBox spacing="14">
-                    <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="player-card-panel">
+                <HBox spacing="14" minWidth="0">
+                    <VBox spacing="8" HBox.hgrow="ALWAYS" minWidth="0" maxWidth="Infinity" styleClass="player-card-panel">
                         <Label text="CURRENT PLAYER" styleClass="section-label"/>
                         <ListView fx:id="overlayCurrentList" prefHeight="240" styleClass="player-list"/>
-                        <VBox styleClass="player-card">
-                            <HBox alignment="CENTER_LEFT">
-                                <VBox spacing="2" HBox.hgrow="ALWAYS">
-                                    <Label fx:id="leftPlayerNameLabel" text="-" styleClass="match-team-name"/>
-                                    <Label fx:id="leftPlayerMetaLabel" text="-" styleClass="label-small"/>
+                        <VBox fx:id="leftPlayerCardVBox" styleClass="player-card" minWidth="0" maxWidth="Infinity">
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <VBox spacing="2" HBox.hgrow="ALWAYS" minWidth="0">
+                                    <Label fx:id="leftPlayerNameLabel" text="-" styleClass="match-team-name" wrapText="true"/>
+                                    <Label fx:id="leftPlayerMetaLabel" text="-" styleClass="label-small" wrapText="true"/>
                                 </VBox>
                                 <Label fx:id="leftOverallBadgeLabel" text="OVR 0" styleClass="overall-badge"/>
                             </HBox>
@@ -149,20 +149,20 @@
                                 <Label fx:id="leftRoleChipLabel" text="ROLE" styleClass="chip-role"/>
                                 <Label fx:id="leftStatusChipLabel" text="FIT" styleClass="chip-status-fit"/>
                             </HBox>
-                            <Canvas fx:id="leftRadarCanvas" width="360" height="230"/>
+                            <Canvas fx:id="leftRadarCanvas"/>
                             <VBox fx:id="leftStatsBox" spacing="4"/>
                             <Label fx:id="leftExtraStatsLabel" text="-" styleClass="label-small"/>
                         </VBox>
                     </VBox>
 
-                    <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="player-card-panel">
+                    <VBox spacing="8" HBox.hgrow="ALWAYS" minWidth="0" maxWidth="Infinity" styleClass="player-card-panel">
                         <Label text="CANDIDATE BENCH PLAYER" styleClass="section-label"/>
                         <ListView fx:id="overlayBenchList" prefHeight="240" styleClass="player-list"/>
-                        <VBox styleClass="player-card">
-                            <HBox alignment="CENTER_LEFT">
-                                <VBox spacing="2" HBox.hgrow="ALWAYS">
-                                    <Label fx:id="rightPlayerNameLabel" text="-" styleClass="match-team-name"/>
-                                    <Label fx:id="rightPlayerMetaLabel" text="-" styleClass="label-small"/>
+                        <VBox fx:id="rightPlayerCardVBox" styleClass="player-card" minWidth="0" maxWidth="Infinity">
+                            <HBox alignment="CENTER_LEFT" spacing="8">
+                                <VBox spacing="2" HBox.hgrow="ALWAYS" minWidth="0">
+                                    <Label fx:id="rightPlayerNameLabel" text="-" styleClass="match-team-name" wrapText="true"/>
+                                    <Label fx:id="rightPlayerMetaLabel" text="-" styleClass="label-small" wrapText="true"/>
                                 </VBox>
                                 <Label fx:id="rightOverallBadgeLabel" text="OVR 0" styleClass="overall-badge"/>
                             </HBox>
@@ -170,7 +170,7 @@
                                 <Label fx:id="rightRoleChipLabel" text="ROLE" styleClass="chip-role"/>
                                 <Label fx:id="rightStatusChipLabel" text="FIT" styleClass="chip-status-fit"/>
                             </HBox>
-                            <Canvas fx:id="rightRadarCanvas" width="360" height="230"/>
+                            <Canvas fx:id="rightRadarCanvas"/>
                             <VBox fx:id="rightStatsBox" spacing="4"/>
                             <Label fx:id="rightExtraStatsLabel" text="-" styleClass="label-small"/>
                         </VBox>

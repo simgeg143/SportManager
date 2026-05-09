@@ -27,11 +27,11 @@
 
     <!-- ── CENTRE LAYOUT ────────────────────────────────────────────────── -->
     <center>
-        <HBox spacing="24" styleClass="dashboard-body">
+        <HBox spacing="24" styleClass="dashboard-body" minWidth="0">
             <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
 
             <!-- LEFT: Season status + Next match -->
-            <VBox spacing="20" HBox.hgrow="ALWAYS" styleClass="dashboard-left">
+            <VBox spacing="20" HBox.hgrow="ALWAYS" minWidth="0" styleClass="dashboard-left">
 
                 <!-- Week banner -->
                 <VBox styleClass="card" spacing="6">
@@ -61,7 +61,7 @@
             </VBox>
 
             <!-- RIGHT: Standings preview -->
-            <VBox spacing="8" prefWidth="320" styleClass="dashboard-right">
+            <VBox spacing="8" prefWidth="320" minWidth="0" maxWidth="Infinity" styleClass="dashboard-right">
                 <VBox styleClass="card" spacing="8">
                     <Label text="STANDINGS" styleClass="section-label"/>
                     <VBox fx:id="standingsPreviewBox" spacing="4"/>
@@ -74,7 +74,7 @@
     </center>
 </BorderPane>
     <StackPane fx:id="saveOverlay" visible="false" managed="false" styleClass="sub-overlay">
-        <VBox spacing="10" maxWidth="560" styleClass="sub-modal">
+        <VBox spacing="10" maxWidth="560" minWidth="0" styleClass="sub-modal">
             <HBox alignment="CENTER_LEFT">
                 <Label text="SAVE GAME" styleClass="card-heading"/>
                 <Region HBox.hgrow="ALWAYS"/>

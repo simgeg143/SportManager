@@ -4,6 +4,7 @@ import com.sportmanager.SportManager;
 import com.sportmanager.core.Coach;
 import com.sportmanager.core.Player;
 import com.sportmanager.core.Team;
+import com.sportmanager.ui.ScrollViewportBindings;
 import com.sportmanager.ui.component.TacticPitchCanvas;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -21,6 +22,7 @@ import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.util.Duration;
@@ -62,6 +64,7 @@ public class SquadController implements Initializable {
     @FXML private Canvas            squadRadarCanvas;
     @FXML private VBox              squadCardStatsBox;
     @FXML private Label             squadCardExtraLabel;
+    @FXML private ScrollPane       squadRightScroll;
 
     private SportManager sm;
     private Map<String, Double> squadRadarPrev = Map.of();
@@ -96,6 +99,28 @@ public class SquadController implements Initializable {
         setupPlayerTable(team);
         setupCoachTable(team);
         setupTacticPanel(team);
+        if (squadRightScroll != null) {
+            ScrollViewportBindings.attachScrollViewportListeners(squadRightScroll, this::resizeSquadSidePanelContents);
+        }
+    }
+
+    private void resizeSquadSidePanelContents() {
+        if (squadRightScroll == null || squadTacticCanvas == null || squadRadarCanvas == null) return;
+        double inner = ScrollViewportBindings.scrollViewportInnerWidth(squadRightScroll, 12);
+        if (inner <= 0) return;
+        ScrollViewportBindings.layoutTacticPitchCanvas(squadTacticCanvas, inner, 256, 300, 340);
+        ScrollViewportBindings.layoutRadarCanvas(squadRadarCanvas, inner, 0.72);
+
+        String tactic = squadTacticCombo != null ? squadTacticCombo.getValue() : null;
+        if (tactic != null && !tactic.isBlank()) {
+            squadTacticCanvas.drawFormation(tactic);
+        }
+        if (playerTable != null) {
+            Player sel = playerTable.getSelectionModel().getSelectedItem();
+            if (sel != null) {
+                drawRadar(squadRadarCanvas, new LinkedHashMap<>(sel.getSpecificAttributes()));
+            }
+        }
     }
 
     // ── Player table ─────────────────────────────────────────────────────────

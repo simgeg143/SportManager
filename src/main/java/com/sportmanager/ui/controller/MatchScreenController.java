@@ -10,6 +10,7 @@ import com.sportmanager.core.Player;
 import com.sportmanager.core.Sport;
 import com.sportmanager.core.Team;
 import com.sportmanager.settings.AppSettings;
+import com.sportmanager.ui.ScrollViewportBindings;
 import com.sportmanager.ui.component.TacticPitchCanvas;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
@@ -42,6 +43,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -120,6 +122,8 @@ public class MatchScreenController implements Initializable {
     @FXML private Label rightStatusChipLabel;
     @FXML private Label rightExtraStatsLabel;
     @FXML private Canvas rightRadarCanvas;
+    @FXML private VBox leftPlayerCardVBox;
+    @FXML private VBox rightPlayerCardVBox;
 
     private SportManager sm;
     private Match match;
@@ -237,7 +241,62 @@ public class MatchScreenController implements Initializable {
             updateEventSpeedLabelAndTimeline();
         }
         setupResponsiveMatchLayout();
+        bindBreakPanelTacticSizing();
+        bindSubstitutionOverlayRadarSizing();
         setupLiveFieldPanel();
+    }
+
+    private void bindBreakPanelTacticSizing() {
+        if (subPanelScroll == null || tacticCanvas == null) return;
+        ScrollViewportBindings.attachScrollViewportListeners(subPanelScroll, () -> {
+            double inner = ScrollViewportBindings.scrollViewportInnerWidth(subPanelScroll, 12);
+            if (inner <= 0) return;
+            ScrollViewportBindings.layoutTacticPitchCanvas(tacticCanvas, inner, 276, 220, 320);
+            String t = tacticCombo != null ? tacticCombo.getValue() : null;
+            if (t != null && !t.isBlank()) tacticCanvas.drawFormation(t);
+        });
+    }
+
+    private void bindSubstitutionOverlayRadarSizing() {
+        if (leftPlayerCardVBox == null || rightPlayerCardVBox == null
+                || leftRadarCanvas == null || rightRadarCanvas == null) return;
+        Runnable resizeLeft = () -> {
+            double w = ScrollViewportBindings.regionInnerWidth(leftPlayerCardVBox, 24);
+            if (w <= 0) return;
+            ScrollViewportBindings.layoutRadarCanvas(leftRadarCanvas, w, 230.0 / 360.0);
+            Player left = overlayCurrentList != null ? overlayCurrentList.getSelectionModel().getSelectedItem() : null;
+            if (left != null) drawRadar(leftRadarCanvas, new LinkedHashMap<>(left.getSpecificAttributes()), true);
+            else clearCanvas(leftRadarCanvas);
+        };
+        Runnable resizeRight = () -> {
+            double w = ScrollViewportBindings.regionInnerWidth(rightPlayerCardVBox, 24);
+            if (w <= 0) return;
+            ScrollViewportBindings.layoutRadarCanvas(rightRadarCanvas, w, 230.0 / 360.0);
+            Player right = overlayBenchList != null ? overlayBenchList.getSelectionModel().getSelectedItem() : null;
+            if (right != null) drawRadar(rightRadarCanvas, new LinkedHashMap<>(right.getSpecificAttributes()), false);
+            else clearCanvas(rightRadarCanvas);
+        };
+        ScrollViewportBindings.attachRegionLayoutListeners(leftPlayerCardVBox, resizeLeft);
+        ScrollViewportBindings.attachRegionLayoutListeners(rightPlayerCardVBox, resizeRight);
+    }
+
+    private void bindHoverRadarSizing() {
+        if (hoverPlayerCard == null || hoverRadarCanvas == null) return;
+        ScrollViewportBindings.attachRegionLayoutListeners(hoverPlayerCard, () -> {
+            double w = ScrollViewportBindings.regionInnerWidth(hoverPlayerCard, 16);
+            if (w <= 0) return;
+            ScrollViewportBindings.layoutRadarCanvas(hoverRadarCanvas, w, 150.0 / 210.0);
+            refreshHoverRadarAfterResize();
+        });
+    }
+
+    private void refreshHoverRadarAfterResize() {
+        if (hoverRadarCanvas == null || hoverPlayerCard == null) return;
+        Player p = lockedNode != null ? lockedNode.player()
+                : (hoveredNode != null ? hoveredNode.player() : null);
+        if (p == null || !hoverPlayerCard.isVisible()) return;
+        boolean managed = lockedNode != null && lockedNode.player() == p;
+        drawHoverRadar(hoverRadarCanvas, p.getSpecificAttributes(), managed);
     }
 
     private void setupResponsiveMatchLayout() {
@@ -995,6 +1054,7 @@ public class MatchScreenController implements Initializable {
             redrawLiveField();
         });
         liveFieldCanvas.addEventHandler(MouseEvent.MOUSE_CLICKED, this::onLiveFieldClick);
+        bindHoverRadarSizing();
         refreshLiveField();
     }
 

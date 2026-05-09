@@ -19,7 +19,7 @@
     </top>
 
     <center>
-        <VBox spacing="12" styleClass="page-body">
+        <VBox spacing="12" styleClass="page-body" minWidth="0" maxWidth="Infinity" maxHeight="Infinity" VBox.vgrow="ALWAYS">
             <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
 
             <TableView fx:id="standingsTable" VBox.vgrow="ALWAYS" styleClass="standings-table">

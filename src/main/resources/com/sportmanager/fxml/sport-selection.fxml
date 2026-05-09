@@ -22,6 +22,8 @@
             <FlowPane fx:id="sportCardsPane"
                       alignment="CENTER"
                       hgap="30" vgap="30"
+                      minWidth="0" maxWidth="Infinity"
+                      prefWrapLength="560"
                       styleClass="sport-cards-pane">
                 <padding><Insets top="40" bottom="40" left="40" right="40"/></padding>
             </FlowPane>
