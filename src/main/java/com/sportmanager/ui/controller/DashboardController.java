@@ -66,7 +66,7 @@ public class DashboardController implements Initializable {
         positionLabel.setText(pos > 0 ? ordinal(pos) + " place" : "—");
         recordLabel.setText(team.getWins() + "W  " + team.getDraws() + "D  "
                 + team.getLosses() + "L    Pts " + team.getPoints()
-                + "    GD " + (team.getGoalDifference() >= 0 ? "+" : "") + team.getGoalDifference());
+                + "    GD " + (team.getScoreDifference() >= 0 ? "+" : "") + team.getScoreDifference());
 
         // Season over banner
         if (sm.isSeasonFinished()) {

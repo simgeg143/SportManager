@@ -117,11 +117,3 @@ public class BasketballSport implements Sport {
         return firstNames.get(rng.nextInt(firstNames.size())) + " " + lastNames.get(rng.nextInt(lastNames.size()));
     }
 }
-<<<<<<< Updated upstream
-
-=======
-<<<<<<< HEAD
-=======
-
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes

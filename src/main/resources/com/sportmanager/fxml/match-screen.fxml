@@ -50,8 +50,8 @@
                         <Label text="LIVE MATCH FIELD" styleClass="live-field-title"/>
                         <StackPane fx:id="liveFieldContainer"
                                    VBox.vgrow="ALWAYS"
-                                   minWidth="500" prefWidth="540" maxWidth="620"
-                                   minHeight="560" prefHeight="720" maxHeight="820"
+                                   minWidth="140" minHeight="200"
+                                   maxWidth="Infinity" maxHeight="Infinity"
                                    styleClass="live-field-frame">
                             <Canvas fx:id="liveFieldCanvas"/>
                             <Pane fx:id="liveFieldOverlayLayer" mouseTransparent="true" pickOnBounds="false">
@@ -70,7 +70,7 @@
                         <Label fx:id="liveFieldHintLabel" text="Hover players for quick info, click to lock card."
                                styleClass="live-field-hint"/>
                     </VBox>
-                    <VBox spacing="10" minWidth="500" prefWidth="580" maxWidth="720" styleClass="card live-main-card">
+                    <VBox spacing="10" minWidth="120" prefWidth="280" maxWidth="Infinity" styleClass="card live-main-card">
                         <Label text="MATCH EVENTS" styleClass="live-field-title"/>
                         <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="events-scroll">
                             <VBox fx:id="eventsBox" spacing="4" styleClass="events-inner">
@@ -84,8 +84,9 @@
             <!-- ── Break panel: substitutions + tactic + pitch canvas ── -->
             <ScrollPane fx:id="subPanelScroll"
                         fitToWidth="true"
-                        minWidth="460"
-                        prefWidth="520"
+                        minWidth="160"
+                        prefWidth="280"
+                        maxWidth="520"
                         visible="false"
                         managed="false"
                         styleClass="events-scroll">
@@ -184,28 +185,32 @@
 
     <!-- ── BOTTOM CONTROLS ──────────────────────────────────────────────── -->
     <bottom>
-        <HBox styleClass="bottom-bar" alignment="CENTER" spacing="20">
-            <padding><Insets top="12" right="24" bottom="12" left="24"/></padding>
-            <ToggleButton fx:id="autoplayToggle" text="Autoplay: ON" selected="true"
-                          onAction="#onToggleAutoplay" styleClass="btn-secondary"/>
-            <HBox spacing="6" alignment="CENTER_LEFT">
-                <Label text="Speed" styleClass="label-small"/>
-                <Slider fx:id="eventSpeedSlider" min="0.5" max="3.0" value="1.0"
-                        prefWidth="140" onMouseReleased="#onEventSpeedChanged"/>
-                <Label fx:id="eventSpeedLabel" text="1.0x" styleClass="label-small"/>
-            </HBox>
-            <Button fx:id="pauseResumeButton" text="Pause"
-                    onAction="#onPauseResume" styleClass="btn-secondary" prefWidth="120"/>
-            <Button fx:id="timeoutButton" text="Take Timeout"
-                    onAction="#onTakeTimeout" styleClass="btn-secondary" prefWidth="150"/>
-            <Button fx:id="simulateButton" text="▶  Start Next Segment"
-                    onAction="#onSimulateNext" styleClass="btn-primary" prefWidth="200"/>
-            <Button fx:id="nextEventButton" text="Next Event"
-                    onAction="#onNextEvent" styleClass="btn-secondary" prefWidth="130" disable="true"/>
-            <Button fx:id="continueButton" text="Continue →"
-                    onAction="#onContinue"    styleClass="btn-success" prefWidth="160"
-                    visible="false"/>
-        </HBox>
+        <ScrollPane fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" styleClass="match-bottom-scroll">
+            <content>
+                <HBox styleClass="bottom-bar" alignment="CENTER_LEFT" spacing="12">
+                    <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+                    <ToggleButton fx:id="autoplayToggle" text="Autoplay: ON" selected="true"
+                                  onAction="#onToggleAutoplay" styleClass="btn-secondary"/>
+                    <HBox spacing="6" alignment="CENTER_LEFT">
+                        <Label text="Speed" styleClass="label-small"/>
+                        <Slider fx:id="eventSpeedSlider" min="0.5" max="3.0" value="1.0"
+                                minWidth="80" prefWidth="120" maxWidth="180" onMouseReleased="#onEventSpeedChanged"/>
+                        <Label fx:id="eventSpeedLabel" text="1.0x" styleClass="label-small"/>
+                    </HBox>
+                    <Button fx:id="pauseResumeButton" text="Pause"
+                            onAction="#onPauseResume" styleClass="btn-secondary" minWidth="72"/>
+                    <Button fx:id="timeoutButton" text="Take Timeout"
+                            onAction="#onTakeTimeout" styleClass="btn-secondary" minWidth="88"/>
+                    <Button fx:id="simulateButton" text="▶  Start Next Segment"
+                            onAction="#onSimulateNext" styleClass="btn-primary" minWidth="120"/>
+                    <Button fx:id="nextEventButton" text="Next Event"
+                            onAction="#onNextEvent" styleClass="btn-secondary" minWidth="72" disable="true"/>
+                    <Button fx:id="continueButton" text="Continue →"
+                            onAction="#onContinue"    styleClass="btn-success" minWidth="96"
+                            visible="false"/>
+                </HBox>
+            </content>
+        </ScrollPane>
     </bottom>
 
 </BorderPane>

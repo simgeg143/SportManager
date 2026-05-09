@@ -94,18 +94,8 @@ public class BasketballLeague extends League {
     public List<Team> getSortedStandings() {
         return teams.stream()
                 .sorted(Comparator.comparingInt(Team::getPoints)
-<<<<<<< Updated upstream
                         .thenComparingInt(Team::getScoreDifference)
                         .thenComparingInt(Team::getScoreFor)
-=======
-<<<<<<< HEAD
-                        .thenComparingInt(Team::getGoalDifference)
-                        .thenComparingInt(Team::getGoalsFor)
-=======
-                        .thenComparingInt(Team::getScoreDifference)
-                        .thenComparingInt(Team::getScoreFor)
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
                         .reversed())
                 .toList();
     }
@@ -115,12 +105,4 @@ public class BasketballLeague extends League {
         List<Team> sorted = getSortedStandings();
         return sorted.isEmpty() ? null : sorted.get(0);
     }
-<<<<<<< Updated upstream
 }
-=======
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes

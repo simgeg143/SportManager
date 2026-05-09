@@ -15,6 +15,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -241,30 +242,155 @@ public class MatchScreenController implements Initializable {
     }
 
     private void setupResponsiveMatchLayout() {
-        if (matchCenterShell != null) {
-            Runnable apply = () -> {
+        Runnable apply = () -> {
+            if (matchCenterShell != null) {
                 double w = matchCenterShell.getWidth();
                 double h = matchCenterShell.getHeight();
-                if (w <= 0 || h <= 0) return;
-                // User requested large outer breathing space.
-                matchCenterShell.setPadding(new Insets(h * 0.10, w * 0.15, h * 0.10, w * 0.15));
-            };
+                if (w > 0 && h > 0) {
+                    double lr = adaptiveHorizontalInset(w);
+                    double tb = adaptiveVerticalInset(h);
+                    matchCenterShell.setPadding(new Insets(tb, lr, tb, lr));
+                }
+            }
+            if (centerContentRow != null) {
+                double cw = centerContentRow.getWidth();
+                centerContentRow.setSpacing(cw > 0 ? clamp(cw * 0.022, 8.0, 36.0) : 16);
+            }
+            commitResponsiveSizing();
+        };
+        if (matchCenterShell != null) {
             matchCenterShell.widthProperty().addListener((obs, o, n) -> apply.run());
             matchCenterShell.heightProperty().addListener((obs, o, n) -> apply.run());
         }
-        if (centerContentRow != null) {
-            centerContentRow.setSpacing(34);
-        }
         if (liveSplitPane != null) {
-            liveSplitPane.setDividerPositions(0.45);
+            liveSplitPane.widthProperty().addListener((obs, o, n) -> Platform.runLater(apply));
+            liveSplitPane.heightProperty().addListener((obs, o, n) -> Platform.runLater(apply));
         }
+        if (centerContentRow != null) {
+            centerContentRow.widthProperty().addListener((obs, o, n) -> apply.run());
+        }
+        Platform.runLater(() -> {
+            attachSplitDividerListener();
+            apply.run();
+        });
+    }
+
+    /** Tighter insets on small monitors so content remains usable. */
+    private static double adaptiveHorizontalInset(double shellWidth) {
+        if (shellWidth >= 1600) return shellWidth * 0.15;
+        if (shellWidth >= 1280) return shellWidth * 0.12;
+        if (shellWidth >= 1024) return shellWidth * 0.08;
+        if (shellWidth >= 720) return shellWidth * 0.05;
+        return Math.max(10.0, shellWidth * 0.03);
+    }
+
+    private static double adaptiveVerticalInset(double shellHeight) {
+        if (shellHeight >= 900) return shellHeight * 0.10;
+        if (shellHeight >= 720) return shellHeight * 0.07;
+        if (shellHeight >= 560) return shellHeight * 0.05;
+        return Math.max(8.0, shellHeight * 0.035);
+    }
+
+    private static double clamp(double v, double lo, double hi) {
+        return Math.max(lo, Math.min(hi, v));
+    }
+
+    private boolean splitDividerHooked;
+    private int lastSplitWidthBucket = Integer.MIN_VALUE;
+
+    private void attachSplitDividerListener() {
+        if (splitDividerHooked || liveSplitPane == null) return;
+        if (!liveSplitPane.getDividers().isEmpty()) {
+            liveSplitPane.getDividers().get(0).positionProperty()
+                    .addListener((obs, o, n) -> Platform.runLater(() -> {
+                        updateMatchFieldSizing();
+                        resizeTacticCanvasForSidePanel();
+                    }));
+            splitDividerHooked = true;
+        }
+    }
+
+    private void commitResponsiveSizing() {
+        updateLiveSplitDividerForBreakpoint();
+        updateMatchFieldSizing();
+        updateSidePanelSizing();
+        resizeTacticCanvasForSidePanel();
+    }
+
+    /** Adjust split only when window width crosses coarse breakpoints — avoids fighting manual drags. */
+    private void updateLiveSplitDividerForBreakpoint() {
+        if (liveSplitPane == null) return;
+        double w = liveSplitPane.getWidth();
+        if (w <= 0) return;
+        int bucket = w >= 1500 ? 5 : w >= 1200 ? 4 : w >= 960 ? 3 : w >= 720 ? 2 : 1;
+        if (bucket == lastSplitWidthBucket && lastSplitWidthBucket != Integer.MIN_VALUE) return;
+        lastSplitWidthBucket = bucket;
+        double pos = bucket >= 5 ? 0.50 : bucket >= 4 ? 0.47 : bucket >= 3 ? 0.44 : bucket >= 2 ? 0.40 : 0.36;
+        Platform.runLater(() -> liveSplitPane.setDividerPositions(pos));
+    }
+
+    /**
+     * Sizes the live field from available center height and actual split-pane left column width
+     * so portrait pitch scales on ultrawide, laptop, and small displays.
+     */
+    private void updateMatchFieldSizing() {
+        if (liveFieldContainer == null || matchCenterShell == null || liveSplitPane == null) return;
+        double shellW = matchCenterShell.getWidth();
+        double shellH = matchCenterShell.getHeight();
+        double splitW = liveSplitPane.getWidth();
+        double splitH = liveSplitPane.getHeight();
+        if (shellW <= 0 || shellH <= 0 || splitW <= 0) return;
+        Insets pad = matchCenterShell.getPadding();
+        double innerH = shellH - pad.getTop() - pad.getBottom();
+
+        double div = 0.42;
+        double[] divs = liveSplitPane.getDividerPositions();
+        if (divs.length > 0) div = divs[0];
+
+        double leftColW = splitW * div;
+        double cardInsets = 56;
+        double usableW = Math.max(120, leftColW - cardInsets);
+
+        double targetH = clamp(innerH * 0.58, 200, 900);
+        double targetW = clamp(targetH * 0.68, 140, usableW);
+        if (targetW > usableW) {
+            targetW = usableW;
+            targetH = clamp(targetW / 0.68, 180, 920);
+        }
+        targetH = Math.min(targetH, Math.max(160, splitH - 100));
+
+        liveFieldContainer.setPrefWidth(targetW);
+        liveFieldContainer.setPrefHeight(targetH);
+        liveFieldContainer.setMaxWidth(targetW);
+        liveFieldContainer.setMaxHeight(targetH);
+    }
+
+    private void updateSidePanelSizing() {
+        if (subPanelScroll == null || centerContentRow == null) return;
+        double cw = centerContentRow.getWidth();
+        if (cw <= 0) return;
+        double pref = clamp(cw * 0.24, 180, 480);
+        subPanelScroll.setPrefWidth(pref);
+        subPanelScroll.setMinWidth(Math.min(160, pref));
+        subPanelScroll.setMaxWidth(520);
+    }
+
+    private void resizeTacticCanvasForSidePanel() {
+        if (tacticCanvas == null || subPanelScroll == null || managedTeam == null) return;
+        double w = subPanelScroll.getWidth();
+        if (w <= 40) return;
+        double inner = clamp(w - 36, 160, 340);
+        tacticCanvas.setWidth(inner);
+        tacticCanvas.setHeight(clamp(inner * 0.82, 160, 280));
+        String tac = managedTeam.getCurrentTacticName();
+        if (tac != null) tacticCanvas.drawFormation(tac);
     }
 
     private void setupTacticPanel() {
         Sport sport = sm.getSport();
         if (sport == null) return;
         tacticCombo.getItems().setAll(sport.getTactics());
-        String current = managedTeam.getCurrentTactic();
+        String current = managedTeam.getCurrentTacticName();
         tacticCombo.setValue(current);
         if (tacticCanvas != null) tacticCanvas.drawFormation(current);
         tacticCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -479,7 +605,7 @@ public class MatchScreenController implements Initializable {
         if (match.isAtBreak() && !match.isFinished()) {
             maybeRunBotDecision(true);
             userPaused = true;
-            String rivalFormation = getRivalTeam().getCurrentTactic();
+            String rivalFormation = getRivalTeam().getCurrentTacticName();
             pauseReasonLabel.setText("Break reached. Rival formation: " + rivalFormation
                     + ". You can adjust tactics or substitute.");
             addBreakDivider();
@@ -908,7 +1034,7 @@ public class MatchScreenController implements Initializable {
     private void applyBotTacticChange() {
         List<String> options = sm.getSport() != null ? sm.getSport().getTactics() : List.of();
         if (options.isEmpty()) return;
-        String current = botTeam.getCurrentTactic();
+        String current = botTeam.getCurrentTacticName();
         List<String> candidates = options.stream().filter(t -> !t.equals(current)).toList();
         if (candidates.isEmpty()) return;
         String next = candidates.get(botRng.nextInt(candidates.size()));
@@ -1019,7 +1145,7 @@ public class MatchScreenController implements Initializable {
             lineup = new ArrayList<>(team.getPlayers().subList(0, fallbackCount));
         }
         if (lineup.isEmpty()) return;
-        List<Dot> formationDots = resolveFormationDots(team.getCurrentTactic(), lineup.size());
+        List<Dot> formationDots = resolveFormationDots(team.getCurrentTacticName(), lineup.size());
         int n = Math.min(lineup.size(), formationDots.size());
         for (int i = 0; i < n; i++) {
             Dot d = formationDots.get(i);
@@ -1282,7 +1408,7 @@ public class MatchScreenController implements Initializable {
         if (rivalFormationLabel == null) return;
         Team rival = getRivalTeam();
         String formation = (rival != null && rival.getCurrentTactic() != null)
-                ? rival.getCurrentTactic()
+                ? rival.getCurrentTacticName()
                 : "-";
         rivalFormationLabel.setText("Rival Formation: " + formation);
     }

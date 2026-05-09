@@ -17,21 +17,9 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
-<<<<<<< Updated upstream
- * Multiple save files under ~/.sportmanager/saves/. Each file stores a
- * SaveGameBundle (display name, timestamp, session snapshot).
- * The legacy single file ~/.sportmanager/savegame.dat is still loadable.
-=======
-<<<<<<< HEAD
  * Multiple save files under {@code ~/.sportmanager/saves/}. Each file stores a
  * {@link SaveGameBundle} (display name, timestamp, session snapshot).
  * The legacy single file {@code ~/.sportmanager/savegame.dat} is still loadable as id {@link #LEGACY_SAVE_ID}.
-=======
- * Multiple save files under ~/.sportmanager/saves/. Each file stores a
- * SaveGameBundle (display name, timestamp, session snapshot).
- * The legacy single file ~/.sportmanager/savegame.dat is still loadable.
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
  */
 public final class SaveGameService {
 
@@ -57,13 +45,7 @@ public final class SaveGameService {
             GameSession.SessionSnapshot snapshot
     ) implements Serializable {}
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
     /** Summary row for load UI; {@code id} is safe to pass back to {@link #loadById(String)}. */
-=======
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
     public record SaveSlotSummary(
             String id,
             String displayName,
@@ -71,15 +53,9 @@ public final class SaveGameService {
             String detailsLine
     ) {}
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
     /**
      * Writes a new save file; returns the generated id (filename without path).
      */
-=======
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
     public static String saveNew(String displayName, GameSession.SessionSnapshot snapshot) throws IOException {
         Files.createDirectories(SAVES_DIR);
         String name = displayName == null || displayName.isBlank() ? "Save" : displayName.trim();
@@ -105,23 +81,11 @@ public final class SaveGameService {
                             try {
                                 SaveGameBundle b = readBundle(p);
                                 list.add(toSummary(p.getFileName().toString(), b));
-<<<<<<< Updated upstream
-                            } catch (Exception ignored) {}
-                        });
-            } catch (IOException ignored) {}
-=======
-<<<<<<< HEAD
                             } catch (Exception ignored) {
                                 /* skip corrupt */
                             }
                         });
             } catch (IOException ignored) { /* empty */ }
-=======
-                            } catch (Exception ignored) {}
-                        });
-            } catch (IOException ignored) {}
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
         }
         if (Files.isRegularFile(LEGACY_SINGLE_FILE)) {
             try (ObjectInputStream in = new ObjectInputStream(Files.newInputStream(LEGACY_SINGLE_FILE))) {
@@ -140,15 +104,7 @@ public final class SaveGameService {
                         "Older single-file save",
                         ts,
                         buildDetails(snap)));
-<<<<<<< Updated upstream
-            } catch (Exception ignored) {}
-=======
-<<<<<<< HEAD
             } catch (Exception ignored) { /* skip */ }
-=======
-            } catch (Exception ignored) {}
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
         }
         list.sort(Comparator.comparingLong(SaveSlotSummary::savedAtEpochMs).reversed());
         return list;
@@ -244,12 +200,4 @@ public final class SaveGameService {
         }
         return name.endsWith(".sav");
     }
-<<<<<<< Updated upstream
 }
-=======
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes

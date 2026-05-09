@@ -1366,6 +1366,15 @@ Label {
     -fx-padding: 0;
 }
 
+.match-bottom-scroll {
+    -fx-fit-to-height: true;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.match-bottom-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
 .match-screen-root .label-small {
     -fx-font-size: 22px;
     -fx-text-fill: #e6f0ff;
