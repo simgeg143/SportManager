@@ -3,6 +3,7 @@ package com.sportmanager.ui.controller;
 import com.sportmanager.SportManager;
 import com.sportmanager.core.Coach;
 import com.sportmanager.core.Player;
+import com.sportmanager.core.Tactic;
 import com.sportmanager.core.Team;
 import com.sportmanager.ui.component.TacticPitchCanvas;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -170,7 +171,7 @@ public class SquadController implements Initializable {
             squadTacticCombo.getItems().setAll(sm.getSport().getTactics());
         }
 
-        String current = team.getCurrentTactic();
+        String current = team.getCurrentTactic().getName();
         squadTacticCombo.setValue(current);
         updateTacticPreview(current);
 
@@ -192,7 +193,12 @@ public class SquadController implements Initializable {
         String chosen = squadTacticCombo.getValue();
         Team team = sm.getManagedTeam();
         if (chosen != null && team != null) {
-            team.setCurrentTactic(chosen);
+            team.setCurrentTactic(
+                    new Tactic(
+                            chosen,
+                            "Balanced"
+                    )
+            );
             tacticStatusLabel.setText("✓  Formation set to " + chosen);
         }
     }

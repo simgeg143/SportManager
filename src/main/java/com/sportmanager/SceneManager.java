@@ -224,15 +224,8 @@ public class SceneManager {
         double stepDuration = (SPLASH_MS - 600.0) / steps;
         for (int i = 1; i <= steps; i++) {
             final double val = (double) i / steps;
-<<<<<<< Updated upstream
-            final String[] hints = { "LOADING ASSETS...", "PREPARING CLUB DATA...", "READY TO MANAGE!" };
-=======
-<<<<<<< HEAD
         final String[] hints = { "LOADING ASSETS...", "PREPARING CLUB DATA...", "READY TO MANAGE!" };
-=======
-            final String[] hints = { "LOADING ASSETS...", "PREPARING CLUB DATA...", "READY TO MANAGE!" };
->>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
->>>>>>> Stashed changes
+
             final String hintText = hints[Math.min(i / (steps / 3), 2)];
             progress.getKeyFrames().add(
                 new KeyFrame(Duration.millis(i * stepDuration),

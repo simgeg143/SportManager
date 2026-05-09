@@ -2,13 +2,7 @@ package com.sportmanager.ui.controller;
 
 import com.sportmanager.SportManager;
 import com.sportmanager.basketball.BasketballTactics;
-import com.sportmanager.core.InjuryRecord;
-import com.sportmanager.core.Match;
-import com.sportmanager.core.MatchResult;
-import com.sportmanager.core.MatchSegment;
-import com.sportmanager.core.Player;
-import com.sportmanager.core.Sport;
-import com.sportmanager.core.Team;
+import com.sportmanager.core.*;
 import com.sportmanager.settings.AppSettings;
 import com.sportmanager.ui.component.TacticPitchCanvas;
 import javafx.animation.KeyFrame;
@@ -264,7 +258,7 @@ public class MatchScreenController implements Initializable {
         Sport sport = sm.getSport();
         if (sport == null) return;
         tacticCombo.getItems().setAll(sport.getTactics());
-        String current = managedTeam.getCurrentTactic();
+        String current = managedTeam.getCurrentTactic().getName();
         tacticCombo.setValue(current);
         if (tacticCanvas != null) tacticCanvas.drawFormation(current);
         tacticCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -479,7 +473,7 @@ public class MatchScreenController implements Initializable {
         if (match.isAtBreak() && !match.isFinished()) {
             maybeRunBotDecision(true);
             userPaused = true;
-            String rivalFormation = getRivalTeam().getCurrentTactic();
+            String rivalFormation = getRivalTeam().getCurrentTactic().getName();
             pauseReasonLabel.setText("Break reached. Rival formation: " + rivalFormation
                     + ". You can adjust tactics or substitute.");
             addBreakDivider();
@@ -869,7 +863,12 @@ public class MatchScreenController implements Initializable {
     private void onApplyTactic() {
         String chosen = tacticCombo.getValue();
         if (chosen == null) return;
-        managedTeam.setCurrentTactic(chosen);
+        managedTeam.setCurrentTactic(
+                new Tactic(
+                        chosen,
+                        "Balanced"
+                )
+        );
         Label ev = new Label("🔧  Tactic changed to " + chosen);
         ev.getStyleClass().add("event-tactic");
         eventsBox.getChildren().add(ev);
@@ -908,11 +907,13 @@ public class MatchScreenController implements Initializable {
     private void applyBotTacticChange() {
         List<String> options = sm.getSport() != null ? sm.getSport().getTactics() : List.of();
         if (options.isEmpty()) return;
-        String current = botTeam.getCurrentTactic();
+        String current = botTeam.getCurrentTactic().getName();
         List<String> candidates = options.stream().filter(t -> !t.equals(current)).toList();
         if (candidates.isEmpty()) return;
         String next = candidates.get(botRng.nextInt(candidates.size()));
-        botTeam.setCurrentTactic(next);
+        botTeam.setCurrentTactic(
+                new Tactic(next, "Balanced")
+        );
         Label ev = new Label("🤖  " + botTeam.getName() + " switched tactic to " + next);
         ev.getStyleClass().add("event-tactic");
         eventsBox.getChildren().add(ev);
@@ -1019,7 +1020,7 @@ public class MatchScreenController implements Initializable {
             lineup = new ArrayList<>(team.getPlayers().subList(0, fallbackCount));
         }
         if (lineup.isEmpty()) return;
-        List<Dot> formationDots = resolveFormationDots(team.getCurrentTactic(), lineup.size());
+        List<Dot> formationDots = resolveFormationDots(team.getCurrentTactic().getName(), lineup.size());
         int n = Math.min(lineup.size(), formationDots.size());
         for (int i = 0; i < n; i++) {
             Dot d = formationDots.get(i);
@@ -1282,7 +1283,7 @@ public class MatchScreenController implements Initializable {
         if (rivalFormationLabel == null) return;
         Team rival = getRivalTeam();
         String formation = (rival != null && rival.getCurrentTactic() != null)
-                ? rival.getCurrentTactic()
+                ? rival.getCurrentTactic().getName()
                 : "-";
         rivalFormationLabel.setText("Rival Formation: " + formation);
     }
