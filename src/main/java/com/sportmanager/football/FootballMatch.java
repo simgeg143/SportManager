@@ -17,7 +17,14 @@ import java.util.stream.Collectors;
 public class FootballMatch extends Match {
 
     private static final int TOTAL_SEGMENTS = 2;
-    private final Random rng;
+    /** Not persisted — {@link Random} is not {@link java.io.Serializable}. */
+    private transient Random rng;
+
+    private Random rng() {
+        if (rng == null) rng = new Random();
+        return rng;
+    }
+
     private MatchSegment activeSegment;
     private int liveEventsRemaining;
     private boolean segmentStarted;
@@ -33,7 +40,6 @@ public class FootballMatch extends Match {
 
     public FootballMatch(Team home, Team away, int weekNo) {
         super(home, away, weekNo);
-        this.rng = new Random();
     }
 
     // ── Match abstract implementation ─────────────────────────────────────────
@@ -73,7 +79,7 @@ public class FootballMatch extends Match {
         activeSegment = new MatchSegment(currentSegment, label);
         activeSegment.addEvent("── " + label.toUpperCase() + " ──");
         segments.add(activeSegment);
-        liveEventsRemaining = 9 + rng.nextInt(4);
+        liveEventsRemaining = 9 + rng().nextInt(4);
         segmentStarted = true;
     }
 
@@ -132,7 +138,7 @@ public class FootballMatch extends Match {
     }
 
     private String generateLiveEvent() {
-        boolean homeAttack = rng.nextBoolean();
+        boolean homeAttack = rng().nextBoolean();
         Team attacker = homeAttack ? homeTeam : awayTeam;
         Team defender = homeAttack ? awayTeam : homeTeam;
 
@@ -145,7 +151,7 @@ public class FootballMatch extends Match {
         double ratio = atk / (atk + def);
         double goalProb = 0.09 + (ratio - 0.5) * 0.30;
         goalProb = Math.max(0.03, Math.min(0.24, goalProb));
-        if (rng.nextDouble() < goalProb) {
+        if (rng().nextDouble() < goalProb) {
             String scorer = randomPlayerName(attacker.getStartingLineup(), "GK");
             if (homeAttack) {
                 homeScore++;
@@ -156,16 +162,16 @@ public class FootballMatch extends Match {
             }
             return "⚽ GOAL!  " + scorer + " (" + attacker.getName() + ")";
         }
-        if (rng.nextDouble() < AppSettings.getInstance().getInjuryChance() * 0.8) {
+        if (rng().nextDouble() < AppSettings.getInstance().getInjuryChance() * 0.8) {
             Player injured = attacker.getStartingLineup().isEmpty() ? null
-                    : attacker.getStartingLineup().get(rng.nextInt(attacker.getStartingLineup().size()));
+                    : attacker.getStartingLineup().get(rng().nextInt(attacker.getStartingLineup().size()));
             if (injured != null && !injured.isInjured()) {
-                int dur = 1 + rng.nextInt(3);
+                int dur = 1 + rng().nextInt(3);
                 injured.setInjuryMatchesRemaining(dur);
                 return "🚑 " + injured.getName() + " injured (" + dur + " match(es))";
             }
         }
-        if (rng.nextDouble() < 0.22) {
+        if (rng().nextDouble() < 0.22) {
             String carded = randomPlayerName(defender.getStartingLineup(), "");
             return "🟨 Yellow card – " + carded + " (" + defender.getName() + ")";
         }
@@ -212,6 +218,6 @@ public class FootballMatch extends Match {
                 .filter(p -> !p.getPosition().equals(excludePos))
                 .collect(Collectors.toList());
         if (eligible.isEmpty()) return "Unknown";
-        return eligible.get(rng.nextInt(eligible.size())).getName();
+        return eligible.get(rng().nextInt(eligible.size())).getName();
     }
 }

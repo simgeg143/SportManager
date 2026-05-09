@@ -48,7 +48,14 @@ public class FootballSport implements Sport {
             "Head Coach", "Assistant Coach", "Goalkeeping Coach", "Fitness Coach"
     };
 
-    private final Random       rng = new Random();
+    /** Not persisted — {@link Random} is not {@link java.io.Serializable}. */
+    private transient Random rng;
+
+    private Random rng() {
+        if (rng == null) rng = new Random();
+        return rng;
+    }
+
     private List<String> firstNames;
     private List<String> lastNames;
     private List<String> teamNames;
@@ -87,7 +94,7 @@ public class FootballSport implements Sport {
         FootballLeague league = new FootballLeague(leagueName, this);
 
         List<String> shuffled = new ArrayList<>(teamNames);
-        Collections.shuffle(shuffled, rng);
+        Collections.shuffle(shuffled, rng());
 
         for (int i = 0; i < teamCount; i++) {
             String tName = i < shuffled.size() ? shuffled.get(i) : "Team " + (i + 1);
@@ -106,17 +113,17 @@ public class FootballSport implements Sport {
 
     private void populateRoster(FootballTeam team) {
         for (String slot : POSITION_SLOTS) {
-            int skill = 55 + rng.nextInt(35);   // 55–89
-            team.getRoster().add(new FootballPlayer(randomName(), slot, skill, rng));
+            int skill = 55 + rng().nextInt(35);   // 55–89
+            team.getRoster().add(new FootballPlayer(randomName(), slot, skill, rng()));
         }
     }
 
     private void populateCoaches(FootballTeam team) {
         // Head Coach with high motivation, then supporting staff
         for (int i = 0; i < COACH_ROLES.length; i++) {
-            int training    = 5 + rng.nextInt(5);   // 5–9
-            int motivation  = 5 + rng.nextInt(5);
-            String shape    = TACTICS.get(rng.nextInt(TACTICS.size()));
+            int training    = 5 + rng().nextInt(5);   // 5–9
+            int motivation  = 5 + rng().nextInt(5);
+            String shape    = TACTICS.get(rng().nextInt(TACTICS.size()));
             team.getCoaches().add(
                     new Coach(randomName(), COACH_ROLES[i], shape, training, motivation));
         }
@@ -125,8 +132,8 @@ public class FootballSport implements Sport {
     // ── Name generation ───────────────────────────────────────────────────────
 
     private String randomName() {
-        return firstNames.get(rng.nextInt(firstNames.size()))
-                + " " + lastNames.get(rng.nextInt(lastNames.size()));
+        return firstNames.get(rng().nextInt(firstNames.size()))
+                + " " + lastNames.get(rng().nextInt(lastNames.size()));
     }
 
     // ── Resource loading ──────────────────────────────────────────────────────

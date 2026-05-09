@@ -22,7 +22,14 @@ public class BasketballSport implements Sport {
             "SG", "PF"
     );
 
-    private final Random rng = new Random();
+    /** Not persisted — {@link Random} is not {@link java.io.Serializable}. */
+    private transient Random rng;
+
+    private Random rng() {
+        if (rng == null) rng = new Random();
+        return rng;
+    }
+
     private final List<String> firstNames = new ArrayList<>(Arrays.asList(
             "James", "Luka", "Jayson", "Nikola", "Anthony", "Damian", "Devin", "Donovan", "Shai", "Kawhi"
     ));
@@ -75,7 +82,7 @@ public class BasketballSport implements Sport {
     public League createLeague(String leagueName, int teamCount) {
         BasketballLeague league = new BasketballLeague(leagueName, this);
         List<String> shuffled = new ArrayList<>(teamNames);
-        Collections.shuffle(shuffled, rng);
+        Collections.shuffle(shuffled, rng());
 
         for (int i = 0; i < teamCount; i++) {
             String name = i < shuffled.size() ? shuffled.get(i) : "Basketball Team " + (i + 1);
@@ -103,8 +110,8 @@ public class BasketballSport implements Sport {
     private void populateRoster(BasketballTeam team) {
         for (int i = 0; i < PLAYERS_PER_TEAM; i++) {
             String slot = POSITION_SLOTS.get(i);
-            int skill = 55 + rng.nextInt(35);
-            team.getRoster().add(new BasketballPlayer(randomName(), slot, skill, rng));
+            int skill = 55 + rng().nextInt(35);
+            team.getRoster().add(new BasketballPlayer(randomName(), slot, skill, rng()));
         }
     }
 
@@ -114,6 +121,6 @@ public class BasketballSport implements Sport {
     }
 
     private String randomName() {
-        return firstNames.get(rng.nextInt(firstNames.size())) + " " + lastNames.get(rng.nextInt(lastNames.size()));
+        return firstNames.get(rng().nextInt(firstNames.size())) + " " + lastNames.get(rng().nextInt(lastNames.size()));
     }
 }

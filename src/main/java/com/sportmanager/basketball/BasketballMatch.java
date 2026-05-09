@@ -9,6 +9,7 @@ import com.sportmanager.core.Team;
 import com.sportmanager.session.GameSession;
 import com.sportmanager.settings.AppSettings;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +25,15 @@ public class BasketballMatch extends Match {
     /** ~NBA pace scaled to our shorter event log per quarter. */
     private static final int POSSESSIONS_MIN = 10;
     private static final int POSSESSIONS_RANGE = 5;
-    private final Random rng = new Random();
+
+    /** Not persisted — {@link Random} is not {@link java.io.Serializable}. */
+    private transient Random rng;
+
+    private Random rng() {
+        if (rng == null) rng = new Random();
+        return rng;
+    }
+
     private MatchSegment activeSegment;
     private List<Boolean> possessionOrder;
     private int possessionCursor;
@@ -51,15 +60,15 @@ public class BasketballMatch extends Match {
         activeSegment.addEvent("── " + activeSegment.getLabel().toUpperCase() + " (12:00) ──");
         segments.add(activeSegment);
 
-        int hPoss = POSSESSIONS_MIN + rng.nextInt(POSSESSIONS_RANGE);
-        int aPoss = POSSESSIONS_MIN + rng.nextInt(POSSESSIONS_RANGE);
+        int hPoss = POSSESSIONS_MIN + rng().nextInt(POSSESSIONS_RANGE);
+        int aPoss = POSSESSIONS_MIN + rng().nextInt(POSSESSIONS_RANGE);
         possessionOrder = new ArrayList<>();
         int max = Math.max(hPoss, aPoss);
         for (int i = 0; i < max; i++) {
             if (i < hPoss) possessionOrder.add(true);
             if (i < aPoss) possessionOrder.add(false);
         }
-        Collections.shuffle(possessionOrder, rng);
+        Collections.shuffle(possessionOrder, rng());
         possessionCursor = 0;
         liveFouls = new QuarterFoulState();
         segmentStarted = true;
@@ -121,15 +130,15 @@ public class BasketballMatch extends Match {
     }
 
     private void simulateQuarter(Team home, Team away, MatchSegment segment, QuarterFoulState fouls) {
-        int hPoss = POSSESSIONS_MIN + rng.nextInt(POSSESSIONS_RANGE);
-        int aPoss = POSSESSIONS_MIN + rng.nextInt(POSSESSIONS_RANGE);
+        int hPoss = POSSESSIONS_MIN + rng().nextInt(POSSESSIONS_RANGE);
+        int aPoss = POSSESSIONS_MIN + rng().nextInt(POSSESSIONS_RANGE);
         List<Boolean> order = new ArrayList<>();
         int max = Math.max(hPoss, aPoss);
         for (int i = 0; i < max; i++) {
             if (i < hPoss) order.add(true);
             if (i < aPoss) order.add(false);
         }
-        Collections.shuffle(order, rng);
+        Collections.shuffle(order, rng());
 
         for (boolean homeBall : order) {
             if (homeBall) {
@@ -150,21 +159,21 @@ public class BasketballMatch extends Match {
         String set = BasketballTactics.normalizeOffense(offense.getCurrentTactic().getName());
 
         double toChance = BasketballTactics.turnoverBaseChance(set);
-        toChance *= (0.92 + rng.nextDouble() * 0.06);
+        toChance *= (0.92 + rng().nextDouble() * 0.06);
         toChance += Math.max(0, (averageDefense(defense) - 72.0) * 0.0012);
         toChance = Math.min(0.24, toChance);
 
-        if (rng.nextDouble() < toChance) {
+        if (rng().nextDouble() < toChance) {
             return "↩️ Turnover — " + offense.getName();
         }
 
-        if (rng.nextDouble() < 0.11) {
+        if (rng().nextDouble() < 0.11) {
             if (offenseIsHome) fouls.awayTeamFouls++;
             else fouls.homeTeamFouls++;
 
             int defFouls = offenseIsHome ? fouls.awayTeamFouls : fouls.homeTeamFouls;
             String foulEvent = "🟥 Team foul — " + defense.getName() + " (" + defFouls + ")";
-            if (defFouls >= 5 && rng.nextDouble() < 0.88) {
+            if (defFouls >= 5 && rng().nextDouble() < 0.88) {
                 addPoints(offenseIsHome, 2);
                 return foulEvent + " | 🏀 " + offense.getName() + " +2 FT (bonus)";
             }
@@ -179,16 +188,16 @@ public class BasketballMatch extends Match {
         double pMake = 0.38 + (off / (off + def) - 0.5) * 0.38;
         pMake = Math.max(0.27, Math.min(0.64, pMake));
 
-        if (rng.nextDouble() < pMake) {
-            boolean three = rng.nextDouble() < BasketballTactics.threePointRate(set);
+        if (rng().nextDouble() < pMake) {
+            boolean three = rng().nextDouble() < BasketballTactics.threePointRate(set);
             int pts = three ? 3 : 2;
             addPoints(offenseIsHome, pts);
             String scorer = randomScorerName(offense);
             return "🏀 " + scorer + " " + pts + (three ? "PT (3FG)" : "PT (2FG)") + " — " + offense.getName();
         }
 
-        if (rng.nextDouble() < 0.24) {
-            if (rng.nextDouble() < 0.42) {
+        if (rng().nextDouble() < 0.24) {
+            if (rng().nextDouble() < 0.42) {
                 addPoints(offenseIsHome, 2);
                 return "🏀 Putback +2 — " + offense.getName();
             } else {
@@ -213,7 +222,7 @@ public class BasketballMatch extends Match {
     private String randomScorerName(Team team) {
         List<Player> xi = team.getStartingLineup();
         if (xi.isEmpty()) return "?";
-        return xi.get(rng.nextInt(xi.size())).getName();
+        return xi.get(rng().nextInt(xi.size())).getName();
     }
 
     private double averageAttack(Team team) {
@@ -232,8 +241,8 @@ public class BasketballMatch extends Match {
 
     private void maybeInjure(Team team, MatchSegment segment) {
         for (Player p : team.getStartingLineup()) {
-            if (!p.isInjured() && rng.nextDouble() < AppSettings.getInstance().getInjuryChance() * 0.55) {
-                int matches = 1 + rng.nextInt(2);
+            if (!p.isInjured() && rng().nextDouble() < AppSettings.getInstance().getInjuryChance() * 0.55) {
+                int matches = 1 + rng().nextInt(2);
                 p.setInjuryMatchesRemaining(matches);
                 segment.addEvent("🚑 " + p.getName() + " injured (" + matches + " game(s))");
             }
@@ -252,7 +261,8 @@ public class BasketballMatch extends Match {
         this.result = new MatchResult(homeTeam, awayTeam, homeScore, awayScore, injuries);
     }
 
-    private static final class QuarterFoulState {
+    private static final class QuarterFoulState implements Serializable {
+        private static final long serialVersionUID = 1L;
         int homeTeamFouls;
         int awayTeamFouls;
     }
