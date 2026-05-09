@@ -94,8 +94,8 @@ public class BasketballLeague extends League {
     public List<Team> getSortedStandings() {
         return teams.stream()
                 .sorted(Comparator.comparingInt(Team::getPoints)
-                        .thenComparingInt(Team::getGoalDifference)
-                        .thenComparingInt(Team::getGoalsFor)
+                        .thenComparingInt(Team::getScoreDifference)
+                        .thenComparingInt(Team::getScoreFor)
                         .reversed())
                 .toList();
     }

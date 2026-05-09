@@ -147,7 +147,7 @@ public class BasketballMatch extends Match {
 
     private String runPossession(Team offense, Team defense, MatchSegment segment,
                                  QuarterFoulState fouls, boolean offenseIsHome) {
-        String set = BasketballTactics.normalizeOffense(offense.getCurrentTactic());
+        String set = BasketballTactics.normalizeOffense(offense.getCurrentTactic().getName());
 
         double toChance = BasketballTactics.turnoverBaseChance(set);
         toChance *= (0.92 + rng.nextDouble() * 0.06);

@@ -1,6 +1,7 @@
 package com.sportmanager.factory;
 
 import com.sportmanager.core.Sport;
+import com.sportmanager.basketball.BasketballSport;
 import com.sportmanager.football.FootballSport;
 
 public final class SportFactory {
@@ -14,6 +15,7 @@ public final class SportFactory {
 
         return switch (sportCode.trim().toLowerCase()) {
             case "football" -> new FootballSport();
+            case "basketbal" -> new BasketballSport();
             default -> throw new IllegalArgumentException("Unsupported sport: " + sportCode.trim().toLowerCase());
         };
     }

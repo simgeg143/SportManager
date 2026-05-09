@@ -2,6 +2,7 @@ package com.sportmanager.basketball;
 
 import com.sportmanager.core.Lineup;
 import com.sportmanager.core.Player;
+import com.sportmanager.core.Tactic;
 import com.sportmanager.core.Team;
 
 import java.util.Comparator;
@@ -23,7 +24,11 @@ public class BasketballTeam extends Team {
 
     public BasketballTeam(String name) {
         super(name);
-        this.currentTactic = BasketballTactics.DEFAULT_OFFENSE;
+        this.currentTactic =
+                new Tactic(
+                        BasketballTactics.DEFAULT_OFFENSE,
+                        "Balanced"
+                );
     }
 
     @Override

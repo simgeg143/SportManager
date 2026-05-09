@@ -28,9 +28,9 @@ public class StandingEntry implements Comparable<StandingEntry>, Serializable {
     public int    getWins()           { return team.getWins(); }
     public int    getDraws()          { return team.getDraws(); }
     public int    getLosses()         { return team.getLosses(); }
-    public int    getGoalsFor()       { return team.getGoalsFor(); }
-    public int    getGoalsAgainst()   { return team.getGoalsAgainst(); }
-    public int    getGoalDifference() { return team.getGoalDifference(); }
+    public int    getGoalsFor()       { return team.getScoreFor(); }
+    public int    getGoalsAgainst()   { return team.getScoreAgainst(); }
+    public int    getGoalDifference() { return team.getScoreDifference(); }
     public int    getMatchesPlayed()  { return team.getMatchesPlayed(); }
 
     // ── Controller-friendly aliases ───────────────────────────────────────────
