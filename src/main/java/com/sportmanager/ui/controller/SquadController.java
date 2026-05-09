@@ -170,7 +170,7 @@ public class SquadController implements Initializable {
             squadTacticCombo.getItems().setAll(sm.getSport().getTactics());
         }
 
-        String current = team.getCurrentTacticName();
+        String current = team.getCurrentTactic();
         squadTacticCombo.setValue(current);
         updateTacticPreview(current);
 
