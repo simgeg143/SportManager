@@ -23,11 +23,11 @@
 
     <!-- ── BODY: PLAYERS/COACHES  (left)  +  TACTIC PANEL (right) ───────── -->
     <center>
-        <HBox spacing="16" styleClass="page-body">
+        <HBox spacing="16" styleClass="page-body" alignment="TOP_LEFT">
             <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
 
             <!-- LEFT: player + coach tables -->
-            <VBox HBox.hgrow="ALWAYS" spacing="12">
+            <VBox HBox.hgrow="ALWAYS" spacing="12" maxHeight="Infinity" VBox.vgrow="ALWAYS">
 
                 <Label text="PLAYERS" styleClass="section-label"/>
                 <TableView fx:id="playerTable" VBox.vgrow="ALWAYS"
@@ -56,47 +56,51 @@
 
             </VBox>
 
-            <!-- RIGHT: tactic + player card -->
-            <VBox spacing="12" prefWidth="280" minWidth="260" styleClass="card">
+            <!-- RIGHT: tactic + player card — scroll vertically when the window is short -->
+            <VBox spacing="0" prefWidth="280" minWidth="240" maxWidth="360" maxHeight="Infinity"
+                   styleClass="card" VBox.vgrow="ALWAYS">
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
+                            styleClass="squad-right-scroll" minHeight="0" maxHeight="Infinity"
+                            VBox.vgrow="ALWAYS">
+                    <content>
+                        <VBox spacing="12" maxWidth="Infinity">
+                            <Label text="FORMATION" styleClass="card-heading"/>
 
-                <Label text="FORMATION" styleClass="card-heading"/>
+                            <TacticPitchCanvas fx:id="squadTacticCanvas"
+                                               width="256" height="300"
+                                               style="-fx-background-radius:8px;"/>
 
-                <!-- Live pitch canvas -->
-                <TacticPitchCanvas fx:id="squadTacticCanvas"
-                                   width="256" height="300"
-                                   style="-fx-background-radius:8px;"/>
+                            <Label text="SELECT FORMATION" styleClass="section-label"
+                                   style="-fx-padding:4 0 0 0;"/>
+                            <ComboBox fx:id="squadTacticCombo" maxWidth="Infinity"
+                                      styleClass="tactic-combo"/>
 
-                <Label text="SELECT FORMATION" styleClass="section-label"
-                       style="-fx-padding:4 0 0 0;"/>
-                <ComboBox fx:id="squadTacticCombo" maxWidth="Infinity"
-                          styleClass="tactic-combo"/>
+                            <Label fx:id="tacticDescLabel" text="" wrapText="true" maxWidth="Infinity"
+                                   styleClass="tactic-desc"/>
 
-                <!-- Tactic description -->
-                <Label fx:id="tacticDescLabel" text="" wrapText="true"
-                       styleClass="tactic-desc"/>
+                            <Button text="Apply Formation" onAction="#onApplySquadTactic"
+                                    maxWidth="Infinity" styleClass="btn-primary"/>
+                            <Label fx:id="tacticStatusLabel" text="" styleClass="status-fit"
+                                   wrapText="true" maxWidth="Infinity"
+                                   style="-fx-font-size:11px;"/>
 
-                <Region VBox.vgrow="ALWAYS"/>
-
-                <Button text="Apply Formation" onAction="#onApplySquadTactic"
-                        maxWidth="Infinity" styleClass="btn-primary"/>
-                <Label fx:id="tacticStatusLabel" text="" styleClass="status-fit"
-                       style="-fx-font-size:11px;"/>
-
-                <Separator/>
-                <Label text="PLAYER CARD" styleClass="card-heading"/>
-                <VBox styleClass="player-card" spacing="8">
-                    <HBox alignment="CENTER_LEFT">
-                        <VBox spacing="2" HBox.hgrow="ALWAYS">
-                            <Label fx:id="squadCardNameLabel" text="Select a player" styleClass="match-team-name"/>
-                            <Label fx:id="squadCardMetaLabel" text="-" styleClass="label-small"/>
+                            <Separator/>
+                            <Label text="PLAYER CARD" styleClass="card-heading"/>
+                            <VBox styleClass="player-card" spacing="8" maxWidth="Infinity">
+                                <HBox alignment="CENTER_LEFT">
+                                    <VBox spacing="2" HBox.hgrow="ALWAYS">
+                                        <Label fx:id="squadCardNameLabel" text="Select a player" styleClass="match-team-name" wrapText="true"/>
+                                        <Label fx:id="squadCardMetaLabel" text="-" styleClass="label-small" wrapText="true"/>
+                                    </VBox>
+                                    <Label fx:id="squadCardOverallLabel" text="OVR 0" styleClass="overall-badge"/>
+                                </HBox>
+                                <Canvas fx:id="squadRadarCanvas" width="240" height="180"/>
+                                <VBox fx:id="squadCardStatsBox" spacing="4" maxWidth="Infinity"/>
+                                <Label fx:id="squadCardExtraLabel" text="-" styleClass="label-small" wrapText="true" maxWidth="Infinity"/>
+                            </VBox>
                         </VBox>
-                        <Label fx:id="squadCardOverallLabel" text="OVR 0" styleClass="overall-badge"/>
-                    </HBox>
-                    <Canvas fx:id="squadRadarCanvas" width="240" height="180"/>
-                    <VBox fx:id="squadCardStatsBox" spacing="4"/>
-                    <Label fx:id="squadCardExtraLabel" text="-" styleClass="label-small" wrapText="true"/>
-                </VBox>
-
+                    </content>
+                </ScrollPane>
             </VBox>
         </HBox>
     </center>

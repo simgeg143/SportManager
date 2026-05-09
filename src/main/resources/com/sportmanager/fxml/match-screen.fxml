@@ -72,7 +72,8 @@
                     </VBox>
                     <VBox spacing="10" minWidth="120" prefWidth="280" maxWidth="Infinity" styleClass="card live-main-card">
                         <Label text="MATCH EVENTS" styleClass="live-field-title"/>
-                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="events-scroll">
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
+                                    VBox.vgrow="ALWAYS" styleClass="events-scroll">
                             <VBox fx:id="eventsBox" spacing="4" styleClass="events-inner">
                                 <padding><Insets top="4" right="8" bottom="4" left="8"/></padding>
                             </VBox>
@@ -84,6 +85,8 @@
             <!-- ── Break panel: substitutions + tactic + pitch canvas ── -->
             <ScrollPane fx:id="subPanelScroll"
                         fitToWidth="true"
+                        hbarPolicy="NEVER"
+                        vbarPolicy="NEVER"
                         minWidth="160"
                         prefWidth="280"
                         maxWidth="520"

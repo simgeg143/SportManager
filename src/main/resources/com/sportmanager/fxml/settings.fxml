@@ -19,7 +19,7 @@
 
     <!-- ── BODY ─────────────────────────────────────────────────────────── -->
     <center>
-        <ScrollPane fitToWidth="true" styleClass="scroll-transparent">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" styleClass="scroll-transparent">
             <VBox spacing="20" styleClass="page-body">
                 <padding><Insets top="28" right="32" bottom="28" left="32"/></padding>
 

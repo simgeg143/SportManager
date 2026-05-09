@@ -22,7 +22,8 @@
         <VBox spacing="16" styleClass="page-body">
             <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
 
-            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="team-scroll">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
+                        VBox.vgrow="ALWAYS" styleClass="team-scroll">
                 <GridPane fx:id="teamGrid" hgap="16" vgap="16">
                     <padding><Insets top="4" right="4" bottom="4" left="4"/></padding>
                 </GridPane>
