@@ -1,10 +1,12 @@
 package com.sportmanager.core;
 
+import java.io.Serializable;
+
 /**
  * Represents a coaching staff member for a team.
  * Coaches affect training outcomes and preferred tactical shape.
  */
-public class Coach {
+public class Coach implements Serializable {
 
     private final String name;
     private final String role;

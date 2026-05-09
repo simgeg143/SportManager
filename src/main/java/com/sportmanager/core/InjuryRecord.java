@@ -1,7 +1,9 @@
 package com.sportmanager.core;
 
+import java.io.Serializable;
+
 /** Tracks a single player's injury and how many matches they will miss. */
-public class InjuryRecord {
+public class InjuryRecord implements Serializable {
 
     private final Player player;
     private int    gamesRemaining;

@@ -170,8 +170,8 @@ public class SceneManager {
         StackPane splash = new StackPane();
         splash.setStyle("-fx-background-color:#0c1018;");
 
-        // Ball icon with glow
-        Label icon = new Label("⚽");
+        // Sport icon with glow
+        Label icon = new Label("🏅");
         icon.setStyle("-fx-font-size:72px;"
                 + "-fx-effect:dropshadow(gaussian,rgba(0,223,162,0.65),32,0.5,0,0);");
 
@@ -182,7 +182,7 @@ public class SceneManager {
                 + "-fx-text-fill:#eef2ff;-fx-letter-spacing:10px;");
 
         // Tagline
-        Label tagline = new Label("FOOTBALL EDITION  ·  2025");
+        Label tagline = new Label("MULTI-SPORT EDITION  ·  CAREER MODE");
         tagline.setStyle("-fx-font-size:12px;-fx-text-fill:#2a3a50;-fx-letter-spacing:4px;");
 
         // Spacer
@@ -224,7 +224,7 @@ public class SceneManager {
         double stepDuration = (SPLASH_MS - 600.0) / steps;
         for (int i = 1; i <= steps; i++) {
             final double val = (double) i / steps;
-            final String[] hints = { "LOADING ASSETS...", "GENERATING LEAGUE...", "READY!" };
+            final String[] hints = { "LOADING ASSETS...", "PREPARING CLUB DATA...", "READY TO MANAGE!" };
             final String hintText = hints[Math.min(i / (steps / 3), 2)];
             progress.getKeyFrames().add(
                 new KeyFrame(Duration.millis(i * stepDuration),
