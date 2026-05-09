@@ -3,6 +3,8 @@ package com.sportmanager;
 import com.sportmanager.core.*;
 import com.sportmanager.factory.SportFactory;
 import com.sportmanager.session.GameSession;
+import com.sportmanager.session.SaveGameService;
+import java.io.IOException;
 
 import java.util.List;
 
@@ -20,6 +22,9 @@ public final class SportManager {
 
     private static final SportManager INSTANCE = new SportManager();
     private final GameSession session = GameSession.getInstance();
+
+    /** Row for the load-game picker (UI uses this instead of importing session types). */
+    public record SaveGameEntry(String id, String displayName, long savedAtEpochMs, String detailsLine) {}
 
     private SportManager() {}
 
@@ -165,4 +170,32 @@ public final class SportManager {
     /** @return how many substitutions have been used in the current match. */
     public int getSubstitutionsUsed()     { return session.getSubstitutionsUsed(); }
     public void incrementSubstitutions()  { session.incrementSubstitutionsUsed(); }
+
+    /**
+     * Creates a new save file with the given label (multiple saves allowed).
+     * @return internal save id (for debugging); UI can ignore it.
+     */
+    public String saveGame(String displayName) throws IOException {
+        if (!session.isActive()) {
+            throw new IllegalStateException("No active game session to save.");
+        }
+        return SaveGameService.saveNew(displayName, session.createSnapshot());
+    }
+
+    public List<SaveGameEntry> listSaveGames() {
+        return SaveGameService.listSaves().stream()
+                .map(s -> new SaveGameEntry(s.id(), s.displayName(), s.savedAtEpochMs(), s.detailsLine()))
+                .toList();
+    }
+
+    public boolean loadGame(String saveId) throws IOException, ClassNotFoundException {
+        session.restoreFromSnapshot(SaveGameService.loadById(saveId));
+        if (!session.isActive()) return false;
+        SceneManager.getInstance().showDashboard();
+        return true;
+    }
+
+    public void deleteSaveGame(String saveId) throws IOException {
+        SaveGameService.deleteById(saveId);
+    }
 }
