@@ -14,7 +14,7 @@
       alignment="CENTER_LEFT">
 
     <!-- ── Branding ── -->
-    <Label text="⚽" styleClass="toolbar-logo-icon"/>
+    <Label text="🏅" styleClass="toolbar-logo-icon"/>
     <Label text="SPORT MANAGER" styleClass="toolbar-app-name"/>
 
     <!-- ── Spacer ── -->

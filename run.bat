@@ -1,7 +1,7 @@
 @echo off
 REM ─────────────────────────────────────────────────────────────────
 REM  Sport Manager — quick launcher
-REM  JavaFX native DLL cache under target/ (relative to project root).
+REM  Entry: JfxLauncher (sets JavaFX native cache, then starts App).
 REM ─────────────────────────────────────────────────────────────────
 title Sport Manager
 
@@ -18,8 +18,7 @@ java ^
   --module-path "target\javafx-libs" ^
   --add-modules javafx.controls,javafx.fxml ^
   --enable-native-access=javafx.graphics ^
-  -Djavafx.cachedir=target/javafx-cache ^
   -cp "target\classes" ^
-  com.sportmanager.App
+  com.sportmanager.JfxLauncher
 
 pause

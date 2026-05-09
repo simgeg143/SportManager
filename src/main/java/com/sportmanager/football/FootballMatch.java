@@ -63,6 +63,11 @@ public class FootballMatch extends Match {
         beginSegmentSimulation();
         while (hasPendingSegmentEvents()) {
             simulateNextSegmentEvent();
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
         }
     }
 
@@ -101,6 +106,10 @@ public class FootballMatch extends Match {
             buildResult();
             }
             return end;
+<<<<<<< Updated upstream
+=======
+>>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
+>>>>>>> Stashed changes
         }
 
         liveEventsRemaining--;
@@ -108,6 +117,53 @@ public class FootballMatch extends Match {
         activeSegment.addEvent(ev);
         events.add(ev);
         return ev;
+<<<<<<< Updated upstream
+=======
+    }
+
+    @Override
+    public void beginSegmentSimulation() {
+        if (finished || segmentStarted) return;
+        String label = getSegmentLabel(currentSegment);
+        activeSegment = new MatchSegment(currentSegment, label);
+        activeSegment.addEvent("── " + label.toUpperCase() + " ──");
+        segments.add(activeSegment);
+        liveEventsRemaining = 9 + rng.nextInt(4);
+        segmentStarted = true;
+    }
+
+    @Override
+    public boolean hasPendingSegmentEvents() {
+        return segmentStarted && liveEventsRemaining >= 0 && !finished;
+    }
+
+    @Override
+    public String simulateNextSegmentEvent() {
+        if (!segmentStarted || activeSegment == null) return null;
+        if (liveEventsRemaining == 0) {
+            String end = "End of " + activeSegment.getLabel() + ": " + homeScore + " - " + awayScore;
+            activeSegment.addEvent(end);
+            events.add(end);
+            liveEventsRemaining = -1;
+            segmentStarted = false;
+            currentSegment++;
+            if (currentSegment >= TOTAL_SEGMENTS) {
+                finished = true;
+                String ft = "Full Time: " + homeTeam.getName() + " "
+                        + homeScore + " – " + awayScore + " " + awayTeam.getName();
+                activeSegment.addEvent(ft);
+                events.add(ft);
+                buildResult();
+            }
+            return end;
+        }
+
+        liveEventsRemaining--;
+        String ev = generateLiveEvent();
+        activeSegment.addEvent(ev);
+        events.add(ev);
+        return ev;
+>>>>>>> Stashed changes
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
@@ -138,6 +194,20 @@ public class FootballMatch extends Match {
 
         double atk = applyDifficulty(attacker, teamAttack(attacker));
         double def = applyDifficulty(defender, teamDefense(defender));
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        double[] aMods = tacticMods(attacker.getCurrentTactic());
+        double[] dMods = tacticMods(defender.getCurrentTactic());
+        atk *= aMods[0];
+        def *= dMods[1];
+
+        double ratio = atk / (atk + def);
+        double goalProb = 0.09 + (ratio - 0.5) * 0.30;
+        goalProb = Math.max(0.03, Math.min(0.24, goalProb));
+
+=======
+>>>>>>> Stashed changes
         double[] aMods = tacticMods(attacker.getCurrentTactic().getName());
         double[] dMods = tacticMods(defender.getCurrentTactic().getName());
         atk *= aMods[0];
@@ -145,6 +215,10 @@ public class FootballMatch extends Match {
         double ratio    = atk / (atk + def);
         double goalProb = 0.09 + (ratio - 0.5) * 0.30;
         goalProb = Math.max(0.03, Math.min(0.24, goalProb));
+<<<<<<< Updated upstream
+=======
+>>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
+>>>>>>> Stashed changes
         if (rng.nextDouble() < goalProb) {
             String scorer = randomPlayerName(attacker.getStartingLineup(), "GK");
             if (homeAttack) {
@@ -156,6 +230,13 @@ public class FootballMatch extends Match {
             }
             return "⚽ GOAL!  " + scorer + " (" + attacker.getName() + ")";
         }
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
+>>>>>>> Stashed changes
         if (rng.nextDouble() < AppSettings.getInstance().getInjuryChance() * 0.8) {
             Player injured = attacker.getStartingLineup().isEmpty() ? null
                     : attacker.getStartingLineup().get(rng.nextInt(attacker.getStartingLineup().size()));
@@ -165,11 +246,29 @@ public class FootballMatch extends Match {
                 return "🚑 " + injured.getName() + " injured (" + dur + " match(es))";
             }
         }
+<<<<<<< Updated upstream
         if (rng.nextDouble() < 0.22) {
             String carded = randomPlayerName(defender.getStartingLineup(), "");
             return "🟨 Yellow card – " + carded + " (" + defender.getName() + ")";
         }
 
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
+        if (rng.nextDouble() < 0.22) {
+            String carded = randomPlayerName(defender.getStartingLineup(), "");
+            return "🟨 Yellow card – " + carded + " (" + defender.getName() + ")";
+        }
+<<<<<<< HEAD
+
+        return "• Possession battle between " + attacker.getName() + " and " + defender.getName();
+    }
+=======
+>>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
+
+>>>>>>> Stashed changes
         return "• Possession battle between " + attacker.getName() + " and " + defender.getName();
     }
     private double teamAttack(Team team) {

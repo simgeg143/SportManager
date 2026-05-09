@@ -46,6 +46,13 @@ public abstract class Team implements Serializable {
     // ── Identity ──────────────────────────────────────────────────────────────
 
     public String getName()     { return name; }
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+    public String getLogoPath() { return logoPath; }
+    public void setLogoPath(String logoPath) { this.logoPath = logoPath; }
+=======
+>>>>>>> Stashed changes
 
     public void setName(String name) {
         this.name = name;
@@ -58,6 +65,10 @@ public abstract class Team implements Serializable {
     public void setLogoPath(String logoPath) {
         this.logoPath = logoPath;
     }
+<<<<<<< Updated upstream
+=======
+>>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
+>>>>>>> Stashed changes
     @Override public String toString() { return name; }
 
     // ── Squad access ──────────────────────────────────────────────────────────

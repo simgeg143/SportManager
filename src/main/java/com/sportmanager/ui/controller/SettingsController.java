@@ -30,6 +30,16 @@ public class SettingsController implements Initializable {
     @FXML private ToggleButton diffNormalBtn;
     @FXML private ToggleButton diffHardBtn;
     @FXML private Label        difficultyHintLabel;
+    @FXML private ToggleButton botBeginnerBtn;
+    @FXML private ToggleButton botStreetBtn;
+    @FXML private ToggleButton botSemiProBtn;
+    @FXML private ToggleButton botProBtn;
+    @FXML private Label        botModeHintLabel;
+
+    @FXML private ToggleButton timeoutCasualBtn;
+    @FXML private ToggleButton timeoutStandardBtn;
+    @FXML private ToggleButton timeoutStrictBtn;
+    @FXML private Label        timeoutHintLabel;
 
     @FXML private CheckBox autoAdvanceCheck;
     @FXML private TextField startYearField;
@@ -51,6 +61,8 @@ public class SettingsController implements Initializable {
     private final ToggleGroup subsGroup    = new ToggleGroup();
     private final ToggleGroup injGroup     = new ToggleGroup();
     private final ToggleGroup diffGroup    = new ToggleGroup();
+    private final ToggleGroup botGroup     = new ToggleGroup();
+    private final ToggleGroup timeoutGroup = new ToggleGroup();
     private final ToggleGroup themeGroup   = new ToggleGroup();
 
     @Override
@@ -66,6 +78,14 @@ public class SettingsController implements Initializable {
         diffEasyBtn.setToggleGroup(diffGroup);
         diffNormalBtn.setToggleGroup(diffGroup);
         diffHardBtn.setToggleGroup(diffGroup);
+        botBeginnerBtn.setToggleGroup(botGroup);
+        botStreetBtn.setToggleGroup(botGroup);
+        botSemiProBtn.setToggleGroup(botGroup);
+        botProBtn.setToggleGroup(botGroup);
+
+        timeoutCasualBtn.setToggleGroup(timeoutGroup);
+        timeoutStandardBtn.setToggleGroup(timeoutGroup);
+        timeoutStrictBtn.setToggleGroup(timeoutGroup);
 
         themeTealBtn.setToggleGroup(themeGroup);
         themeAmberBtn.setToggleGroup(themeGroup);
@@ -96,6 +116,22 @@ public class SettingsController implements Initializable {
             default     -> diffNormalBtn.setSelected(true);
         }
         updateDifficultyHint(settings.getDifficulty());
+
+        switch (settings.getRivalBotMode()) {
+            case "Beginner" -> botBeginnerBtn.setSelected(true);
+            case "Street Player" -> botStreetBtn.setSelected(true);
+            case "Professional" -> botProBtn.setSelected(true);
+            default -> botSemiProBtn.setSelected(true);
+        }
+        updateBotModeHint(settings.getRivalBotMode());
+
+        // Timeout presets
+        switch (settings.getTimeoutPreset()) {
+            case "Casual" -> timeoutCasualBtn.setSelected(true);
+            case "Strict" -> timeoutStrictBtn.setSelected(true);
+            default -> timeoutStandardBtn.setSelected(true);
+        }
+        updateTimeoutHint(settings.getTimeoutPreset());
 
         // Checkboxes
         autoAdvanceCheck.setSelected(settings.isAutoAdvance());
@@ -138,6 +174,21 @@ public class SettingsController implements Initializable {
         statusLabel.setText("");
     }
 
+    @FXML private void onBotModeChanged() {
+        String val = botBeginnerBtn.isSelected() ? "Beginner"
+                : botStreetBtn.isSelected() ? "Street Player"
+                : botProBtn.isSelected() ? "Professional" : "Semi-Pro";
+        updateBotModeHint(val);
+        statusLabel.setText("");
+    }
+
+    @FXML private void onTimeoutPresetChanged() {
+        String val = timeoutCasualBtn.isSelected() ? "Casual"
+                : timeoutStrictBtn.isSelected() ? "Strict" : "Standard";
+        updateTimeoutHint(val);
+        statusLabel.setText("");
+    }
+
     @FXML private void onDetailedEventsChanged() {
         statusLabel.setText("");
     }
@@ -164,6 +215,14 @@ public class SettingsController implements Initializable {
         settings.setDifficulty(
                 diffEasyBtn.isSelected() ? "Easy" :
                 diffHardBtn.isSelected() ? "Hard" : "Normal");
+        settings.setRivalBotMode(
+                botBeginnerBtn.isSelected() ? "Beginner" :
+                botStreetBtn.isSelected() ? "Street Player" :
+                botProBtn.isSelected() ? "Professional" : "Semi-Pro");
+
+        settings.setTimeoutPreset(
+                timeoutCasualBtn.isSelected() ? "Casual" :
+                timeoutStrictBtn.isSelected() ? "Strict" : "Standard");
 
         // Checkboxes
         settings.setAutoAdvance(autoAdvanceCheck.isSelected());
@@ -212,6 +271,23 @@ public class SettingsController implements Initializable {
             case "Easy" -> "AI teams are 25 % weaker — good for learning the game.";
             case "Hard" -> "AI teams are 30 % stronger — a real challenge.";
             default     -> "Balanced — AI teams play at their natural strength.";
+        });
+    }
+
+    private void updateTimeoutHint(String preset) {
+        timeoutHintLabel.setText(switch (preset) {
+            case "Casual" -> "More tactical pauses and timeout calls per match.";
+            case "Strict" -> "Fewer timeout calls; decisions are more costly.";
+            default -> "Balanced timeout budget for each sport.";
+        });
+    }
+
+    private void updateBotModeHint(String mode) {
+        botModeHintLabel.setText(switch (mode) {
+            case "Beginner" -> "Minimal tactical reactions, rarely uses substitutions.";
+            case "Street Player" -> "Occasional tactical switches and basic timeout usage.";
+            case "Professional" -> "Aggressive tactical adaptation with frequent strategic decisions.";
+            default -> "Balanced rival AI with practical in-match adjustments.";
         });
     }
 }

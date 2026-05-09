@@ -21,7 +21,15 @@ import java.util.Random;
 public class BasketballMatch extends Match {
 
     private static final int TOTAL_SEGMENTS = 4;
+<<<<<<< Updated upstream
     /** scaled to our shorter event log per quarter. */
+=======
+<<<<<<< HEAD
+    /** ~NBA pace scaled to our shorter event log per quarter. */
+=======
+    /** scaled to our shorter event log per quarter. */
+>>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
+>>>>>>> Stashed changes
     private static final int POSSESSIONS_MIN = 10;
     private static final int POSSESSIONS_RANGE = 5;
     private final Random rng = new Random();
@@ -146,8 +154,18 @@ public class BasketballMatch extends Match {
     }
 
     private String runPossession(Team offense, Team defense, MatchSegment segment,
+<<<<<<< Updated upstream
                                  QuarterFoulState fouls, boolean offenseIsHome) {
         String set = BasketballTactics.normalizeOffense(offense.getCurrentTactic().getName());
+=======
+<<<<<<< HEAD
+                               QuarterFoulState fouls, boolean offenseIsHome) {
+        String set = BasketballTactics.normalizeOffense(offense.getCurrentTactic());
+=======
+                                 QuarterFoulState fouls, boolean offenseIsHome) {
+        String set = BasketballTactics.normalizeOffense(offense.getCurrentTactic().getName());
+>>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
+>>>>>>> Stashed changes
 
         double toChance = BasketballTactics.turnoverBaseChance(set);
         toChance *= (0.92 + rng.nextDouble() * 0.06);

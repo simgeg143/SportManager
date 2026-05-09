@@ -1,5 +1,6 @@
 package com.sportmanager.ui.component;
 
+import com.sportmanager.basketball.BasketballTactics;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -11,25 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Resizable Canvas that draws a top-down football pitch with player dots
- * laid out according to a named formation (e.g. "4-3-3").
- *
- * Usage:
- *   TacticPitchCanvas canvas = new TacticPitchCanvas();
- *   canvas.drawFormation("4-3-3");
- *
- * The canvas can be placed directly in any JavaFX layout and will redraw
- * when drawFormation() is called again.  isResizable() returns true so
- * it participates properly in layout passes.
+ * Draws either a football pitch (11-a-side formations) or a basketball half-court
+ * with five-man offensive spacing, depending on the tactic name.
  */
 public class TacticPitchCanvas extends Canvas {
 
-    // ── Formation data: {x, y, label} in 0-1 normalized coordinates ───────────
-    // y = 0 → top of pitch (opposition end), y = 1 → bottom (our goal / GK)
-
     private record Dot(double x, double y, String label) {}
 
-    private static final Map<String, List<Dot>> FORMATIONS = Map.of(
+    private static final Map<String, List<Dot>> FOOTBALL_FORMATIONS = Map.of(
 
         "4-3-3", List.of(
             new Dot(0.50, 0.88, "GK"),
@@ -82,8 +72,7 @@ public class TacticPitchCanvas extends Canvas {
     );
 
     private String currentFormation = "4-4-2";
-
-    // ── Constructors ──────────────────────────────────────────────────────────
+    private boolean basketballMode;
 
     public TacticPitchCanvas() {
         super(240, 290);
@@ -97,17 +86,20 @@ public class TacticPitchCanvas extends Canvas {
         heightProperty().addListener(e -> redraw());
     }
 
-    // ── Public API ────────────────────────────────────────────────────────────
-
     public void drawFormation(String formation) {
-        currentFormation = (formation != null && FORMATIONS.containsKey(formation))
-                ? formation : "4-4-2";
+        String bbKey = BasketballTactics.diagramKeyForTactic(formation);
+        if (bbKey != null) {
+            basketballMode = true;
+            currentFormation = bbKey;
+        } else {
+            basketballMode = false;
+            currentFormation = (formation != null && FOOTBALL_FORMATIONS.containsKey(formation))
+                    ? formation : "4-4-2";
+        }
         redraw();
     }
 
     public String getCurrentFormation() { return currentFormation; }
-
-    // ── Resizable support ─────────────────────────────────────────────────────
 
     @Override public boolean isResizable()               { return true; }
     @Override public double  prefWidth(double height)    { return 240; }
@@ -120,8 +112,6 @@ public class TacticPitchCanvas extends Canvas {
         redraw();
     }
 
-    // ── Drawing ───────────────────────────────────────────────────────────────
-
     private void redraw() {
         double w = getWidth();
         double h = getHeight();
@@ -130,60 +120,55 @@ public class TacticPitchCanvas extends Canvas {
         GraphicsContext gc = getGraphicsContext2D();
         gc.clearRect(0, 0, w, h);
 
-        drawPitch(gc, w, h);
-        drawPlayers(gc, w, h);
+        if (basketballMode) {
+            drawBasketballCourt(gc, w, h);
+            drawBasketballPlayers(gc, w, h);
+        } else {
+            drawFootballPitch(gc, w, h);
+            drawFootballPlayers(gc, w, h);
+        }
         drawFormationLabel(gc, w, h);
     }
 
-    private void drawPitch(GraphicsContext gc, double w, double h) {
+    private void drawFootballPitch(GraphicsContext gc, double w, double h) {
         double pad = 8;
 
-        // Base green
         gc.setFill(Color.web("#1a4a1a"));
         gc.fillRoundRect(0, 0, w, h, 10, 10);
 
-        // Alternating lighter stripes (7 vertical bands)
         gc.setFill(Color.web("#1e5220", 0.55));
         double stripeH = (h - 2 * pad) / 7.0;
         for (int i = 0; i < 7; i += 2) {
             gc.fillRect(pad, pad + i * stripeH, w - 2 * pad, stripeH);
         }
 
-        // Pitch boundary
         gc.setStroke(Color.web("#ffffff", 0.45));
         gc.setLineWidth(1.2);
         gc.strokeRoundRect(pad, pad, w - 2 * pad, h - 2 * pad, 4, 4);
 
-        // Halfway line
         double midY = h / 2.0;
         gc.strokeLine(pad, midY, w - pad, midY);
 
-        // Center circle
         double cr = Math.min(w, h) * 0.11;
         gc.strokeOval(w / 2 - cr, midY - cr, cr * 2, cr * 2);
         gc.setFill(Color.web("#ffffff", 0.55));
         gc.fillOval(w / 2 - 2, midY - 2, 4, 4);
 
-        // Penalty areas — top (opponent)
         double paW = w * 0.54;
         double paH = h * 0.16;
         gc.strokeRect((w - paW) / 2, pad, paW, paH);
-        // Penalty areas — bottom (ours)
         gc.strokeRect((w - paW) / 2, h - pad - paH, paW, paH);
 
-        // Goal areas
         double gaW = w * 0.28;
         double gaH = h * 0.065;
         gc.strokeRect((w - gaW) / 2, pad, gaW, gaH);
         gc.strokeRect((w - gaW) / 2, h - pad - gaH, gaW, gaH);
 
-        // Penalty spots
         double psY1 = pad + paH * 0.62;
         double psY2 = h - pad - paH * 0.62;
         gc.fillOval(w / 2 - 2, psY1, 4, 4);
         gc.fillOval(w / 2 - 2, psY2 - 4, 4, 4);
 
-        // Corner arcs (small)
         gc.setLineWidth(0.8);
         double ca = 7;
         gc.strokeArc(pad - ca, pad - ca, ca * 2, ca * 2, 270, 90, javafx.scene.shape.ArcType.OPEN);
@@ -192,31 +177,73 @@ public class TacticPitchCanvas extends Canvas {
         gc.strokeArc(w - pad - ca, h - pad - ca, ca * 2, ca * 2, 90, 90, javafx.scene.shape.ArcType.OPEN);
     }
 
-    private void drawPlayers(GraphicsContext gc, double w, double h) {
-        List<Dot> dots = FORMATIONS.getOrDefault(currentFormation, FORMATIONS.get("4-4-2"));
+    /** Half court: basket at top (y = pad). Spacing matches {@link BasketballTactics#OFFENSE_DIAGRAM}. */
+    private void drawBasketballCourt(GraphicsContext gc, double w, double h) {
+        double pad = 8;
+        gc.setFill(Color.web("#c9956b"));
+        gc.fillRoundRect(0, 0, w, h, 10, 10);
+
+        gc.setStroke(Color.web("#ffffff", 0.85));
+        gc.setLineWidth(1.4);
+        gc.strokeRoundRect(pad, pad, w - 2 * pad, h - 2 * pad, 6, 6);
+
+        double cx = w / 2.0;
+        double top = pad;
+        double rimY = top + 14;
+
+        gc.setFill(Color.web("#ff6b35"));
+        gc.fillOval(cx - 5, rimY - 2, 10, 6);
+
+        double keyW = (w - 2 * pad) * 0.36;
+        double keyH = h * 0.22;
+        gc.strokeRect(cx - keyW / 2, top, keyW, keyH);
+
+        double ftY = top + keyH;
+        gc.strokeLine(cx - keyW / 2, ftY, cx + keyW / 2, ftY);
+
+        double arcR = Math.min(w, h) * 0.38;
+        gc.strokeArc(cx - arcR, top - arcR * 0.15, arcR * 2, arcR * 2, 195, 150, javafx.scene.shape.ArcType.OPEN);
+
+        double midY = h - pad - (h - 2 * pad) * 0.08;
+        gc.strokeLine(pad, midY, w - pad, midY);
+        gc.setFill(Color.web("#ffffff", 0.5));
+        gc.strokeOval(cx - 18, midY - 18, 36, 36);
+    }
+
+    private void drawFootballPlayers(GraphicsContext gc, double w, double h) {
+        List<Dot> dots = FOOTBALL_FORMATIONS.getOrDefault(currentFormation, FOOTBALL_FORMATIONS.get("4-4-2"));
+        drawDots(gc, w, h, dots, true);
+    }
+
+    private void drawBasketballPlayers(GraphicsContext gc, double w, double h) {
+        List<BasketballTactics.Dot> raw = BasketballTactics.OFFENSE_DIAGRAM.get(currentFormation);
+        if (raw == null) {
+            raw = BasketballTactics.OFFENSE_DIAGRAM.get(BasketballTactics.DEFAULT_OFFENSE);
+        }
+        List<Dot> dots = raw.stream().map(d -> new Dot(d.x(), d.y(), d.label())).toList();
+        drawDots(gc, w, h, dots, false);
+    }
+
+    private void drawDots(GraphicsContext gc, double w, double h, List<Dot> dots, boolean football) {
         double dotR = Math.max(9, Math.min(13, w * 0.05));
 
         for (Dot d : dots) {
             double px = d.x() * w;
             double py = d.y() * h;
-            boolean isGK = d.label().equals("GK");
+            boolean highlight = football ? d.label().equals("GK") : d.label().equals("C");
 
-            // Drop shadow
             gc.setFill(Color.web("#000000", 0.35));
             gc.fillOval(px - dotR + 1.5, py - dotR + 2.5, dotR * 2, dotR * 2);
 
-            // Fill
-            gc.setFill(isGK ? Color.web("#f59e0b") : Color.web("#00dfa2"));
+            gc.setFill(highlight ? Color.web("#f59e0b") : Color.web("#00dfa2"));
             gc.fillOval(px - dotR, py - dotR, dotR * 2, dotR * 2);
 
-            // Rim
-            gc.setStroke(isGK ? Color.web("#fde68a") : Color.web("#4dffc3"));
+            gc.setStroke(highlight ? Color.web("#fde68a") : Color.web("#4dffc3"));
             gc.setLineWidth(1.5);
             gc.strokeOval(px - dotR, py - dotR, dotR * 2, dotR * 2);
 
-            // Position label
             gc.setFill(Color.web("#0c1018"));
-            double fontSize = d.label().length() > 2 ? dotR * 0.62 : dotR * 0.72;
+            double fontSize = d.label().length() > 2 ? dotR * 0.55 : dotR * 0.72;
             gc.setFont(Font.font("Segoe UI", FontWeight.BOLD, fontSize));
             gc.setTextAlign(TextAlignment.CENTER);
             gc.fillText(d.label(), px, py + fontSize * 0.38);

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import com.sportmanager.ui.component.TacticPitchCanvas?>
@@ -55,7 +56,7 @@
 
             </VBox>
 
-            <!-- RIGHT: tactic card -->
+            <!-- RIGHT: tactic + player card -->
             <VBox spacing="12" prefWidth="280" minWidth="260" styleClass="card">
 
                 <Label text="FORMATION" styleClass="card-heading"/>
@@ -80,6 +81,21 @@
                         maxWidth="Infinity" styleClass="btn-primary"/>
                 <Label fx:id="tacticStatusLabel" text="" styleClass="status-fit"
                        style="-fx-font-size:11px;"/>
+
+                <Separator/>
+                <Label text="PLAYER CARD" styleClass="card-heading"/>
+                <VBox styleClass="player-card" spacing="8">
+                    <HBox alignment="CENTER_LEFT">
+                        <VBox spacing="2" HBox.hgrow="ALWAYS">
+                            <Label fx:id="squadCardNameLabel" text="Select a player" styleClass="match-team-name"/>
+                            <Label fx:id="squadCardMetaLabel" text="-" styleClass="label-small"/>
+                        </VBox>
+                        <Label fx:id="squadCardOverallLabel" text="OVR 0" styleClass="overall-badge"/>
+                    </HBox>
+                    <Canvas fx:id="squadRadarCanvas" width="240" height="180"/>
+                    <VBox fx:id="squadCardStatsBox" spacing="4"/>
+                    <Label fx:id="squadCardExtraLabel" text="-" styleClass="label-small" wrapText="true"/>
+                </VBox>
 
             </VBox>
         </HBox>

@@ -1,6 +1,7 @@
 package com.sportmanager.core;
 import java.io.Serializable;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**

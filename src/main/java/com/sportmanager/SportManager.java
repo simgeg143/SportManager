@@ -4,8 +4,16 @@ import com.sportmanager.core.*;
 import com.sportmanager.factory.SportFactory;
 import com.sportmanager.session.GameSession;
 import com.sportmanager.session.SaveGameService;
+<<<<<<< Updated upstream
 import java.io.IOException;
+=======
+<<<<<<< HEAD
+=======
+import java.io.IOException;
+>>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
+>>>>>>> Stashed changes
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -19,6 +27,9 @@ import java.util.List;
  * import GameSession, League, or any concrete sport class directly.
  */
 public final class SportManager {
+
+    /** Row for the load-game picker (UI uses this instead of importing session types). */
+    public record SaveGameEntry(String id, String displayName, long savedAtEpochMs, String detailsLine) {}
 
     private static final SportManager INSTANCE = new SportManager();
     private final GameSession session = GameSession.getInstance();

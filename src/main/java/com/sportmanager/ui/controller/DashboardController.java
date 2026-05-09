@@ -7,10 +7,12 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -41,6 +43,9 @@ public class DashboardController implements Initializable {
     // ── Squad preview ─────────────────────────────────────────────────────────
     @FXML private Label lineupStatusLabel;
     @FXML private VBox  injuryListBox;
+    @FXML private StackPane saveOverlay;
+    @FXML private TextField saveNameField;
+    @FXML private Label saveOverlayStatusLabel;
 
     private SportManager sm;
 
@@ -200,6 +205,37 @@ public class DashboardController implements Initializable {
     @FXML private void onViewFixtures() { sm.showFixture(); }
     @FXML private void onViewSquad()    { sm.showSquad(); }
     @FXML private void onViewTable()    { sm.showLeagueTable(); }
+    @FXML private void onSaveGame() {
+        Team team = sm.getManagedTeam();
+        String def = team != null
+                ? team.getName() + " — W" + sm.getCurrentWeek()
+                : "Save " + System.currentTimeMillis();
+        saveNameField.setText(def);
+        saveOverlayStatusLabel.setText("");
+        saveOverlay.setVisible(true);
+        saveOverlay.setManaged(true);
+    }
+
+    @FXML
+    private void onConfirmSaveGame() {
+        String label = saveNameField.getText() == null ? "" : saveNameField.getText().trim();
+        if (label.isBlank()) {
+            saveOverlayStatusLabel.setText("Please enter a save name.");
+            return;
+        }
+        try {
+            sm.saveGame(label);
+            saveOverlayStatusLabel.setText("Saved as \"" + label + "\".");
+        } catch (Exception ex) {
+            saveOverlayStatusLabel.setText("Save failed: " + ex.getMessage());
+        }
+    }
+
+    @FXML
+    private void onCloseSaveOverlay() {
+        saveOverlay.setVisible(false);
+        saveOverlay.setManaged(false);
+    }
     @FXML private void onMainMenu() {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                 "Return to the main menu? (Current progress will not be saved)",

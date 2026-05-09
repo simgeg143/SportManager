@@ -12,9 +12,9 @@
 
         <!-- Hero block -->
         <VBox alignment="CENTER" spacing="12" styleClass="hero-block">
-            <Label text="⚽" styleClass="hero-icon"/>
+            <Label text="🏅" styleClass="hero-icon"/>
             <Label text="SPORT MANAGER" styleClass="title-label"/>
-            <Label text="Build your dynasty. Own the season." styleClass="subtitle-label"/>
+            <Label text="Build your dynasty across football and basketball." styleClass="subtitle-label"/>
         </VBox>
 
         <!-- Spacer -->
@@ -29,7 +29,25 @@
 
         <!-- Version stamp -->
         <Region prefHeight="60"/>
-        <Label text="v1.0 · CE 216 Project" styleClass="version-label"/>
+        <Label text="v2.0 · Multi-Sport Career Mode" styleClass="version-label"/>
 
     </VBox>
+
+    <StackPane fx:id="loadOverlay" visible="false" managed="false" styleClass="sub-overlay">
+        <VBox spacing="10" maxWidth="760" styleClass="sub-modal">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="LOAD GAME" styleClass="card-heading"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="✕" onAction="#onCloseLoadOverlay" styleClass="btn-secondary"/>
+            </HBox>
+            <Label fx:id="loadStatusLabel"
+                   text="Select a save. Files are stored under your user folder (.sportmanager/saves)."
+                   styleClass="label-small" wrapText="true"/>
+            <ListView fx:id="saveListView" prefHeight="360" styleClass="player-list"/>
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Button text="Delete Selected" onAction="#onDeleteSelectedSave" styleClass="btn-secondary"/>
+                <Button text="Load Selected" onAction="#onLoadSelectedSave" styleClass="btn-primary"/>
+            </HBox>
+        </VBox>
+    </StackPane>
 </StackPane>

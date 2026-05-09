@@ -1,6 +1,13 @@
 package com.sportmanager.core;
 
+<<<<<<< Updated upstream
 import java.io.Serial;
+=======
+<<<<<<< HEAD
+=======
+import java.io.Serial;
+>>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
+>>>>>>> Stashed changes
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

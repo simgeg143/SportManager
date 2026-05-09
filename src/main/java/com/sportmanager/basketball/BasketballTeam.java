@@ -2,7 +2,14 @@ package com.sportmanager.basketball;
 
 import com.sportmanager.core.Lineup;
 import com.sportmanager.core.Player;
+<<<<<<< Updated upstream
 import com.sportmanager.core.Tactic;
+=======
+<<<<<<< HEAD
+=======
+import com.sportmanager.core.Tactic;
+>>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
+>>>>>>> Stashed changes
 import com.sportmanager.core.Team;
 
 import java.util.Comparator;
@@ -24,11 +31,21 @@ public class BasketballTeam extends Team {
 
     public BasketballTeam(String name) {
         super(name);
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        this.currentTactic = BasketballTactics.DEFAULT_OFFENSE;
+=======
+>>>>>>> Stashed changes
         this.currentTactic =
                 new Tactic(
                         BasketballTactics.DEFAULT_OFFENSE,
                         "Balanced"
                 );
+<<<<<<< Updated upstream
+=======
+>>>>>>> 500fd5138fc06faaeedc747d2b64dae2724e5e08
+>>>>>>> Stashed changes
     }
 
     @Override

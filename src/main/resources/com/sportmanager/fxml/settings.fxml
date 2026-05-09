@@ -77,6 +77,43 @@
                             <Label fx:id="difficultyHintLabel" text="" styleClass="hint-label"/>
                         </VBox>
 
+                        <!-- Rival Bot Mode -->
+                        <VBox spacing="6">
+                            <Label text="RIVAL BOT MODE" styleClass="section-label"/>
+                            <HBox spacing="0" styleClass="settings-toggle-group">
+                                <ToggleButton fx:id="botBeginnerBtn" text="Beginner"
+                                              styleClass="settings-toggle,settings-toggle-left"
+                                              onAction="#onBotModeChanged"/>
+                                <ToggleButton fx:id="botStreetBtn" text="Street Player"
+                                              styleClass="settings-toggle,settings-toggle-mid"
+                                              onAction="#onBotModeChanged"/>
+                                <ToggleButton fx:id="botSemiProBtn" text="Semi-Pro"
+                                              styleClass="settings-toggle,settings-toggle-mid"
+                                              onAction="#onBotModeChanged"/>
+                                <ToggleButton fx:id="botProBtn" text="Professional"
+                                              styleClass="settings-toggle,settings-toggle-right"
+                                              onAction="#onBotModeChanged"/>
+                            </HBox>
+                            <Label fx:id="botModeHintLabel" text="" styleClass="hint-label"/>
+                        </VBox>
+
+                        <!-- Timeout Preset -->
+                        <VBox spacing="6">
+                            <Label text="TIMEOUT PRESET" styleClass="section-label"/>
+                            <HBox spacing="0" styleClass="settings-toggle-group">
+                                <ToggleButton fx:id="timeoutCasualBtn" text="Casual"
+                                              styleClass="settings-toggle,settings-toggle-left"
+                                              onAction="#onTimeoutPresetChanged"/>
+                                <ToggleButton fx:id="timeoutStandardBtn" text="Standard"
+                                              styleClass="settings-toggle,settings-toggle-mid"
+                                              onAction="#onTimeoutPresetChanged"/>
+                                <ToggleButton fx:id="timeoutStrictBtn" text="Strict"
+                                              styleClass="settings-toggle,settings-toggle-right"
+                                              onAction="#onTimeoutPresetChanged"/>
+                            </HBox>
+                            <Label fx:id="timeoutHintLabel" text="" styleClass="hint-label"/>
+                        </VBox>
+
                         <!-- Auto-Advance -->
                         <VBox spacing="6">
                             <Label text="AFTER MATCH" styleClass="section-label"/>

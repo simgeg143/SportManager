@@ -1,6 +1,7 @@
 package com.sportmanager;
 import com.sportmanager.core.Sport;
 import com.sportmanager.factory.SportFactory;
+import com.sportmanager.basketball.BasketballSport;
 import com.sportmanager.football.FootballSport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,16 @@ class SportFactoryTest {
 
         assertNotNull(sport);
         assertInstanceOf(FootballSport.class, sport);
+    }
+
+    @Test
+    @DisplayName("Should create BasketballSport when sport code is basketball")
+    void shouldCreateBasketballSportWhenCodeIsBasketball() {
+        Sport sport = SportFactory.create("basketball");
+
+        assertNotNull(sport);
+        assertInstanceOf(BasketballSport.class, sport);
+        assertEquals("Basketball", sport.getName());
     }
 
     @Test

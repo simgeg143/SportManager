@@ -3,9 +3,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.sportmanager.ui.controller.DashboardController"
-            styleClass="root-pane">
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
+           xmlns="http://javafx.com/javafx"
+           fx:controller="com.sportmanager.ui.controller.DashboardController"
+           styleClass="root-pane">
+<BorderPane styleClass="root-pane">
 
     <!-- ── TOP NAV BAR ──────────────────────────────────────────────────── -->
     <top>
@@ -17,6 +19,7 @@
             <Button text="📋  Fixtures"  onAction="#onViewFixtures" styleClass="nav-btn"/>
             <Button text="👥  Squad"     onAction="#onViewSquad"    styleClass="nav-btn"/>
             <Button text="📊  Table"     onAction="#onViewTable"    styleClass="nav-btn"/>
+            <Button text="💾  Save"      onAction="#onSaveGame"      styleClass="nav-btn"/>
             <Separator orientation="VERTICAL"/>
             <Button text="Main Menu"     onAction="#onMainMenu"     styleClass="nav-btn-danger"/>
         </HBox>
@@ -70,3 +73,20 @@
         </HBox>
     </center>
 </BorderPane>
+    <StackPane fx:id="saveOverlay" visible="false" managed="false" styleClass="sub-overlay">
+        <VBox spacing="10" maxWidth="560" styleClass="sub-modal">
+            <HBox alignment="CENTER_LEFT">
+                <Label text="SAVE GAME" styleClass="card-heading"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="✕" onAction="#onCloseSaveOverlay" styleClass="btn-secondary"/>
+            </HBox>
+            <Label text="Name this save (each save is a separate file)." styleClass="label-small"/>
+            <TextField fx:id="saveNameField" styleClass="settings-text-field"/>
+            <Label fx:id="saveOverlayStatusLabel" text="" styleClass="label-small" wrapText="true"/>
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Button text="Cancel" onAction="#onCloseSaveOverlay" styleClass="btn-secondary"/>
+                <Button text="Save" onAction="#onConfirmSaveGame" styleClass="btn-primary"/>
+            </HBox>
+        </VBox>
+    </StackPane>
+</StackPane>

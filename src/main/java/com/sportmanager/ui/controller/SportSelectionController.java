@@ -22,8 +22,7 @@ public class SportSelectionController implements Initializable {
 
     private static final List<String[]> SPORTS = List.of(
             new String[]{"football", "Football",  "11-a-side league competition"},
-            new String[]{"basketball","Basketball","Coming soon",},
-            new String[]{"tennis",   "Tennis",    "Coming soon"}
+            new String[]{"basketball","Basketball","5-on-5 full season management"}
     );
 
     @Override
@@ -47,7 +46,7 @@ public class SportSelectionController implements Initializable {
             detail.getStyleClass().add("sport-card-desc");
             card.getChildren().addAll(icon, title, detail);
 
-            boolean enabled = code.equals("football");
+            boolean enabled = true;
             card.setOnMouseClicked(e -> {
                 if (enabled) SportManager.getInstance().selectSport(code);
             });

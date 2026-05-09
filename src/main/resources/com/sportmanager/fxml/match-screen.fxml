@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import com.sportmanager.ui.component.TacticPitchCanvas?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.sportmanager.ui.controller.MatchScreenController"
-            styleClass="root-pane">
+            styleClass="root-pane match-screen-root">
 
     <!-- ── SCOREBOARD ───────────────────────────────────────────────────── -->
     <top>
         <VBox styleClass="scoreboard-panel">
             <HBox alignment="CENTER" spacing="0" styleClass="scoreboard-row">
                 <VBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS" styleClass="team-side">
+                    <StackPane styleClass="crest-badge">
+                        <ImageView fx:id="homeCrestImage" fitWidth="44" fitHeight="44" preserveRatio="true"/>
+                        <Label fx:id="homeCrestFallbackLabel" text="HM" styleClass="crest-fallback-label"/>
+                    </StackPane>
                     <Label fx:id="homeTeamLabel" text="Home Team" styleClass="match-team-name"/>
                     <Label text="HOME" styleClass="venue-badge"/>
                 </VBox>
@@ -21,6 +27,10 @@
                     <Label fx:id="matchInfoLabel" text=""   styleClass="match-info-label"/>
                 </VBox>
                 <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" styleClass="team-side">
+                    <StackPane styleClass="crest-badge">
+                        <ImageView fx:id="awayCrestImage" fitWidth="44" fitHeight="44" preserveRatio="true"/>
+                        <Label fx:id="awayCrestFallbackLabel" text="AW" styleClass="crest-fallback-label"/>
+                    </StackPane>
                     <Label fx:id="awayTeamLabel" text="Away Team" styleClass="match-team-name"/>
                     <Label text="AWAY" styleClass="venue-badge"/>
                 </VBox>
@@ -30,59 +40,168 @@
 
     <!-- ── CENTRE: events + half-time panel ─────────────────────────────── -->
     <center>
-        <HBox spacing="16" styleClass="match-center">
-            <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+        <StackPane fx:id="matchCenterShell" styleClass="match-center match-center-shell">
+        <HBox fx:id="centerContentRow" spacing="34">
 
             <!-- Event log -->
-            <VBox HBox.hgrow="ALWAYS" spacing="8" styleClass="card">
-                <Label text="MATCH EVENTS" styleClass="section-label"/>
-                <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true" styleClass="events-scroll">
-                    <VBox fx:id="eventsBox" spacing="4" styleClass="events-inner">
-                        <padding><Insets top="4" right="8" bottom="4" left="8"/></padding>
+            <SplitPane fx:id="liveSplitPane" HBox.hgrow="ALWAYS" minWidth="0" maxWidth="Infinity" styleClass="live-split-pane">
+                <items>
+                    <VBox spacing="12" minWidth="0" maxWidth="Infinity" alignment="TOP_CENTER" styleClass="card live-main-card">
+                        <Label text="LIVE MATCH FIELD" styleClass="live-field-title"/>
+                        <StackPane fx:id="liveFieldContainer"
+                                   VBox.vgrow="ALWAYS"
+                                   minWidth="500" prefWidth="540" maxWidth="620"
+                                   minHeight="560" prefHeight="720" maxHeight="820"
+                                   styleClass="live-field-frame">
+                            <Canvas fx:id="liveFieldCanvas"/>
+                            <Pane fx:id="liveFieldOverlayLayer" mouseTransparent="true" pickOnBounds="false">
+                                <VBox fx:id="hoverPlayerCard" visible="false" managed="false" spacing="8" styleClass="hover-player-card">
+                                    <HBox alignment="CENTER_LEFT" spacing="8">
+                                        <Label fx:id="hoverCardNameLabel" text="-" styleClass="hover-player-name"/>
+                                        <Region HBox.hgrow="ALWAYS"/>
+                                        <Label fx:id="hoverCardOverallLabel" text="OVR 0" styleClass="overall-badge"/>
+                                    </HBox>
+                                    <Label fx:id="hoverCardMetaLabel" text="-" styleClass="hover-player-meta"/>
+                                    <Canvas fx:id="hoverRadarCanvas" width="210" height="150"/>
+                                    <Label fx:id="hoverCardStatsLabel" text="-" wrapText="true" styleClass="hover-player-stats"/>
+                                </VBox>
+                            </Pane>
+                        </StackPane>
+                        <Label fx:id="liveFieldHintLabel" text="Hover players for quick info, click to lock card."
+                               styleClass="live-field-hint"/>
                     </VBox>
-                </ScrollPane>
-            </VBox>
+                    <VBox spacing="10" minWidth="500" prefWidth="580" maxWidth="720" styleClass="card live-main-card">
+                        <Label text="MATCH EVENTS" styleClass="live-field-title"/>
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="events-scroll">
+                            <VBox fx:id="eventsBox" spacing="4" styleClass="events-inner">
+                                <padding><Insets top="4" right="8" bottom="4" left="8"/></padding>
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+                </items>
+            </SplitPane>
 
-            <!-- ── Half-time panel: substitutions + tactic + pitch canvas ── -->
-            <VBox fx:id="subPanel" spacing="10" prefWidth="300" styleClass="card"
-                  visible="false" managed="true">
-                <Label text="HALF TIME" styleClass="section-label"/>
+            <!-- ── Break panel: substitutions + tactic + pitch canvas ── -->
+            <ScrollPane fx:id="subPanelScroll"
+                        fitToWidth="true"
+                        minWidth="460"
+                        prefWidth="520"
+                        visible="false"
+                        managed="false"
+                        styleClass="events-scroll">
+                <content>
+                    <VBox fx:id="subPanel" spacing="10" styleClass="card">
+                        <Label fx:id="breakPanelTitleLabel" text="HALF TIME" styleClass="section-label"/>
+                        <Label fx:id="pauseReasonLabel" text="Match paused for tactical intervention."
+                               styleClass="label-small" wrapText="true"/>
+                        <Label fx:id="rivalFormationLabel" text="Rival Formation: -" styleClass="label-small"/>
+                        <Label fx:id="subCountLabel" text="Substitutions used: 0 / 3" styleClass="label-small"/>
+                        <Label fx:id="timeoutCountLabel" text="Timeouts left: 0" styleClass="label-small"/>
+                        <Button text="Open Substitution Comparison" onAction="#onOpenSubstitutionModal"
+                                maxWidth="Infinity" styleClass="btn-secondary"/>
 
-                <!-- Substitution section -->
-                <Label text="SUBSTITUTION  (max 3)" styleClass="card-heading"/>
-                <Label text="Remove from XI:" styleClass="label-small"/>
-                <ComboBox fx:id="removePlayerCombo" maxWidth="Infinity"
-                          styleClass="tactic-combo"/>
-                <Label text="Add from bench:" styleClass="label-small"/>
-                <ComboBox fx:id="addPlayerCombo" maxWidth="Infinity"
-                          styleClass="tactic-combo"/>
-                <Label fx:id="subCountLabel" text="Subs: 0 / 3" styleClass="label-small"/>
-                <Button text="Make Substitution" onAction="#onMakeSubstitution"
-                        maxWidth="Infinity" styleClass="btn-secondary"/>
+                        <Separator style="-fx-background-color:#253042;"/>
 
-                <Separator style="-fx-background-color:#253042;"/>
+                        <!-- Tactic section -->
+                        <Label text="FORMATION" styleClass="card-heading"/>
+                        <ComboBox fx:id="tacticCombo" maxWidth="Infinity" styleClass="tactic-combo"/>
 
-                <!-- Tactic section -->
-                <Label text="FORMATION" styleClass="card-heading"/>
-                <ComboBox fx:id="tacticCombo" maxWidth="Infinity" styleClass="tactic-combo"/>
+                        <!-- Formation pitch canvas — updates live on combo change -->
+                        <TacticPitchCanvas fx:id="tacticCanvas"
+                                           width="276" height="220"
+                                           style="-fx-background-radius:8px;"/>
 
-                <!-- Formation pitch canvas — updates live on combo change -->
-                <TacticPitchCanvas fx:id="tacticCanvas"
-                                   width="276" height="220"
-                                   style="-fx-background-radius:8px;"/>
-
-                <Button text="Apply Formation" onAction="#onApplyTactic"
-                        maxWidth="Infinity" styleClass="btn-primary"/>
-            </VBox>
+                        <Button text="Apply Formation" onAction="#onApplyTactic"
+                                maxWidth="Infinity" styleClass="btn-primary"/>
+                    </VBox>
+                </content>
+            </ScrollPane>
         </HBox>
+
+        <!-- In-window substitution modal overlay -->
+        <StackPane fx:id="subOverlay" visible="false" managed="false" styleClass="sub-overlay">
+            <VBox spacing="12" maxWidth="980" styleClass="sub-modal">
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="SUBSTITUTION HUB" styleClass="card-heading"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="✕" onAction="#onCloseSubOverlay" styleClass="btn-secondary"/>
+                </HBox>
+                <Label fx:id="subOverlayReasonLabel" text="Compare players and confirm your substitution."
+                       styleClass="label-small"/>
+
+                <HBox spacing="14">
+                    <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="player-card-panel">
+                        <Label text="CURRENT PLAYER" styleClass="section-label"/>
+                        <ListView fx:id="overlayCurrentList" prefHeight="240" styleClass="player-list"/>
+                        <VBox styleClass="player-card">
+                            <HBox alignment="CENTER_LEFT">
+                                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="leftPlayerNameLabel" text="-" styleClass="match-team-name"/>
+                                    <Label fx:id="leftPlayerMetaLabel" text="-" styleClass="label-small"/>
+                                </VBox>
+                                <Label fx:id="leftOverallBadgeLabel" text="OVR 0" styleClass="overall-badge"/>
+                            </HBox>
+                            <HBox spacing="8">
+                                <Label fx:id="leftRoleChipLabel" text="ROLE" styleClass="chip-role"/>
+                                <Label fx:id="leftStatusChipLabel" text="FIT" styleClass="chip-status-fit"/>
+                            </HBox>
+                            <Canvas fx:id="leftRadarCanvas" width="360" height="230"/>
+                            <VBox fx:id="leftStatsBox" spacing="4"/>
+                            <Label fx:id="leftExtraStatsLabel" text="-" styleClass="label-small"/>
+                        </VBox>
+                    </VBox>
+
+                    <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="player-card-panel">
+                        <Label text="CANDIDATE BENCH PLAYER" styleClass="section-label"/>
+                        <ListView fx:id="overlayBenchList" prefHeight="240" styleClass="player-list"/>
+                        <VBox styleClass="player-card">
+                            <HBox alignment="CENTER_LEFT">
+                                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="rightPlayerNameLabel" text="-" styleClass="match-team-name"/>
+                                    <Label fx:id="rightPlayerMetaLabel" text="-" styleClass="label-small"/>
+                                </VBox>
+                                <Label fx:id="rightOverallBadgeLabel" text="OVR 0" styleClass="overall-badge"/>
+                            </HBox>
+                            <HBox spacing="8">
+                                <Label fx:id="rightRoleChipLabel" text="ROLE" styleClass="chip-role"/>
+                                <Label fx:id="rightStatusChipLabel" text="FIT" styleClass="chip-status-fit"/>
+                            </HBox>
+                            <Canvas fx:id="rightRadarCanvas" width="360" height="230"/>
+                            <VBox fx:id="rightStatsBox" spacing="4"/>
+                            <Label fx:id="rightExtraStatsLabel" text="-" styleClass="label-small"/>
+                        </VBox>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="12" alignment="CENTER_RIGHT">
+                    <Button text="Keep Current" onAction="#onKeepCurrentSubstitution" styleClass="btn-secondary"/>
+                    <Button text="Apply Substitution" onAction="#onApplyOverlaySubstitution" styleClass="btn-primary"/>
+                </HBox>
+            </VBox>
+        </StackPane>
+        </StackPane>
     </center>
 
     <!-- ── BOTTOM CONTROLS ──────────────────────────────────────────────── -->
     <bottom>
         <HBox styleClass="bottom-bar" alignment="CENTER" spacing="20">
             <padding><Insets top="12" right="24" bottom="12" left="24"/></padding>
-            <Button fx:id="simulateButton" text="▶  Play First Half"
+            <ToggleButton fx:id="autoplayToggle" text="Autoplay: ON" selected="true"
+                          onAction="#onToggleAutoplay" styleClass="btn-secondary"/>
+            <HBox spacing="6" alignment="CENTER_LEFT">
+                <Label text="Speed" styleClass="label-small"/>
+                <Slider fx:id="eventSpeedSlider" min="0.5" max="3.0" value="1.0"
+                        prefWidth="140" onMouseReleased="#onEventSpeedChanged"/>
+                <Label fx:id="eventSpeedLabel" text="1.0x" styleClass="label-small"/>
+            </HBox>
+            <Button fx:id="pauseResumeButton" text="Pause"
+                    onAction="#onPauseResume" styleClass="btn-secondary" prefWidth="120"/>
+            <Button fx:id="timeoutButton" text="Take Timeout"
+                    onAction="#onTakeTimeout" styleClass="btn-secondary" prefWidth="150"/>
+            <Button fx:id="simulateButton" text="▶  Start Next Segment"
                     onAction="#onSimulateNext" styleClass="btn-primary" prefWidth="200"/>
+            <Button fx:id="nextEventButton" text="Next Event"
+                    onAction="#onNextEvent" styleClass="btn-secondary" prefWidth="130" disable="true"/>
             <Button fx:id="continueButton" text="Continue →"
                     onAction="#onContinue"    styleClass="btn-success" prefWidth="160"
                     visible="false"/>
