@@ -31,6 +31,8 @@
 
 .root-pane {
     -fx-background-color: #0c1018;
+    -fx-min-height: 0;
+    -fx-max-height: infinity;
 }
 
 Label {
@@ -315,10 +317,6 @@ Label {
     -fx-background-color: transparent;
     -fx-background: transparent;
 }
-.scroll-transparent > .viewport {
-    -fx-background-color: transparent;
-}
-
 .sport-cards-pane {
     -fx-background-color: transparent;
 }
@@ -1054,7 +1052,8 @@ Label {
 
 .page-body {
     -fx-background-color: #0c1018;
-    -fx-min-height: 100%;
+    /* Allow shrinking inside BorderPane / stacked shells instead of forcing a tall minimum */
+    -fx-min-height: 0;
 }
 
 .fixture-table, .standings-table, .squad-table {
@@ -1109,20 +1108,25 @@ Label {
 
 .row-current-week { -fx-border-color: #00dfa2 transparent !important; -fx-border-width: 1 0 !important; }
 
-/* Squad — right column (formation + player card) scrolls when window height is small */
+/* Squad — right column vertical split (pitch vs formation controls + card) */
+.squad-right-split {
+    -fx-background-color: transparent;
+    -fx-padding: 2 0 2 0;
+}
+.squad-right-split > .split-pane-divider {
+    -fx-background-color: #253042;
+    -fx-padding: 3 0 3 0;
+}
+
+/* Squad — right column legacy pane helper */
 .squad-right-scroll {
     -fx-background-color: transparent;
     -fx-padding: 0;
 }
-.squad-right-scroll > .viewport {
-    -fx-background-color: transparent;
-}
-
 /* ══════════════════════════════════════════════════════════════════
    21. TEAM SELECTION CARDS
 ══════════════════════════════════════════════════════════════════ */
 
-.team-scroll > .viewport { -fx-background-color: transparent; }
 .team-scroll { -fx-background-color: transparent; -fx-background: transparent; }
 
 .team-card {
@@ -1193,9 +1197,6 @@ Label {
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;
 }
-.events-scroll > .viewport {
-    -fx-background-color: #111827;
-}
 .events-inner {
     -fx-background-color: #111827;
 }
@@ -1253,31 +1254,6 @@ Label {
 .sub-overlay {
     -fx-background-color: rgba(5, 9, 16, 0.82);
     -fx-padding: 20px;
-}
-
-/* Substitution hub: vertical wheel/trackpad scroll without visible bars */
-.sub-modal-scroll {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0;
-    -fx-padding: 0;
-}
-.sub-modal-scroll > .viewport {
-    -fx-background-color: transparent;
-}
-.sub-modal-scroll > .corner {
-    -fx-background-color: transparent;
-}
-.sub-modal-scroll .scroll-bar:vertical {
-    -fx-pref-width: 0;
-    -fx-min-width: 0;
-    -fx-opacity: 0;
-    -fx-padding: 0;
-}
-.sub-modal-scroll .scroll-bar:horizontal {
-    -fx-pref-height: 0;
-    -fx-min-height: 0;
-    -fx-opacity: 0;
-    -fx-padding: 0;
 }
 
 .sub-modal {
@@ -1406,13 +1382,9 @@ Label {
     -fx-background-color: #0f1520;
 }
 
-.match-bottom-scroll {
-    -fx-fit-to-height: true;
+.match-bottom-bar-host {
     -fx-background-color: transparent;
     -fx-padding: 0;
-}
-.match-bottom-scroll > .viewport {
-    -fx-background-color: transparent;
 }
 
 .match-screen-root .label-small {

@@ -26,7 +26,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
@@ -94,7 +93,7 @@ public class MatchScreenController implements Initializable {
     @FXML private Button pauseResumeButton;
     @FXML private Button timeoutButton;
     @FXML private Button nextEventButton;
-    @FXML private ScrollPane subPanelScroll;
+    @FXML private VBox subPanelScroll;
     @FXML private Label breakPanelTitleLabel;
     @FXML private Label subCountLabel;
     @FXML private Label timeoutCountLabel;
@@ -249,8 +248,8 @@ public class MatchScreenController implements Initializable {
 
     private void bindBreakPanelTacticSizing() {
         if (subPanelScroll == null || tacticCanvas == null) return;
-        ScrollViewportBindings.attachScrollViewportListeners(subPanelScroll, () -> {
-            double inner = ScrollViewportBindings.scrollViewportInnerWidth(subPanelScroll, 12);
+        ScrollViewportBindings.attachRegionLayoutListeners(subPanelScroll, () -> {
+            double inner = ScrollViewportBindings.regionInnerWidth(subPanelScroll, 12);
             if (inner <= 0) return;
             ScrollViewportBindings.layoutTacticPitchCanvas(tacticCanvas, inner, 276, 220, 320);
             String t = tacticCombo != null ? tacticCombo.getValue() : null;

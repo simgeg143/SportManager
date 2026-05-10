@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -64,7 +65,9 @@ public class SquadController implements Initializable {
     @FXML private Canvas            squadRadarCanvas;
     @FXML private VBox              squadCardStatsBox;
     @FXML private Label             squadCardExtraLabel;
-    @FXML private ScrollPane       squadRightScroll;
+    @FXML private SplitPane squadRightSplit;
+    @FXML private VBox squadTacticCanvasHost;
+    @FXML private VBox squadBottomPane;
 
     private SportManager sm;
     private Map<String, Double> squadRadarPrev = Map.of();
@@ -99,22 +102,53 @@ public class SquadController implements Initializable {
         setupPlayerTable(team);
         setupCoachTable(team);
         setupTacticPanel(team);
-        if (squadRightScroll != null) {
-            ScrollViewportBindings.attachScrollViewportListeners(squadRightScroll, this::resizeSquadSidePanelContents);
+        if (squadRightSplit != null) {
+            ScrollViewportBindings.attachRegionLayoutListeners(squadRightSplit, this::resizeSquadSidePanelContents);
         }
+        if (squadTacticCanvasHost != null) {
+            ScrollViewportBindings.attachRegionLayoutListeners(squadTacticCanvasHost, this::resizeSquadSidePanelContents);
+        }
+        if (squadBottomPane != null) {
+            ScrollViewportBindings.attachRegionLayoutListeners(squadBottomPane, this::resizeSquadSidePanelContents);
+        }
+        Platform.runLater(() -> {
+            if (squadRightSplit == null) return;
+            for (javafx.scene.Node n : squadRightSplit.lookupAll(".split-pane-divider")) {
+                n.setMouseTransparent(true);
+            }
+        });
     }
 
     private void resizeSquadSidePanelContents() {
-        if (squadRightScroll == null || squadTacticCanvas == null || squadRadarCanvas == null) return;
-        double inner = ScrollViewportBindings.scrollViewportInnerWidth(squadRightScroll, 12);
-        if (inner <= 0) return;
-        ScrollViewportBindings.layoutTacticPitchCanvas(squadTacticCanvas, inner, 256, 300, 340);
-        ScrollViewportBindings.layoutRadarCanvas(squadRadarCanvas, inner, 0.72);
+        if (squadRightSplit == null || squadTacticCanvasHost == null || squadBottomPane == null
+                || squadTacticCanvas == null || squadRadarCanvas == null) return;
+
+        double splitInner = ScrollViewportBindings.regionInnerWidth(squadRightSplit, 12);
+        if (splitInner <= 40) return;
+
+        double inset = 10;
+        double hostW = Math.max(36, squadTacticCanvasHost.getWidth() - inset);
+        double hostH = Math.max(48, squadTacticCanvasHost.getHeight() - inset);
+
+        double idealPitchH = hostW * (300.0 / 256.0);
+        double pitchH = Math.min(Math.max(idealPitchH, 72), hostH);
+        squadTacticCanvas.setWidth(hostW);
+        squadTacticCanvas.setHeight(pitchH);
 
         String tactic = squadTacticCombo != null ? squadTacticCombo.getValue() : null;
         if (tactic != null && !tactic.isBlank()) {
             squadTacticCanvas.drawFormation(tactic);
         }
+
+        double bottomH = squadBottomPane.getHeight();
+        double radarW = ScrollViewportBindings.regionInnerWidth(squadBottomPane, 28);
+        if (radarW <= 40 || bottomH < 80) return;
+
+        double radarH = Math.max(52, bottomH - 220);
+        radarH = Math.min(radarH, radarW * 0.92);
+
+        ScrollViewportBindings.layoutRadarCanvas(squadRadarCanvas, radarW, radarH / radarW);
+
         if (playerTable != null) {
             Player sel = playerTable.getSelectionModel().getSelectedItem();
             if (sel != null) {

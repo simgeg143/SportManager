@@ -73,28 +73,25 @@
                     </VBox>
                     <VBox spacing="10" minWidth="120" prefWidth="280" maxWidth="Infinity" styleClass="card live-main-card">
                         <Label text="MATCH EVENTS" styleClass="live-field-title"/>
-                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
-                                    VBox.vgrow="ALWAYS" styleClass="events-scroll">
-                            <VBox fx:id="eventsBox" spacing="4" styleClass="events-inner" minWidth="0" maxWidth="Infinity">
+                        <VBox minHeight="0" maxHeight="Infinity" VBox.vgrow="ALWAYS" styleClass="events-scroll">
+                            <VBox fx:id="eventsBox" spacing="4" styleClass="events-inner" minWidth="0" maxWidth="Infinity" VBox.vgrow="ALWAYS">
                                 <padding><Insets top="4" right="8" bottom="4" left="8"/></padding>
                             </VBox>
-                        </ScrollPane>
+                        </VBox>
                     </VBox>
                 </items>
             </SplitPane>
 
             <!-- ── Break panel: substitutions + tactic + pitch canvas ── -->
-            <ScrollPane fx:id="subPanelScroll"
-                        fitToWidth="true"
-                        hbarPolicy="NEVER"
-                        vbarPolicy="NEVER"
-                        minWidth="160"
-                        prefWidth="280"
-                        maxWidth="520"
-                        visible="false"
-                        managed="false"
-                        styleClass="events-scroll">
-                <content>
+            <VBox fx:id="subPanelScroll"
+                  minWidth="160"
+                  prefWidth="280"
+                  maxWidth="520"
+                  visible="false"
+                  managed="false"
+                  minHeight="0"
+                  maxHeight="Infinity"
+                  styleClass="events-scroll">
                     <VBox fx:id="subPanel" spacing="10" styleClass="card" minWidth="0" maxWidth="Infinity">
                         <Label fx:id="breakPanelTitleLabel" text="HALF TIME" styleClass="section-label"/>
                         <Label fx:id="pauseReasonLabel" text="Match paused for tactical intervention."
@@ -118,14 +115,11 @@
                         <Button text="Apply Formation" onAction="#onApplyTactic"
                                 maxWidth="Infinity" styleClass="btn-primary"/>
                     </VBox>
-                </content>
-            </ScrollPane>
+            </VBox>
         </HBox>
 
         <!-- In-window substitution modal overlay -->
         <StackPane fx:id="subOverlay" visible="false" managed="false" styleClass="sub-overlay">
-            <ScrollPane fitToWidth="true" minHeight="0" hbarPolicy="NEVER" vbarPolicy="NEVER" pannable="true"
-                        styleClass="sub-modal-scroll">
                 <VBox fx:id="subModalRoot" spacing="12" maxWidth="980" minWidth="0" styleClass="sub-modal">
                 <HBox alignment="CENTER_LEFT">
                     <Label text="SUBSTITUTION HUB" styleClass="card-heading"/>
@@ -184,19 +178,16 @@
                     <Button text="Apply Substitution" onAction="#onApplyOverlaySubstitution" styleClass="btn-primary"/>
                 </HBox>
             </VBox>
-            </ScrollPane>
         </StackPane>
         </StackPane>
     </center>
 
     <!-- ── BOTTOM CONTROLS ──────────────────────────────────────────────── -->
     <bottom>
-        <!-- Outer row fills BorderPane width; side Regions steal slack so ScrollPane (intrinsic width) stays visually centered. -->
+        <!-- Outer row fills BorderPane width; side Regions center the bottom bar. Whole screen scales to fit. -->
         <HBox alignment="CENTER" spacing="0" maxWidth="Infinity" styleClass="match-bottom-outer">
             <Region HBox.hgrow="ALWAYS" minWidth="0" maxHeight="Infinity"/>
-            <ScrollPane fitToHeight="true" minWidth="0" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" styleClass="match-bottom-scroll">
-                <content>
-                    <HBox styleClass="bottom-bar" alignment="CENTER_LEFT" spacing="12">
+            <HBox minWidth="0" maxWidth="Infinity" alignment="CENTER_LEFT" spacing="12" styleClass="bottom-bar match-bottom-bar-host">
                         <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
                         <ToggleButton fx:id="autoplayToggle" text="Autoplay: ON" selected="true"
                                       onAction="#onToggleAutoplay" styleClass="btn-secondary"/>
@@ -217,9 +208,7 @@
                         <Button fx:id="continueButton" text="Continue →"
                                 onAction="#onContinue"    styleClass="btn-success" minWidth="96"
                                 visible="false"/>
-                    </HBox>
-                </content>
-            </ScrollPane>
+            </HBox>
             <Region HBox.hgrow="ALWAYS" minWidth="0" maxHeight="Infinity"/>
         </HBox>
     </bottom>

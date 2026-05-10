@@ -17,8 +17,7 @@
 
     <!-- ── Centre: sport cards populated dynamically ── -->
     <center>
-        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
-                    styleClass="scroll-transparent">
+        <VBox alignment="TOP_CENTER" minHeight="0" maxHeight="Infinity" styleClass="scroll-transparent">
             <FlowPane fx:id="sportCardsPane"
                       alignment="CENTER"
                       hgap="30" vgap="30"
@@ -27,7 +26,7 @@
                       styleClass="sport-cards-pane">
                 <padding><Insets top="40" bottom="40" left="40" right="40"/></padding>
             </FlowPane>
-        </ScrollPane>
+        </VBox>
     </center>
 
     <!-- ── Bottom: navigation ── -->
