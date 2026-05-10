@@ -1,0 +1,650 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\usepackage{amssymb}
+\usepackage{parskip}
+\usepackage{mathptmx}
+
+\geometry{margin=2.5cm}
+
+\begin{document}
+
+\begin{titlepage}
+\thispagestyle{empty}
+\centering
+\vspace*{2cm}
+T.C.\\
+IZMIR UNIVERSITY OF ECONOMICS\\
+FACULTY OF ENGINEERING\\
+CE 216
+\vfill
+{\Large\bfseries ``SPORTS MANAGER'' PROJECT}\\[0.75em]
+{\large\bfseries MILESTONE 3 REPORT DOCUMENT}
+\vfill
+SİMGE GÖKALP — 20230602029\\[0.45em]
+TUANA YAĞMUR — 20240602410\\[0.45em]
+VİLDAN TURNALAR İNAL — 20253501001\\[0.45em]
+UĞUR EMİN BAYNAL — 20220602408\\[1.25em]
+LECTURER: KAYA OĞUZ
+\end{titlepage}
+
+\section{Introduction}
+
+This report presents the final implementation of the Sports Manager application developed during the CE216 course project. The project began with an architecture-focused design document in Milestone 1, continued with the implementation of the core framework and testing infrastructure in Milestone 2, and was completed in Milestone 3 with a fully playable application, graphical user interface, second sport integration, installer-ready structure, and user-oriented features.
+
+The primary objective of the project was to create a sports management framework capable of supporting multiple sports through abstraction and object-oriented design principles. Instead of creating a football-only game, the system was designed as a reusable and extensible framework where different sports can share the same core architecture while implementing their own rules and mechanics.
+
+The final system successfully demonstrates this goal. The application now supports two sports:
+\begin{itemize}
+\item Football
+\item Basketball
+\end{itemize}
+Both sports operate on the same framework while implementing different match logic, player structures, tactics, lineups, and league behavior.
+
+The project includes:
+\begin{itemize}
+\item A JavaFX graphical user interface
+\item Match simulation systems
+\item League and standings management
+\item Squad and tactic management
+\item Injury and substitution systems
+\item Theme and settings support
+\item Save-ready architecture
+\item Multi-sport extensibility
+\item Unit testing with JUnit
+\end{itemize}
+
+The final implementation preserves the layered architecture and abstraction principles defined during Milestone 1 while introducing several practical refinements based on implementation experience.
+
+\section{Final System Architecture}
+
+The Sports Manager application follows a layered and modular architecture designed to separate responsibilities and minimize coupling between components.
+
+\subsection{User Interface Layer}
+
+The User Interface layer is implemented using JavaFX and FXML.
+
+Controllers include:
+\begin{itemize}
+\item MainMenuController
+\item DashboardController
+\item FixtureController
+\item MatchScreenController
+\item LeagueTableController
+\item SquadController
+\item TeamSelectionController
+\item SportSelectionController
+\item SettingsController
+\item AppToolbarController
+\end{itemize}
+
+The UI layer never communicates directly with concrete sport implementations. Controllers interact only with abstract types and the \texttt{SportManager} class.
+
+Scene transitions are centralized inside the \texttt{SceneManager} class. This prevents duplication of navigation logic and keeps controllers lightweight.
+
+\subsection{Core System Layer}
+
+The Core System layer contains the abstract framework shared by all sports.
+
+Main abstract classes:
+\begin{itemize}
+\item Player
+\item Team
+\item Match
+\item League
+\end{itemize}
+
+Supporting classes:
+\begin{itemize}
+\item StandingEntry
+\item Lineup
+\item Tactic
+\item MatchResult
+\item MatchSegment
+\item InjuryRecord
+\item Coach
+\end{itemize}
+
+The \texttt{SportManager} class acts as the facade between the UI and the game system.
+
+\texttt{GameSession} is responsible for maintaining application state including:
+\begin{itemize}
+\item Current season year
+\item Current round/week
+\item Managed team
+\item Selected sport
+\item Active league
+\item Match progression
+\end{itemize}
+
+\subsection{Sport Abstraction Layer}
+
+The \texttt{Sport} interface defines all sport-specific behavior.
+
+Implemented methods include:
+\begin{itemize}
+\item \texttt{getName()}
+\item \texttt{createLeague()}
+\item \texttt{createTeam()}
+\item \texttt{createMatch()}
+\item \texttt{getPositions()}
+\item \texttt{getTactics()}
+\item \texttt{getRequiredLineupSize()}
+\item \texttt{getMaxSubstituteCount()}
+\item \texttt{getSegmentCount()}
+\item \texttt{getSegmentLabel()}
+\end{itemize}
+
+\texttt{SportFactory} centralizes concrete sport creation logic.
+
+Example:
+\begin{verbatim}
+case "football":
+    return new FootballSport();
+case "basketball":
+    return new BasketballSport();
+\end{verbatim}
+
+This ensures that the rest of the application remains independent from sport implementations.
+
+\subsection{Concrete Sport Modules}
+
+\subsubsection*{Football Module}
+
+Implemented football classes:
+\begin{itemize}
+\item FootballSport
+\item FootballLeague
+\item FootballTeam
+\item FootballPlayer
+\item FootballMatch
+\end{itemize}
+
+Football uses:
+\begin{itemize}
+\item 11-player lineups
+\item 2 halves
+\item Football formations
+\item Goal-based scoring
+\item Standard 3-1-0 point system
+\end{itemize}
+
+\subsubsection*{Basketball Module}
+
+Implemented basketball classes:
+\begin{itemize}
+\item BasketballSport
+\item BasketballLeague
+\item BasketballTeam
+\item BasketballPlayer
+\item BasketballMatch
+\item BasketballTactics
+\end{itemize}
+
+Basketball introduces:
+\begin{itemize}
+\item Quarter-based matches
+\item Basketball-specific tactics
+\item Higher-scoring simulations
+\item Smaller lineups
+\item Faster possession-based gameplay
+\end{itemize}
+
+The successful integration of basketball demonstrates that the framework supports extension without requiring major architectural changes.
+
+\section{Object-Oriented Design Principles Applied}
+
+The project heavily relies on object-oriented programming principles.
+
+\subsection{Abstraction}
+
+Abstraction is the foundation of the entire project.
+
+Examples:
+\begin{itemize}
+\item Abstract classes: Player, Team, League, Match
+\item Sport interface
+\item Generic UI interaction through abstract types
+\end{itemize}
+
+The UI does not know whether it is managing football or basketball. It communicates only through abstract interfaces.
+
+\subsection{Encapsulation}
+
+Data and behavior are encapsulated inside domain objects.
+
+Examples:
+\begin{itemize}
+\item Player manages injury recovery internally
+\item Team manages lineup validation
+\item League controls standings and rounds
+\item Match controls simulation flow
+\end{itemize}
+
+Sensitive fields are protected using private/protected access modifiers and accessed through getters/setters.
+
+\subsection{Inheritance}
+
+Concrete sports inherit shared functionality from abstract base classes.
+
+Examples:
+\begin{itemize}
+\item FootballPlayer extends Player
+\item BasketballPlayer extends Player
+\item FootballTeam extends Team
+\item BasketballLeague extends League
+\end{itemize}
+
+This reduces code duplication while allowing sport-specific behavior.
+
+\subsection{Polymorphism}
+
+Polymorphism allows the application to work with multiple sports through shared interfaces.
+
+Example:
+\begin{verbatim}
+Sport sport = SportFactory.create(sportCode);
+\end{verbatim}
+
+The caller does not need to know whether the returned object is football or basketball.
+
+\subsection{Factory Pattern}
+
+\texttt{SportFactory} centralizes object creation.
+
+Benefits:
+\begin{itemize}
+\item Reduced coupling
+\item Easy extension
+\item Cleaner UI layer
+\item Simplified initialization
+\end{itemize}
+
+\subsection{Separation of Concerns}
+
+Responsibilities are clearly separated:
+\begin{itemize}
+\item UI handles presentation
+\item SportManager coordinates actions
+\item GameSession stores state
+\item Domain objects manage game logic
+\item Sport modules implement specific rules
+\end{itemize}
+
+\section{Changes From Milestone 1 Design}
+
+Several improvements and practical refinements were introduced during implementation.
+
+\subsection{Match System Redesign}
+
+The original start/play/finish structure was replaced by a segment-based simulation system.
+
+Benefits:
+\begin{itemize}
+\item Better UI integration
+\item Easier halftime management
+\item Better event generation
+\item Cleaner simulation flow
+\end{itemize}
+
+\subsection{Team Statistics Refactoring}
+
+Season statistics were moved directly into Team instead of being duplicated inside StandingEntry.
+
+Benefits:
+\begin{itemize}
+\item Eliminated synchronization issues
+\item Reduced duplicated data
+\item Simplified standings updates
+\end{itemize}
+
+\subsection{Simplified Tactic System}
+
+The original design included numeric attack/defense levels.
+
+The final implementation simplified tactics into:
+\begin{itemize}
+\item Name
+\item Style
+\end{itemize}
+
+This was sufficient for the implemented simulation systems while keeping the design extensible.
+
+\subsection{SceneManager Addition}
+
+\texttt{SceneManager} was added to centralize JavaFX navigation.
+
+Benefits:
+\begin{itemize}
+\item Cleaner controllers
+\item Better separation of concerns
+\item Easier screen transitions
+\end{itemize}
+
+\subsection{Basketball Integration}
+
+The biggest architectural extension from Milestone 2 to Milestone 3 was the addition of basketball.
+
+This required:
+\begin{itemize}
+\item New sport implementation
+\item New player types
+\item Basketball-specific match simulation
+\item Possession-based logic
+\item Quarter system
+\item Basketball tactics
+\item Basketball standings
+\end{itemize}
+
+The integration validated the flexibility of the framework.
+
+\section{Implemented Features}
+
+\subsection{League and Season System}
+
+The application generates fully playable league seasons.
+
+Features:
+\begin{itemize}
+\item Automatic fixture generation
+\item Double round-robin scheduling
+\item Round progression
+\item League standings
+\item Champion determination
+\item Week management
+\end{itemize}
+
+\subsection{Match Simulation}
+
+\subsubsection*{Football}
+
+Football simulation includes:
+\begin{itemize}
+\item Two halves
+\item Tactical modifiers
+\item Goals
+\item Yellow cards
+\item Injuries
+\item Substitutions
+\item Live event feed
+\end{itemize}
+
+\subsubsection*{Basketball}
+
+Basketball simulation includes:
+\begin{itemize}
+\item Quarter-based gameplay
+\item Possession simulation
+\item Basketball tactics
+\item Offensive and defensive balancing
+\item Fast scoring system
+\end{itemize}
+
+\subsection{Tactical System}
+
+The tactical system supports multiple formations and styles.
+
+Football formations:
+\begin{itemize}
+\item 4-3-3
+\item 4-4-2
+\item 4-2-3-1
+\item 3-5-2
+\item 5-3-2
+\end{itemize}
+
+Basketball tactics include offensive strategy configurations.
+
+\subsection{Squad and Lineup Management}
+
+Users can:
+\begin{itemize}
+\item View players
+\item Create lineups
+\item Change tactics
+\item Make substitutions
+\item Track injuries
+\item View player attributes
+\end{itemize}
+
+\subsection{Injury System}
+
+Players can become injured during matches.
+
+Features:
+\begin{itemize}
+\item Random injury generation
+\item Match-based recovery system
+\item Injury frequency settings
+\item Availability checks
+\end{itemize}
+
+\subsection{Settings System}
+
+Implemented settings:
+\begin{itemize}
+\item Match difficulty
+\item Injury frequency
+\item Maximum substitutions
+\item Accent themes
+\item Auto-advance
+\item Detailed event display
+\end{itemize}
+
+\subsection{User Interface}
+
+The JavaFX interface includes:
+\begin{itemize}
+\item Animated splash screen
+\item Dashboard
+\item Fixtures screen
+\item Match screen
+\item Squad screen
+\item League table
+\item Settings page
+\item Theme support
+\item Toolbar navigation
+\item Live match events
+\end{itemize}
+
+\section{Save and Load System}
+
+The project architecture supports save/load functionality through Java serialization.
+
+Core classes implement \texttt{Serializable}, including:
+\begin{itemize}
+\item Team
+\item Player
+\item League
+\item Match
+\item StandingEntry
+\item Lineup
+\item Tactic
+\end{itemize}
+
+This allows complete game state persistence.
+
+The final implementation includes a functional save/load system based on serialized game snapshots, while still allowing future expansion for more advanced persistence features.
+
+\section{Testing}
+
+JUnit was used for testing.
+
+Tested systems include:
+\begin{itemize}
+\item Team statistics
+\item Standings sorting
+\item Injury handling
+\item Lineup validation
+\item League progression
+\item Sport factory creation
+\item Match logic
+\end{itemize}
+
+The tests validate both:
+\begin{itemize}
+\item Framework behavior
+\item Sport-specific implementations
+\end{itemize}
+
+The testing process significantly improved project reliability.
+
+\section{Running the Project}
+
+\subsection*{Requirements}
+
+\begin{itemize}
+\item Java JDK 21+
+\item Apache Maven 3.8+
+\end{itemize}
+
+\subsection*{Build}
+
+\begin{verbatim}
+mvn compile
+\end{verbatim}
+
+\subsection*{Run}
+
+\begin{verbatim}
+mvn compile exec:java
+\end{verbatim}
+
+\subsection*{Run Tests}
+
+\begin{verbatim}
+mvn test
+\end{verbatim}
+
+\section{Post-Mortem}
+
+\subsection{What Went Well}
+
+Several aspects of the project were successful.
+
+\subsubsection*{Strong Core Architecture}
+
+The abstraction-focused design created during Milestone 1 proved highly effective during implementation.
+
+The addition of basketball required only minimal changes outside the new module itself, demonstrating that the architecture was truly extensible.
+
+\subsubsection*{Successful Multi-Sport Support}
+
+The project successfully supports two sports using the same framework.
+
+This validates:
+\begin{itemize}
+\item Interface-based design
+\item Factory pattern usage
+\item Shared domain abstraction
+\item Polymorphic behavior
+\end{itemize}
+
+\subsubsection*{UI Development}
+
+The JavaFX interface became significantly more polished during Milestone 3.
+
+The addition of:
+\begin{itemize}
+\item Theme support
+\item Toolbar navigation
+\item Animated transitions
+\item Match event feeds
+\item Tactical visuals
+\end{itemize}
+
+improved overall usability and presentation quality.
+
+\subsubsection*{Team Collaboration}
+
+Git-based collaboration and task sharing allowed the team to work on different modules simultaneously.
+
+Responsibilities were divided across:
+\begin{itemize}
+\item UI
+\item Match simulation
+\item Core framework
+\item Testing
+\item Basketball integration
+\end{itemize}
+
+\subsection{Challenges and Problems}
+
+\subsubsection*{JavaFX and Maven Configuration}
+
+One of the biggest technical difficulties involved JavaFX runtime configuration on Windows systems.
+
+Problems included:
+\begin{itemize}
+\item Module-path issues
+\item Native library loading
+\item Non-ASCII path problems
+\item Maven plugin configuration
+\end{itemize}
+
+Several workarounds were required to ensure stable execution.
+
+\subsubsection*{Merge Conflicts}
+
+As the project grew larger, merge conflicts became more common.
+
+This was especially noticeable when:
+\begin{itemize}
+\item Refactoring the tactic system
+\item Modifying abstract classes
+\item Updating Team and Match logic
+\end{itemize}
+
+The team improved its Git workflow over time to reduce conflicts.
+
+\subsubsection*{Scope Management}
+
+Some planned features were simplified or partially implemented due to time constraints.
+
+Examples:
+\begin{itemize}
+\item Advanced transfer system
+\item Financial management
+\item Detailed training mechanics
+\item Full save/load UI
+\item Multi-season persistence
+\end{itemize}
+
+\subsection{Lessons Learned}
+
+The project provided practical experience in:
+\begin{itemize}
+\item Object-oriented architecture
+\item JavaFX development
+\item Maven dependency management
+\item Git collaboration
+\item Large-scale Java project structure
+\item Abstraction and extensibility
+\item Refactoring
+\item Team coordination
+\end{itemize}
+
+The importance of designing extensible systems early became especially clear during basketball integration.
+
+\section{Final Evaluation}
+
+The Sports Manager project successfully evolved from a conceptual design into a fully functional multi-sport management application.
+
+The final system demonstrates:
+\begin{itemize}
+\item Strong object-oriented design
+\item Functional abstraction
+\item Multi-sport support
+\item Modular architecture
+\item Working graphical interface
+\item Extendable framework
+\item Stable gameplay systems
+\end{itemize}
+
+The project successfully satisfies the core objectives defined in the assignment specification.
+
+The implementation proves that the framework can continue growing with additional sports and features in future iterations.
+
+\end{document}

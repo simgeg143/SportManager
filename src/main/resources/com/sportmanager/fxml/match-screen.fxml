@@ -73,11 +73,13 @@
                     </VBox>
                     <VBox spacing="10" minWidth="120" prefWidth="280" maxWidth="Infinity" styleClass="card live-main-card">
                         <Label text="MATCH EVENTS" styleClass="live-field-title"/>
-                        <VBox minHeight="0" maxHeight="Infinity" VBox.vgrow="ALWAYS" styleClass="events-scroll">
-                            <VBox fx:id="eventsBox" spacing="4" styleClass="events-inner" minWidth="0" maxWidth="Infinity" VBox.vgrow="ALWAYS">
+                        <ScrollPane fitToWidth="true" fitToHeight="false" minHeight="0" maxHeight="Infinity"
+                                    VBox.vgrow="ALWAYS" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" pannable="true"
+                                    styleClass="events-scroll events-scroll-pane">
+                            <VBox fx:id="eventsBox" spacing="4" styleClass="events-inner" minWidth="0" maxWidth="Infinity">
                                 <padding><Insets top="4" right="8" bottom="4" left="8"/></padding>
                             </VBox>
-                        </VBox>
+                        </ScrollPane>
                     </VBox>
                 </items>
             </SplitPane>
@@ -92,6 +94,12 @@
                   minHeight="0"
                   maxHeight="Infinity"
                   styleClass="events-scroll">
+                <ScrollPane fx:id="breakPanelScrollPane"
+                            fitToWidth="true" fitToHeight="false"
+                            minHeight="0" maxHeight="Infinity"
+                            VBox.vgrow="ALWAYS"
+                            hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" pannable="true"
+                            styleClass="break-panel-scroll events-scroll-pane page-scroll">
                     <VBox fx:id="subPanel" spacing="10" styleClass="card" minWidth="0" maxWidth="Infinity">
                         <Label fx:id="breakPanelTitleLabel" text="HALF TIME" styleClass="section-label"/>
                         <Label fx:id="pauseReasonLabel" text="Match paused for tactical intervention."
@@ -115,65 +123,75 @@
                         <Button text="Apply Formation" onAction="#onApplyTactic"
                                 maxWidth="Infinity" styleClass="btn-primary"/>
                     </VBox>
+                </ScrollPane>
             </VBox>
         </HBox>
 
-        <!-- In-window substitution modal overlay -->
+        <!-- In-window substitution modal: scroll middle, sticky footer so actions stay above taskbar -->
         <StackPane fx:id="subOverlay" visible="false" managed="false" styleClass="sub-overlay">
-                <VBox fx:id="subModalRoot" spacing="12" maxWidth="980" minWidth="0" styleClass="sub-modal">
-                <HBox alignment="CENTER_LEFT">
-                    <Label text="SUBSTITUTION HUB" styleClass="card-heading"/>
+            <VBox alignment="TOP_CENTER" spacing="0" maxWidth="980" minWidth="0" maxHeight="Infinity"
+                  styleClass="sub-modal">
+                <ScrollPane fitToWidth="true" fitToHeight="false" minHeight="0" maxHeight="Infinity" VBox.vgrow="ALWAYS"
+                            hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" pannable="true" styleClass="sub-modal-scroll">
+                    <VBox fx:id="subModalRoot" spacing="12" maxWidth="980" minWidth="0" styleClass="sub-modal-inner">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="SUBSTITUTION HUB" styleClass="card-heading"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="✕" onAction="#onCloseSubOverlay" styleClass="btn-secondary"/>
+                        </HBox>
+                        <Label fx:id="subOverlayReasonLabel" text="Compare players and confirm your substitution."
+                               styleClass="label-small"/>
+
+                        <HBox spacing="14" minWidth="0">
+                            <VBox spacing="8" HBox.hgrow="ALWAYS" minWidth="0" maxWidth="Infinity" styleClass="player-card-panel">
+                                <Label text="CURRENT PLAYER" styleClass="section-label"/>
+                                <ListView fx:id="overlayCurrentList" prefHeight="160" minHeight="96" maxHeight="280"
+                                          styleClass="player-list"/>
+                                <VBox fx:id="leftPlayerCardVBox" styleClass="player-card" minWidth="0" maxWidth="Infinity">
+                                    <HBox alignment="CENTER_LEFT" spacing="8">
+                                        <VBox spacing="2" HBox.hgrow="ALWAYS" minWidth="0">
+                                            <Label fx:id="leftPlayerNameLabel" text="-" styleClass="match-team-name" wrapText="true"/>
+                                            <Label fx:id="leftPlayerMetaLabel" text="-" styleClass="label-small" wrapText="true"/>
+                                        </VBox>
+                                        <Label fx:id="leftOverallBadgeLabel" text="OVR 0" styleClass="overall-badge"/>
+                                    </HBox>
+                                    <HBox spacing="8">
+                                        <Label fx:id="leftRoleChipLabel" text="ROLE" styleClass="chip-role"/>
+                                        <Label fx:id="leftStatusChipLabel" text="FIT" styleClass="chip-status-fit"/>
+                                    </HBox>
+                                    <Canvas fx:id="leftRadarCanvas"/>
+                                    <VBox fx:id="leftStatsBox" spacing="4"/>
+                                    <Label fx:id="leftExtraStatsLabel" text="-" styleClass="label-small"/>
+                                </VBox>
+                            </VBox>
+
+                            <VBox spacing="8" HBox.hgrow="ALWAYS" minWidth="0" maxWidth="Infinity" styleClass="player-card-panel">
+                                <Label text="CANDIDATE BENCH PLAYER" styleClass="section-label"/>
+                                <ListView fx:id="overlayBenchList" prefHeight="160" minHeight="96" maxHeight="280"
+                                          styleClass="player-list"/>
+                                <VBox fx:id="rightPlayerCardVBox" styleClass="player-card" minWidth="0" maxWidth="Infinity">
+                                    <HBox alignment="CENTER_LEFT" spacing="8">
+                                        <VBox spacing="2" HBox.hgrow="ALWAYS" minWidth="0">
+                                            <Label fx:id="rightPlayerNameLabel" text="-" styleClass="match-team-name" wrapText="true"/>
+                                            <Label fx:id="rightPlayerMetaLabel" text="-" styleClass="label-small" wrapText="true"/>
+                                        </VBox>
+                                        <Label fx:id="rightOverallBadgeLabel" text="OVR 0" styleClass="overall-badge"/>
+                                    </HBox>
+                                    <HBox spacing="8">
+                                        <Label fx:id="rightRoleChipLabel" text="ROLE" styleClass="chip-role"/>
+                                        <Label fx:id="rightStatusChipLabel" text="FIT" styleClass="chip-status-fit"/>
+                                    </HBox>
+                                    <Canvas fx:id="rightRadarCanvas"/>
+                                    <VBox fx:id="rightStatsBox" spacing="4"/>
+                                    <Label fx:id="rightExtraStatsLabel" text="-" styleClass="label-small"/>
+                                </VBox>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                </ScrollPane>
+                <HBox spacing="12" alignment="CENTER_RIGHT" styleClass="sub-modal-footer">
+                    <padding><Insets top="10" right="16" bottom="16" left="16"/></padding>
                     <Region HBox.hgrow="ALWAYS"/>
-                    <Button text="✕" onAction="#onCloseSubOverlay" styleClass="btn-secondary"/>
-                </HBox>
-                <Label fx:id="subOverlayReasonLabel" text="Compare players and confirm your substitution."
-                       styleClass="label-small"/>
-
-                <HBox spacing="14" minWidth="0">
-                    <VBox spacing="8" HBox.hgrow="ALWAYS" minWidth="0" maxWidth="Infinity" styleClass="player-card-panel">
-                        <Label text="CURRENT PLAYER" styleClass="section-label"/>
-                        <ListView fx:id="overlayCurrentList" prefHeight="240" styleClass="player-list"/>
-                        <VBox fx:id="leftPlayerCardVBox" styleClass="player-card" minWidth="0" maxWidth="Infinity">
-                            <HBox alignment="CENTER_LEFT" spacing="8">
-                                <VBox spacing="2" HBox.hgrow="ALWAYS" minWidth="0">
-                                    <Label fx:id="leftPlayerNameLabel" text="-" styleClass="match-team-name" wrapText="true"/>
-                                    <Label fx:id="leftPlayerMetaLabel" text="-" styleClass="label-small" wrapText="true"/>
-                                </VBox>
-                                <Label fx:id="leftOverallBadgeLabel" text="OVR 0" styleClass="overall-badge"/>
-                            </HBox>
-                            <HBox spacing="8">
-                                <Label fx:id="leftRoleChipLabel" text="ROLE" styleClass="chip-role"/>
-                                <Label fx:id="leftStatusChipLabel" text="FIT" styleClass="chip-status-fit"/>
-                            </HBox>
-                            <Canvas fx:id="leftRadarCanvas"/>
-                            <VBox fx:id="leftStatsBox" spacing="4"/>
-                            <Label fx:id="leftExtraStatsLabel" text="-" styleClass="label-small"/>
-                        </VBox>
-                    </VBox>
-
-                    <VBox spacing="8" HBox.hgrow="ALWAYS" minWidth="0" maxWidth="Infinity" styleClass="player-card-panel">
-                        <Label text="CANDIDATE BENCH PLAYER" styleClass="section-label"/>
-                        <ListView fx:id="overlayBenchList" prefHeight="240" styleClass="player-list"/>
-                        <VBox fx:id="rightPlayerCardVBox" styleClass="player-card" minWidth="0" maxWidth="Infinity">
-                            <HBox alignment="CENTER_LEFT" spacing="8">
-                                <VBox spacing="2" HBox.hgrow="ALWAYS" minWidth="0">
-                                    <Label fx:id="rightPlayerNameLabel" text="-" styleClass="match-team-name" wrapText="true"/>
-                                    <Label fx:id="rightPlayerMetaLabel" text="-" styleClass="label-small" wrapText="true"/>
-                                </VBox>
-                                <Label fx:id="rightOverallBadgeLabel" text="OVR 0" styleClass="overall-badge"/>
-                            </HBox>
-                            <HBox spacing="8">
-                                <Label fx:id="rightRoleChipLabel" text="ROLE" styleClass="chip-role"/>
-                                <Label fx:id="rightStatusChipLabel" text="FIT" styleClass="chip-status-fit"/>
-                            </HBox>
-                            <Canvas fx:id="rightRadarCanvas"/>
-                            <VBox fx:id="rightStatsBox" spacing="4"/>
-                            <Label fx:id="rightExtraStatsLabel" text="-" styleClass="label-small"/>
-                        </VBox>
-                    </VBox>
-                </HBox>
-
-                <HBox spacing="12" alignment="CENTER_RIGHT">
                     <Button text="Keep Current" onAction="#onKeepCurrentSubstitution" styleClass="btn-secondary"/>
                     <Button text="Apply Substitution" onAction="#onApplyOverlaySubstitution" styleClass="btn-primary"/>
                 </HBox>

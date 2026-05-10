@@ -19,7 +19,9 @@
 
     <!-- ── BODY ─────────────────────────────────────────────────────────── -->
     <center>
-        <VBox minHeight="0" maxHeight="Infinity" styleClass="scroll-transparent" VBox.vgrow="ALWAYS">
+        <ScrollPane fitToWidth="true" fitToHeight="false" minHeight="0" maxHeight="Infinity"
+                    maxWidth="Infinity" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" pannable="true"
+                    styleClass="scroll-transparent page-scroll">
             <VBox spacing="20" styleClass="page-body" minWidth="0" maxWidth="Infinity">
                 <padding><Insets top="28" right="32" bottom="28" left="32"/></padding>
 
@@ -223,7 +225,7 @@
                 </HBox>
 
             </VBox>
-        </VBox>
+        </ScrollPane>
     </center>
 
 </BorderPane>

@@ -1188,7 +1188,7 @@ Label {
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   23. MATCH EVENTS  (VBox-based)
+   23. MATCH EVENTS  (ScrollPane + inner VBox)
 ══════════════════════════════════════════════════════════════════ */
 
 .events-scroll {
@@ -1197,8 +1197,22 @@ Label {
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;
 }
+.events-scroll-pane > .viewport {
+    -fx-background-color: #111827;
+}
 .events-inner {
     -fx-background-color: #111827;
+}
+
+.page-scroll {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+.page-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+.page-scroll > .corner {
+    -fx-background-color: transparent;
 }
 .segment-header {
     -fx-font-size: 11px;
@@ -1262,7 +1276,40 @@ Label {
     -fx-border-color: #253042;
     -fx-border-width: 1px;
     -fx-border-radius: 12px;
-    -fx-padding: 16px;
+    -fx-padding: 0;
+}
+.sub-modal-inner {
+    -fx-background-color: transparent;
+    -fx-padding: 16px 16px 8px 16px;
+}
+.sub-modal-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+.sub-modal-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+.sub-modal-scroll > .corner {
+    -fx-background-color: transparent;
+}
+.sub-modal-scroll .scroll-bar:vertical {
+    -fx-pref-width: 10px;
+}
+.sub-modal-scroll .scroll-bar:horizontal {
+    -fx-pref-height: 10px;
+}
+.sub-modal-scroll .scroll-bar .thumb {
+    -fx-background-color: #253042;
+    -fx-background-radius: 4px;
+}
+.sub-modal-scroll .scroll-bar .track {
+    -fx-background-color: transparent;
+}
+.sub-modal-footer {
+    -fx-background-color: transparent;
+    -fx-border-color: #253042 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
 }
 
 .player-card-panel {

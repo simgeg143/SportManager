@@ -19,14 +19,16 @@
     </top>
 
     <center>
-        <VBox spacing="16" styleClass="page-body">
+        <VBox spacing="16" styleClass="page-body" minHeight="0" maxHeight="Infinity">
             <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
 
-            <VBox minHeight="0" maxHeight="Infinity" VBox.vgrow="ALWAYS" styleClass="team-scroll">
-                <GridPane fx:id="teamGrid" hgap="16" vgap="16" minWidth="0" maxWidth="Infinity" VBox.vgrow="ALWAYS">
+            <ScrollPane fitToWidth="true" fitToHeight="false" minHeight="0" maxHeight="Infinity"
+                        VBox.vgrow="ALWAYS" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" pannable="true"
+                        styleClass="team-scroll page-scroll">
+                <GridPane fx:id="teamGrid" hgap="16" vgap="16" minWidth="0" maxWidth="Infinity">
                     <padding><Insets top="4" right="4" bottom="4" left="4"/></padding>
                 </GridPane>
-            </VBox>
+            </ScrollPane>
 
         </VBox>
     </center>

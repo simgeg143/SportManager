@@ -27,6 +27,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
@@ -94,6 +95,7 @@ public class MatchScreenController implements Initializable {
     @FXML private Button timeoutButton;
     @FXML private Button nextEventButton;
     @FXML private VBox subPanelScroll;
+    @FXML private ScrollPane breakPanelScrollPane;
     @FXML private Label breakPanelTitleLabel;
     @FXML private Label subCountLabel;
     @FXML private Label timeoutCountLabel;
@@ -247,9 +249,9 @@ public class MatchScreenController implements Initializable {
     }
 
     private void bindBreakPanelTacticSizing() {
-        if (subPanelScroll == null || tacticCanvas == null) return;
-        ScrollViewportBindings.attachRegionLayoutListeners(subPanelScroll, () -> {
-            double inner = ScrollViewportBindings.regionInnerWidth(subPanelScroll, 12);
+        if (breakPanelScrollPane == null || tacticCanvas == null) return;
+        ScrollViewportBindings.attachScrollViewportListeners(breakPanelScrollPane, () -> {
+            double inner = ScrollViewportBindings.scrollViewportInnerWidth(breakPanelScrollPane, 24);
             if (inner <= 0) return;
             ScrollViewportBindings.layoutTacticPitchCanvas(tacticCanvas, inner, 276, 220, 320);
             String t = tacticCombo != null ? tacticCombo.getValue() : null;
@@ -301,15 +303,12 @@ public class MatchScreenController implements Initializable {
 
     private void setupResponsiveMatchLayout() {
         if (matchCenterShell != null) {
-            Runnable apply = () -> {
-                double w = matchCenterShell.getWidth();
-                double h = matchCenterShell.getHeight();
-                if (w <= 0 || h <= 0) return;
-                // User requested large outer breathing space.
-                matchCenterShell.setPadding(new Insets(h * 0.10, w * 0.15, h * 0.10, w * 0.15));
-            };
+            Runnable apply = this::applyMatchCenterShellPadding;
             matchCenterShell.widthProperty().addListener((obs, o, n) -> apply.run());
             matchCenterShell.heightProperty().addListener((obs, o, n) -> apply.run());
+            if (subOverlay != null) {
+                subOverlay.visibleProperty().addListener((obs, o, n) -> apply.run());
+            }
         }
         if (centerContentRow != null) {
             centerContentRow.setSpacing(34);
@@ -317,6 +316,18 @@ public class MatchScreenController implements Initializable {
         if (liveSplitPane != null) {
             liveSplitPane.setDividerPositions(0.45);
         }
+    }
+
+    /** Tighter padding while substitution modal is open so the hub fits short laptop viewports. */
+    private void applyMatchCenterShellPadding() {
+        if (matchCenterShell == null) return;
+        double w = matchCenterShell.getWidth();
+        double h = matchCenterShell.getHeight();
+        if (w <= 0 || h <= 0) return;
+        boolean modalOpen = subOverlay != null && subOverlay.isVisible();
+        double vFrac = modalOpen ? 0.035 : 0.10;
+        double hFrac = modalOpen ? 0.06 : 0.15;
+        matchCenterShell.setPadding(new Insets(h * vFrac, w * hFrac, h * vFrac, w * hFrac));
     }
 
     private void setupTacticPanel() {
